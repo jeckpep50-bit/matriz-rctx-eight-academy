@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Matriz de visita áulica RCTX | Eight Academy</title>
+<meta name="description" content="Registro de visitas áulicas con la matriz RCTX del Departamento de Planificación de Eight Academy.">
+<meta name="theme-color" content="#B2F3FD">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F6FA; --surface:#FFFFFF; --surface-2:#FAFBFC; --surface-3:#EEF3FA;
+  --ink:#252733; --ink-2:#434859; --muted:#667085; --line:#D7DCE3; --line-2:#BCC4D0;
+  --title:#2A153D; --h2:#2F3C6F; --primary:#2F3C6F; --on-primary:#FFFFFF; --purple:#2A153D;
+  --cyan:#39DADB; --cyan-soft:#E8FBFB; --teal:#5DAF86; --teal-ink:#2B7550; --teal-soft:#E9F5EF;
+  --yellow:#FFD54C; --yellow-soft:#FFF6D6; --orange:#F2A000; --orange-ink:#8F5D00;
+  --kids:#8FD3F4; --kids-ink:#1D6A91; --kids-soft:#EAF6FD;
+  --pri:#E98FA5; --pri-ink:#AE3A5A; --pri-soft:#FCEBEF;
+  --sec:#3FCBBF; --sec-ink:#0F766D; --sec-soft:#E2F7F5;
+  --danger:#B42318; --danger-soft:#FDECEA; --focus:#2F3C6F;
+  --shadow:0 1px 2px rgba(47,60,111,.06), 0 6px 18px -12px rgba(47,60,111,.25);
+  --tf:"Carlito","Calibri","Segoe UI",Arial,sans-serif;
+  --bf:Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11132A; --surface:#191C36; --surface-2:#1E2240; --surface-3:#252A4D;
+    --ink:#ECEEF6; --ink-2:#C4C8DA; --muted:#949BB5; --line:#2E3458; --line-2:#3E4574;
+    --title:#DCCFF2; --h2:#AEB9EE; --primary:#9AA8EA; --on-primary:#11132A;
+    --cyan-soft:#153639; --teal-ink:#94D6B4; --teal-soft:#1B3329;
+    --yellow-soft:#39321A; --orange-ink:#F4BE52;
+    --kids-ink:#A9DEF8; --kids-soft:#15303F; --pri-ink:#F4AABB; --pri-soft:#3A2130; --sec-ink:#7FE3D9; --sec-soft:#123733;
+    --danger:#F28B7F; --danger-soft:#3E1F1D; --focus:#39DADB; --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#191C36; --surface-2:#1E2240; --surface-3:#252A4D;
+  --ink:#ECEEF6; --ink-2:#C4C8DA; --muted:#949BB5; --line:#2E3458; --line-2:#3E4574;
+  --title:#DCCFF2; --h2:#AEB9EE; --primary:#9AA8EA; --on-primary:#11132A;
+  --cyan-soft:#153639; --teal-ink:#94D6B4; --teal-soft:#1B3329;
+  --yellow-soft:#39321A; --orange-ink:#F4BE52;
+  --kids-ink:#A9DEF8; --kids-soft:#15303F; --pri-ink:#F4AABB; --pri-soft:#3A2130; --sec-ink:#7FE3D9; --sec-soft:#123733;
+  --danger:#F28B7F; --danger-soft:#3E1F1D; --focus:#39DADB; --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -14px rgba(0,0,0,.8);
+}
+:root{box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0}
+body{background:var(--bg); color:var(--ink); font-family:var(--bf); font-size:14.5px; line-height:1.5}
+img{max-width:100%; display:block}
+button,input,select,textarea{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--focus); outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important; transition:none!important}}
+.hide{display:none!important}
+
+/* ---------- cabecera institucional ---------- */
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:40; background:linear-gradient(180deg,#B2F3FD 0%,#DEFAFF 100%);
+  border-bottom:3px solid var(--cyan); display:flex; align-items:center; gap:18px; padding:0 22px 0 8px; height:71px}
+.brand{display:flex; align-items:center; gap:16px; min-width:0; height:100%}
+.brand img{height:68px; width:auto; display:block}
+.wm-sep{width:1px; height:34px; background:rgba(47,60,111,.25)}
+.wm-sub{font-family:var(--tf); font-weight:700; font-size:17px; color:#2F3C6F; line-height:1.15}
+.wm-sub small{display:block; font-family:var(--bf); font-weight:400; font-size:12px; color:#434859}
+.top .state{background:rgba(255,255,255,.75); border-color:rgba(47,60,111,.18); color:#2F3C6F}
+.top .icon-btn{background:rgba(255,255,255,.75); border-color:rgba(47,60,111,.18); color:#2F3C6F}
+.top-r{margin-left:auto; display:flex; gap:8px; align-items:center}
+.state{display:inline-flex; align-items:center; gap:7px; font-size:12px; color:var(--ink-2); background:var(--surface-2);
+  border:1px solid var(--line); border-radius:999px; padding:5px 11px; white-space:nowrap}
+.state i{width:8px; height:8px; border-radius:50%; background:var(--muted)}
+.state.ok i{background:var(--teal)} .state.warn i{background:var(--orange)}
+.icon-btn{width:36px; height:36px; border-radius:9px; border:1px solid var(--line); background:var(--surface-2); cursor:pointer; color:var(--ink-2); display:grid; place-items:center}
+
+/* ---------- estructura ---------- */
+.shell{display:grid; grid-template-columns:232px minmax(0,1fr); align-items:start}
+.rail{position:sticky; top:74px; padding:18px 12px; min-height:calc(100vh - 74px); background:var(--surface); border-right:1px solid var(--line)}
+.nav{display:flex; flex-direction:column; gap:3px}
+.nav button{display:flex; align-items:center; gap:11px; width:100%; border:0; background:none; text-align:left; cursor:pointer;
+  padding:10px 12px; border-radius:9px; color:var(--ink-2); font-size:14.5px}
+.nav button svg{width:18px; height:18px; flex:none; stroke:currentColor; fill:none; stroke-width:1.8}
+.nav button:hover{background:var(--surface-3)}
+.nav button[aria-current="true"]{background:var(--primary); color:var(--on-primary); font-weight:700}
+.rail-stats{margin-top:22px; border-top:1px solid var(--line); padding:14px 12px 0; display:grid; gap:10px}
+.rail-stats div{font-size:12px; color:var(--muted)}
+.rail-stats b{display:block; font-family:var(--tf); font-size:26px; color:var(--h2); line-height:1.05}
+main{padding:26px 30px 110px; max-width:1200px; min-width:0}
+.view-h{display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; margin-bottom:20px}
+.view-h h2{font-family:var(--tf); font-weight:700; font-size:30px; color:var(--title); margin:0; line-height:1.1}
+.view-h p{margin:5px 0 0; color:var(--muted); max-width:70ch}
+.view-h .end{margin-left:auto}
+
+/* ---------- paneles ---------- */
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow)}
+.panel h3{font-family:var(--tf); font-weight:700; font-size:19px; color:var(--h2); margin:0 0 2px}
+.panel .hint{margin:0 0 16px; font-size:13px; color:var(--muted); max-width:72ch}
+.callout{background:var(--teal-soft); border-left:4px solid var(--teal); border-radius:0 10px 10px 0; padding:12px 16px; font-size:13.5px; color:var(--ink-2)}
+.callout b{color:var(--ink)}
+.callout.warn{background:var(--yellow-soft); border-left-color:var(--orange)}
+.callout.err{background:var(--danger-soft); border-left-color:var(--danger); color:var(--danger)}
+.sep{height:1px; background:var(--line); margin:18px 0}
+
+/* ---------- formulario ---------- */
+.grid{display:grid; gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))} .g3{grid-template-columns:repeat(3,minmax(0,1fr))} .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.field>label,.lbl{font-size:13px; font-weight:700; color:var(--ink-2)}
+.req{color:var(--danger)}
+input[type=text],input[type=date],input[type=time],input[type=search],select,textarea{
+  width:100%; background:var(--surface); border:1px solid var(--line-2); border-radius:8px; padding:10px 12px; min-height:42px}
+textarea{min-height:100px; resize:vertical; line-height:1.55}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--focus); outline-offset:0; border-color:var(--h2)}
+input[readonly]{background:var(--surface-3); color:var(--ink-2); font-weight:700}
+.bad{border-color:var(--danger)!important; background:var(--danger-soft)!important}
+.fmsg{font-size:12px; color:var(--danger)}
+
+/* pasos */
+.steps{display:flex; gap:0; list-style:none; margin:0 0 18px; padding:14px 18px; background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); overflow-x:auto}
+.steps li{flex:1; min-width:118px; position:relative}
+.steps li:not(:last-child)::after{content:""; position:absolute; top:16px; left:calc(50% + 20px); right:calc(-50% + 20px); height:2px; background:var(--line)}
+.steps li.done:not(:last-child)::after{background:var(--teal)}
+.steps button{display:flex; flex-direction:column; align-items:center; gap:6px; width:100%; background:none; border:0; cursor:pointer; padding:0 4px; color:var(--muted); font-size:12.5px; text-align:center}
+.steps .num{width:32px; height:32px; border-radius:50%; display:grid; place-items:center; font-family:var(--tf); font-weight:700; font-size:15px; border:2px solid var(--line-2); background:var(--surface); color:var(--muted)}
+.steps li.done .num{background:var(--teal); border-color:var(--teal); color:#fff}
+.steps li.cur .num{background:var(--primary); border-color:var(--primary); color:var(--on-primary)}
+.steps li.cur button{color:var(--h2); font-weight:700}
+.steps li.err .num{border-color:var(--danger); color:var(--danger)}
+
+/* tarjetas de opción */
+.opts{display:grid; gap:10px}
+.opts.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:700px){.opts.c3{grid-template-columns:1fr}}
+.opt{display:flex; gap:12px; align-items:flex-start; text-align:left; background:var(--surface); border:1.5px solid var(--line); border-radius:11px; padding:13px 14px; cursor:pointer; min-height:56px}
+.opt:hover{border-color:var(--line-2)}
+.opt .dot{width:14px; height:14px; border-radius:50%; flex:none; margin-top:3px; border:2px solid var(--line-2)}
+.opt b{display:block; font-family:var(--tf); font-size:16.5px; color:var(--ink)}
+.opt small{display:block; font-size:12.5px; color:var(--muted); margin-top:2px}
+.opt[aria-pressed="true"]{border-color:var(--h2); background:var(--surface-3)}
+.opt[aria-pressed="true"] .dot{background:var(--h2); border-color:var(--h2)}
+.opt.KIDS .dot{background:var(--kids); border-color:var(--kids)} .opt.PRIMARIA .dot{background:var(--pri); border-color:var(--pri)} .opt.SECUNDARIA .dot{background:var(--sec); border-color:var(--sec)}
+.opt.KIDS[aria-pressed="true"]{border-color:var(--kids); background:var(--kids-soft)}
+.opt.PRIMARIA[aria-pressed="true"]{border-color:var(--pri); background:var(--pri-soft)}
+.opt.SECUNDARIA[aria-pressed="true"]{border-color:var(--sec); background:var(--sec-soft)}
+.opt.l1[aria-pressed="true"]{border-color:var(--teal); background:var(--teal-soft)} .opt.l1[aria-pressed="true"] .dot{background:var(--teal); border-color:var(--teal)}
+.opt.l2[aria-pressed="true"]{border-color:var(--orange); background:var(--yellow-soft)} .opt.l2[aria-pressed="true"] .dot{background:var(--orange); border-color:var(--orange)}
+.opt.l3[aria-pressed="true"]{border-color:var(--danger); background:var(--danger-soft)} .opt.l3[aria-pressed="true"] .dot{background:var(--danger); border-color:var(--danger)}
+.opts.bad-group .opt{border-color:var(--danger)}
+
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{background:var(--surface); border:1px solid var(--line-2); border-radius:999px; padding:7px 14px; font-size:13px; cursor:pointer; color:var(--ink-2)}
+.chip:hover{border-color:var(--h2)}
+.chip[aria-pressed="true"]{background:var(--primary); border-color:var(--primary); color:var(--on-primary)}
+.chips.mj .chip[aria-pressed="true"]{background:var(--yellow-soft); border-color:var(--orange); color:var(--orange-ink); font-weight:700}
+.chips.bp .chip[aria-pressed="true"]{background:var(--teal-soft); border-color:var(--teal); color:var(--teal-ink); font-weight:700}
+.counter{font-size:12px; color:var(--muted); margin-left:8px; font-weight:400}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; background:var(--primary); color:var(--on-primary); border:1px solid var(--primary); border-radius:9px; padding:10px 18px; min-height:42px; font-weight:700; font-size:14px; cursor:pointer}
+.btn:hover{filter:brightness(1.08)} .btn:disabled{opacity:.45; cursor:not-allowed}
+.btn.sec{background:var(--surface); color:var(--h2); border-color:var(--line-2)}
+.btn.sec:hover{border-color:var(--h2); filter:none}
+.btn.accent{background:var(--purple); border-color:var(--purple); color:#fff}
+.btn.sm{min-height:34px; padding:6px 12px; font-size:13px}
+.btn.danger{background:transparent; color:var(--danger); border-color:var(--danger)}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
+.switch{display:inline-flex; align-items:center; gap:12px; cursor:pointer}
+.switch input{position:absolute; opacity:0; width:1px; height:1px}
+.trk{width:44px; height:25px; border-radius:999px; background:var(--line-2); position:relative; flex:none; transition:background .15s}
+.trk::after{content:""; position:absolute; top:3px; left:3px; width:19px; height:19px; border-radius:50%; background:#fff; transition:transform .15s}
+.switch input:checked+.trk{background:var(--h2)} .switch input:checked+.trk::after{transform:translateX(19px)}
+.switch input:focus-visible+.trk{outline:2px solid var(--focus); outline-offset:2px}
+
+details.quick{background:var(--surface-3); border:1px solid var(--line); border-radius:12px; margin-bottom:16px}
+details.quick summary{cursor:pointer; padding:14px 18px; font-family:var(--tf); font-size:17px; font-weight:700; color:var(--title); list-style:none; display:flex; align-items:center; gap:10px}
+details.quick summary::-webkit-details-marker{display:none}
+details.quick summary small{font-family:var(--bf); font-weight:400; font-size:12.5px; color:var(--muted)}
+details.quick summary::after{content:"+"; margin-left:auto; font-size:20px; color:var(--h2)}
+details.quick[open] summary::after{content:"–"}
+details.quick .qb{padding:0 18px 16px}
+
+/* barra de acciones */
+.actionbar{position:sticky; bottom:calc(10px + env(safe-area-inset-bottom,0px)); z-index:20; margin-top:6px; background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:0 8px 30px -12px rgba(47,60,111,.45); padding:12px 16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.actionbar .idp{font-size:12.5px; color:var(--muted)}
+.actionbar .idp b{font-family:var(--tf); font-size:16px; color:var(--h2); letter-spacing:.03em}
+.actionbar .grow{flex:1}
+
+/* fotos */
+.photos{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+@media (max-width:620px){.photos{grid-template-columns:1fr}}
+.slot{border:1px solid var(--line); border-radius:12px; padding:12px; background:var(--surface-2)}
+.slot-h{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
+.slot-h b{font-family:var(--tf); font-size:16px; color:var(--h2)}
+.drop{border:2px dashed var(--line-2); border-radius:10px; min-height:170px; display:grid; place-items:center; text-align:center; color:var(--muted); font-size:13px; cursor:pointer; padding:16px; background:var(--surface)}
+.drop:hover{border-color:var(--h2)}
+.drop svg{width:30px; height:30px; stroke:var(--h2); fill:none; stroke-width:1.6; margin:0 auto 8px}
+.drop.has{padding:0; border-style:solid; overflow:hidden; max-height:240px}
+.drop.has img{width:100%; height:100%; object-fit:cover}
+.drop.off{opacity:.5; pointer-events:none}
+.slot input[type=text]{margin-top:10px}
+
+/* resumen */
+.summary{border:1px solid var(--line); border-radius:10px; overflow:hidden}
+.summary .sh{background:var(--primary); color:var(--on-primary); padding:9px 14px; font-weight:700; font-size:13px}
+.summary dl{display:grid; grid-template-columns:180px 1fr; margin:0}
+.summary dt,.summary dd{padding:8px 14px; border-top:1px solid var(--line); margin:0; font-size:13.5px}
+.summary dt{background:var(--surface-2); color:var(--muted); font-weight:700; font-size:12.5px}
+@media (max-width:560px){.summary dl{grid-template-columns:1fr} .summary dd{border-top:0; padding-top:0}}
+
+/* ---------- tablas estilo manual ---------- */
+.tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--surface); box-shadow:var(--shadow)}
+table.tbl{width:100%; border-collapse:collapse; font-size:13.5px}
+.tbl th{background:var(--primary); color:var(--on-primary); text-align:left; font-weight:700; font-size:12.5px; padding:11px 12px; white-space:nowrap}
+.tbl td{padding:11px 12px; border-top:1px solid var(--line); vertical-align:top}
+.tbl tbody tr:nth-child(even) td{background:var(--surface-2)}
+.tbl tbody tr{cursor:pointer}
+.tbl tbody tr:hover td{background:var(--surface-3)}
+.tbl .idc{font-family:var(--tf); font-weight:700; color:var(--h2); white-space:nowrap; font-size:14px}
+.tbl .who b{display:block; font-weight:700}
+.tbl .who span{color:var(--muted); font-size:12.5px}
+.tbl .num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+.secbar{display:inline-block; width:4px; height:30px; border-radius:2px; vertical-align:middle; margin-right:8px; background:var(--muted)}
+.secbar.KIDS{background:var(--kids)} .secbar.PRIMARIA{background:var(--pri)} .secbar.SECUNDARIA{background:var(--sec)}
+@media (max-width:780px){
+  .tbl-wrap{border:0; background:none; box-shadow:none; overflow:visible}
+  .tbl thead{display:none}
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block; width:100%}
+  .tbl tr{background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; padding:6px 4px; box-shadow:var(--shadow); border-left:5px solid var(--muted)}
+  .tbl tr.KIDS{border-left-color:var(--kids)} .tbl tr.PRIMARIA{border-left-color:var(--pri)} .tbl tr.SECUNDARIA{border-left-color:var(--sec)}
+  .tbl tbody tr:nth-child(even) td,.tbl tbody tr:hover td{background:none}
+  .tbl td{border:0; padding:5px 12px; display:flex; gap:12px}
+  .tbl td::before{content:attr(data-l); flex:0 0 96px; font-size:11.5px; color:var(--muted); font-weight:700; padding-top:2px}
+  .tbl td.num{text-align:left}
+  .secbar{display:none}
+}
+
+.tags{display:flex; flex-wrap:wrap; gap:5px}
+.tag{display:inline-block; font-size:11.5px; font-weight:700; border-radius:6px; padding:3px 8px; border:1px solid var(--line); background:var(--surface-2); color:var(--ink-2); white-space:nowrap}
+.tag.KIDS{background:var(--kids-soft); color:var(--kids-ink); border-color:var(--kids)}
+.tag.PRIMARIA{background:var(--pri-soft); color:var(--pri-ink); border-color:var(--pri)}
+.tag.SECUNDARIA{background:var(--sec-soft); color:var(--sec-ink); border-color:var(--sec)}
+.tag.good{background:var(--teal-soft); color:var(--teal-ink); border-color:var(--teal)}
+.tag.warn{background:var(--yellow-soft); color:var(--orange-ink); border-color:var(--orange)}
+.tag.prio{background:var(--danger-soft); color:var(--danger); border-color:var(--danger)}
+.tag.en{background:var(--surface-3); color:var(--h2); border-color:var(--h2)}
+
+.toolbar{display:grid; grid-template-columns:2fr repeat(3,minmax(0,1fr)); gap:10px; align-items:end}
+@media (max-width:900px){.toolbar{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.toolbar{grid-template-columns:1fr}}
+.seg{display:inline-flex; background:var(--surface-3); border-radius:10px; padding:3px; gap:2px; flex-wrap:wrap}
+.seg button{border:0; background:none; padding:7px 13px; border-radius:8px; font-size:13px; cursor:pointer; color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--surface); color:var(--h2); font-weight:700; box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.muted{color:var(--muted); font-size:13px}
+.empty{text-align:center; padding:48px 20px; border:2px dashed var(--line-2); border-radius:14px; background:var(--surface); color:var(--muted)}
+.empty b{display:block; font-family:var(--tf); font-size:20px; color:var(--title); margin-bottom:6px}
+
+/* ---------- tablero ---------- */
+.kpis{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin-bottom:16px}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:620px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--h2); border-radius:10px; padding:14px 16px; box-shadow:var(--shadow)}
+.kpi.t{border-top-color:var(--teal)} .kpi.c{border-top-color:var(--cyan)} .kpi.y{border-top-color:var(--orange)} .kpi.r{border-top-color:var(--danger)}
+.kpi .n{font-family:var(--tf); font-weight:700; font-size:36px; color:var(--h2); line-height:1; font-variant-numeric:tabular-nums}
+.kpi .k{font-size:13px; font-weight:700; color:var(--ink-2); margin-top:8px}
+.kpi .s{font-size:12px; color:var(--muted); margin-top:2px}
+.two{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px}
+@media (max-width:1000px){.two{grid-template-columns:1fr}}
+.bars{display:grid; gap:10px}
+.bar{display:grid; grid-template-columns:minmax(100px,36%) 1fr 40px; gap:10px; align-items:center; font-size:13px}
+.bar .bl{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink-2)}
+.bar .bt{display:block; height:12px; background:var(--surface-3); border-radius:6px; overflow:hidden}
+.bar .bf{display:block; height:100%; border-radius:6px; background:var(--h2)}
+.bar .bf.KIDS{background:var(--kids)} .bar .bf.PRIMARIA{background:var(--pri)} .bar .bf.SECUNDARIA{background:var(--sec)}
+.bar .bf.good{background:var(--teal)} .bar .bf.warn{background:var(--orange)}
+.bar .bv{text-align:right; font-weight:700; font-variant-numeric:tabular-nums}
+.cols{display:flex; align-items:flex-end; gap:4px; height:120px; padding-bottom:22px; position:relative}
+.cols div{flex:1; background:var(--h2); border-radius:4px 4px 0 0; position:relative; min-height:2px; opacity:.9}
+.cols div.z{background:var(--surface-3)}
+.cols div em{position:absolute; bottom:-20px; left:50%; transform:translateX(-50%); font-style:normal; font-size:10.5px; color:var(--muted)}
+.cols div b{position:absolute; top:-17px; left:50%; transform:translateX(-50%); font-size:11px; color:var(--ink-2)}
+.stack{display:flex; height:14px; border-radius:7px; overflow:hidden; background:var(--surface-3)}
+.stack span{height:100%}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin-top:10px}
+.legend i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px}
+.plist{list-style:none; margin:0; padding:0}
+.plist li{display:flex; gap:10px; align-items:center; padding:9px 0; border-top:1px solid var(--line); font-size:13.5px}
+.plist li:first-child{border-top:0}
+.plist .grow{flex:1; min-width:0}
+.plist .grow span{display:block; color:var(--muted); font-size:12px}
+.linkish{background:none; border:0; padding:0; color:var(--h2); font-weight:700; cursor:pointer; text-align:left; font-size:13.5px}
+.linkish:hover{text-decoration:underline}
+
+/* ---------- modal / ficha ---------- */
+.mask{position:fixed; inset:0; background:rgba(17,19,42,.6); z-index:60; display:none; padding:22px; overflow:auto}
+.mask.open{display:block}
+.modal{max-width:860px; margin:0 auto; background:var(--surface); border-radius:14px; overflow:hidden; border:1px solid var(--line)}
+.m-run{font-size:11.5px; font-weight:700; color:#2F3C6F; letter-spacing:.04em; padding:0 18px 0 0; border-bottom:3px solid var(--cyan); display:flex; align-items:center; gap:14px; background:linear-gradient(180deg,#B2F3FD 0%,#DEFAFF 100%); height:55px}
+.m-logo{height:52px; width:auto}
+.m-run button{margin-left:auto}
+.m-top{padding:18px 24px 6px; display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+.m-top h3{font-family:var(--tf); font-size:26px; color:var(--title); margin:0; letter-spacing:.02em}
+.m-body{padding:10px 24px 22px}
+.ficha{border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-top:14px}
+.ficha .sh{background:var(--primary); color:var(--on-primary); font-weight:700; font-size:13px; padding:9px 14px}
+.ficha table{width:100%; border-collapse:collapse}
+.ficha th{width:30%; text-align:left; background:var(--surface-2); color:var(--muted); font-size:12.5px; padding:9px 14px; border-top:1px solid var(--line); vertical-align:top}
+.ficha td{padding:9px 14px; border-top:1px solid var(--line); font-size:13.5px; white-space:pre-wrap}
+@media (max-width:560px){.ficha th,.ficha td{display:block; width:100%} .ficha td{border-top:0; padding-top:0}}
+.shots{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px 14px}
+.shots img{border-radius:8px; border:1px solid var(--line); width:100%}
+.shots figure{margin:0} .shots figcaption{font-size:12px; color:var(--muted); margin-top:5px}
+.m-foot{padding:14px 24px; border-top:1px solid var(--line); display:flex; gap:10px; flex-wrap:wrap; background:var(--surface-2)}
+.m-foot .grow{flex:1}
+
+.toast{position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom,0px)); transform:translate(-50%,16px); opacity:0; background:var(--purple); color:#fff; padding:12px 20px; border-radius:10px; z-index:90; pointer-events:none; transition:.2s; font-size:14px; max-width:92vw; text-align:center}
+.toast.show{opacity:1; transform:translate(-50%,0)}
+.spin{display:inline-block; width:14px; height:14px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:sp .7s linear infinite; vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static; min-height:0; border-right:0; border-bottom:1px solid var(--line); padding:8px 10px}
+  .nav{flex-direction:row; overflow-x:auto}
+  .nav button{white-space:nowrap; width:auto; padding:9px 12px}
+  .rail-stats,.wm-sep,.wm-sub{display:none}
+  main{padding:18px 14px 110px}
+  .top{padding:0 12px 0 4px; height:61px} .brand img{height:58px} .rail{top:auto}
+  .view-h h2{font-size:25px}
+}
+@media (max-width:620px){
+  .steps{padding:12px 8px}
+  .steps li{min-width:0}
+  .steps li:not(.cur) button{font-size:0; gap:0}
+  .steps li:not(.cur) .num{font-size:15px}
+  .steps li:not(:last-child)::after{left:calc(50% + 18px); right:calc(-50% + 18px)}
+  .state #storeText{display:none}
+  .actionbar{padding:10px 12px}
+  .actionbar .idp{order:-1; flex-basis:100%}
+}
+@media print{
+  .m-run,.top{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .top,.shell,.m-foot,.m-run button,.toast{display:none!important}
+  body{background:#fff}
+  .mask{position:static; display:block; background:none; padding:0}
+  .modal{border:0; max-width:100%}
+}
+/* ---------- matriz RCTX ---------- */
+.blk-h{display:flex; align-items:center; gap:12px; margin-bottom:14px}
+.pill{margin-left:auto; font-family:var(--tf); font-weight:700; font-size:16px; background:var(--surface-3); color:var(--h2); border-radius:999px; padding:5px 14px; white-space:nowrap; font-variant-numeric:tabular-nums}
+.inds{display:grid; gap:10px}
+.ind{border:1.5px solid var(--line); border-radius:11px; padding:12px 14px; background:var(--surface-2); display:grid; gap:10px}
+.ind.bad{border-color:var(--danger); background:var(--danger-soft)}
+.ind-h{display:flex; gap:10px; align-items:flex-start}
+.ind-h p{margin:0; flex:1; font-size:14px; color:var(--ink)}
+.code{font-family:var(--tf); font-weight:700; font-size:13.5px; color:var(--on-primary); background:var(--primary); border-radius:6px; padding:2px 8px; flex:none; min-width:40px; text-align:center}
+.pts{font-size:12px; color:var(--muted); white-space:nowrap; font-weight:700; padding-top:2px}
+.lv{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px}
+.lv button{border:1.5px solid var(--line-2); background:var(--surface); border-radius:9px; padding:8px 6px; min-height:42px; font-weight:700; font-size:13px; cursor:pointer; color:var(--ink-2)}
+.lv button:hover{border-color:var(--h2)}
+.lv button[data-l="CUMPLE"][aria-pressed="true"]{background:var(--teal-soft); border-color:var(--teal); color:var(--teal-ink)}
+.lv button[data-l="EN PROCESO"][aria-pressed="true"]{background:var(--yellow-soft); border-color:var(--orange); color:var(--orange-ink)}
+.lv button[data-l="NO CUMPLE"][aria-pressed="true"]{background:var(--danger-soft); border-color:var(--danger); color:var(--danger)}
+input.ev{min-height:36px; padding:7px 11px; font-size:13px}
+.live{display:flex; align-items:baseline; gap:6px; font-size:12px; color:var(--muted); background:var(--surface-3); border-radius:9px; padding:6px 12px; white-space:nowrap}
+.live b{font-family:var(--tf); font-size:20px; color:var(--title); font-variant-numeric:tabular-nums}
+.bar .bf.low{background:var(--danger)}
+.tag.nv.SATISFACTORIO{background:var(--teal-soft); color:var(--teal-ink); border-color:var(--teal)}
+.tag.nv.CONFORME{background:var(--yellow-soft); color:var(--orange-ink); border-color:var(--orange)}
+.tag.nv.INSATISFACTORIO{background:var(--danger-soft); color:var(--danger); border-color:var(--danger)}
+.tag.nv.INCOMPLETA{background:var(--surface-3); color:var(--muted)}
+.scn{font-family:var(--tf); font-size:17px; color:var(--title)}
+.score{display:grid; grid-template-columns:230px minmax(0,1fr); gap:20px; align-items:center}
+@media (max-width:700px){.score{grid-template-columns:1fr}}
+.sc-card{border-radius:12px; padding:18px 16px; text-align:center; background:var(--surface-3); border-top:5px solid var(--h2)}
+.sc-card.SATISFACTORIO{border-top-color:var(--teal)} .sc-card.CONFORME{border-top-color:var(--orange)} .sc-card.INSATISFACTORIO{border-top-color:var(--danger)}
+.sc-card .k{font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
+.sc-card .big{font-family:var(--tf); font-weight:700; font-size:52px; color:var(--title); line-height:1.05; margin-top:6px; font-variant-numeric:tabular-nums}
+.sc-card .of{font-size:12.5px; color:var(--muted)}
+.nivel{display:inline-block; margin-top:12px; font-weight:700; font-size:14px; border-radius:8px; padding:6px 14px; background:var(--surface); color:var(--muted); border:1px solid var(--line)}
+.nivel.SATISFACTORIO{background:var(--teal-soft); color:var(--teal-ink); border-color:var(--teal)}
+.nivel.CONFORME{background:var(--yellow-soft); color:var(--orange-ink); border-color:var(--orange)}
+.nivel.INSATISFACTORIO{background:var(--danger-soft); color:var(--danger); border-color:var(--danger)}
+table.mx{width:100%; border-collapse:collapse; font-size:13px}
+.mx th{background:var(--surface-3); color:var(--h2); font-size:12px; text-align:left; padding:8px 10px; white-space:nowrap}
+.mx td{padding:8px 10px; border-top:1px solid var(--line); vertical-align:top}
+.mx .c{text-align:center; white-space:nowrap}
+.mx .cd{font-family:var(--tf); font-weight:700; color:var(--h2)}
+.mx tr.bh td{background:var(--primary); color:var(--on-primary); font-weight:700; font-size:12.5px}
+.mx tr.tt td{background:var(--purple); color:#fff; font-weight:700; font-family:var(--tf); font-size:15px}
+.tbl.sm td,.tbl.sm th{padding:8px 10px}
+.tbl.sm tbody tr{cursor:default}
+.firmas{display:none}
+@media (max-width:620px){ .actionbar .idp{display:none} .live{order:0; flex:1; justify-content:center; padding:6px 8px} .actionbar #nextBtn,.actionbar #saveBtn,.actionbar #prevBtn{padding:10px 12px} .live span:first-child{display:none} .fmsg:empty{display:none} .actionbar{flex-wrap:nowrap} .actionbar:has(.fmsg:not(:empty)){flex-wrap:wrap} .lv button{font-size:12px} }
+.mx td:nth-child(2){min-width:230px} .mx td:nth-child(6){min-width:160px}
+@media print{
+  .firmas{display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:56px}
+  .firmas div{border-top:1px solid #2F3C6F; padding-top:6px; text-align:center; font-size:11px; color:#434859}
+  .ficha,.mx tr{break-inside:avoid}
+  .mx tr.bh td,.mx tr.tt td,.ficha .sh,.sc-card,.nivel,.bar .bf,.tag{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+}
+
+.gate{position:fixed; left:0; right:0; bottom:0; top:calc(71px + env(safe-area-inset-top,0px)); background:var(--bg); z-index:35; display:grid; place-items:center; padding:24px; overflow:auto}
+.gate .card{max-width:480px; width:100%; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cyan); border-radius:14px; padding:30px 28px; box-shadow:var(--shadow); text-align:center}
+.gate h2{font-family:var(--tf); color:var(--title); font-size:26px; margin:0 0 8px}
+.gate p{color:var(--ink-2); margin:0 0 18px}
+.gate code{background:var(--surface-3); padding:2px 6px; border-radius:5px; font-size:12.5px}
+.gbtn{display:inline-flex; align-items:center; gap:10px}
+.gbtn svg{width:18px; height:18px}
+body.ro .w-only{display:none!important}
+.users{display:grid; gap:8px; margin-top:12px}
+.urow{display:grid; grid-template-columns:minmax(0,1fr) 150px auto; gap:8px; align-items:center; padding:8px 10px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2)}
+.urow span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13.5px}
+@media (max-width:560px){.urow{grid-template-columns:1fr} }
+@media (max-width:900px){.gate{top:calc(61px + env(safe-area-inset-top,0px))}}
+.draft{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:16px}
+.draft .grow{flex:1; min-width:200px}
+.audit{font-size:12px; color:var(--muted); padding:0 24px 12px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <img id="logoImg" alt="Eight Academy, Unidad Educativa" src="logo.png">
+    <span class="wm-sep"></span>
+    <div class="wm-sub">Matriz de visita áulica RCTX<small>Departamento de Planificación</small></div>
+  </div>
+  <div class="top-r">
+    <span class="state" id="storeState"><i></i><span id="storeText">Conectando</span></span>
+    <button class="icon-btn hide" id="outBtn" aria-label="Cerrar sesión" title="Cerrar sesión"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg></button>
+    <button class="icon-btn" id="themeBtn" aria-label="Cambiar entre modo claro y oscuro" title="Modo claro u oscuro">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="gate" id="gate"><div class="card" id="gateCard"><h2>Conectando</h2><p><span class="spin"></span></p></div></div>
+
+<div class="shell">
+  <nav class="rail" aria-label="Secciones de la matriz">
+    <div class="nav" id="nav">
+      <button data-view="nueva" class="w-only" aria-current="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>Nueva visita</button>
+      <button data-view="registros"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Registros</button>
+      <button data-view="docentes"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg>Docentes</button>
+      <button data-view="tablero"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Tablero</button>
+      <button data-view="ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Ajustes</button>
+    </div>
+    <div class="rail-stats">
+      <div><b id="stTotal">0</b>visitas registradas</div>
+      <div><b id="stAvg">—</b>calificación promedio</div>
+      <div><b id="stWeek">0</b>en los últimos 7 días</div>
+    </div>
+  </nav>
+
+  <main>
+  <!-- ================= NUEVA VISITA ================= -->
+  <section id="view-nueva">
+    <div class="view-h">
+      <div>
+        <h2 id="formTitle">Nueva visita áulica</h2>
+        <p>Matriz optimizada de 18 indicadores sobre 100 puntos. Puedes avanzar y regresar sin perder lo registrado: se guarda un borrador en este dispositivo mientras escribes.</p>
+      </div>
+    </div>
+    <div class="callout warn draft hide" id="draftBar"><span class="grow" id="draftTxt"></span><button type="button" class="btn sm" id="draftUse">Recuperar borrador</button><button type="button" class="btn sec sm" id="draftDrop">Descartar</button></div>
+
+    <ol class="steps" id="steps">
+      <li class="cur"><button type="button" data-step="0"><span class="num">1</span>Datos de la visita</button></li>
+      <li><button type="button" data-step="1"><span class="num">2</span>Planificación y ciclo</button></li>
+      <li><button type="button" data-step="2"><span class="num">3</span>Evaluación y actuación</button></li>
+      <li><button type="button" data-step="3"><span class="num">4</span>Retroalimentación</button></li>
+      <li><button type="button" data-step="4"><span class="num">5</span>Resultado y revisión</button></li>
+    </ol>
+
+    <form id="form" autocomplete="off" novalidate>
+    <!-- Paso 1 -->
+    <div class="step" data-panel="0">
+      <div class="panel">
+        <h3>Sección <span class="req">*</span></h3>
+        <p class="hint">Cada sección conserva su color de identificación institucional.</p>
+        <div class="opts c3" id="secOpts">
+          <button type="button" class="opt KIDS" data-val="KIDS" aria-pressed="false"><span class="dot"></span><span><b>Kids</b><small>Educación inicial</small></span></button>
+          <button type="button" class="opt PRIMARIA" data-val="PRIMARIA" aria-pressed="false"><span class="dot"></span><span><b>Primaria</b><small>Educación general básica</small></span></button>
+          <button type="button" class="opt SECUNDARIA" data-val="SECUNDARIA" aria-pressed="false"><span class="dot"></span><span><b>Secundaria</b><small>Básica superior y bachillerato</small></span></button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Información general</h3>
+        <p class="hint">Los campos con <span class="req">*</span> son obligatorios.</p>
+        <div class="grid g3">
+          <div class="field"><label for="fecha">Fecha de visita <span class="req">*</span></label><input type="date" id="fecha"></div>
+          <div class="field"><label for="observador">Observador/a <span class="req">*</span></label><input type="text" id="observador" list="dlObs" placeholder="Quien realiza la visita"></div>
+          <div class="field"><label for="docente">Docente observado/a <span class="req">*</span></label><input type="text" id="docente" list="dlDoc" placeholder="Docente a cargo"></div>
+          <div class="field"><label for="curso">Grado / curso <span class="req">*</span></label><input type="text" id="curso" placeholder="Ej.: 10.º EGB"></div>
+          <div class="field"><label for="paralelo">Paralelo</label><input type="text" id="paralelo" placeholder="Ej.: D"></div>
+          <div class="field"><label for="materia">Asignatura <span class="req">*</span></label><input type="text" id="materia" list="dlMat" placeholder="Asignatura o área"></div>
+        </div>
+        <div class="field" style="margin-top:14px"><label for="tema">Tema de clase</label><input type="text" id="tema" placeholder="Tema desarrollado durante la observación"></div>
+        <datalist id="dlObs"></datalist><datalist id="dlDoc"></datalist><datalist id="dlMat"></datalist>
+      </div>
+
+      <div class="panel">
+        <h3>Horario de la visita</h3>
+        <p class="hint">La duración se calcula automáticamente con las dos horas.</p>
+        <div class="grid g3">
+          <div class="field"><label for="hIni">Hora de inicio <span class="req">*</span></label>
+            <div class="row" style="flex-wrap:nowrap"><input type="time" id="hIni"><button type="button" class="btn sec sm" id="nowIni">Ahora</button></div></div>
+          <div class="field"><label for="hFin">Hora de finalización <span class="req">*</span></label>
+            <div class="row" style="flex-wrap:nowrap"><input type="time" id="hFin"><button type="button" class="btn sec sm" id="nowFin">Ahora</button></div></div>
+          <div class="field"><label for="dur">Duración</label><input type="text" id="dur" readonly value="—"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paso 2 y 3: bloques de la matriz -->
+    <div class="step hide" data-panel="1"><div class="callout" style="margin-bottom:16px"><b>Escala:</b> Cumple = 100 % del puntaje del indicador · En proceso = 50 % · No cumple = 0 %. La evidencia es opcional pero recomendada.</div><div id="blk1"></div></div>
+    <div class="step hide" data-panel="2"><div id="blk2"></div></div>
+
+    <!-- Paso 4 -->
+    <div class="step hide" data-panel="3">
+      <div class="panel">
+        <h3>Retroalimentación al docente</h3>
+        <p class="hint">Redacción constructiva y concreta. La visita no tiene carácter sancionador.</p>
+        <div class="grid g2">
+          <div class="field"><label for="fortalezas">Fortalezas observadas <span class="req">*</span></label><textarea id="fortalezas" placeholder="Lo que funcionó bien en la clase"></textarea></div>
+          <div class="field"><label for="mejoras">Aspectos por mejorar <span class="req">*</span></label><textarea id="mejoras" placeholder="Oportunidades de mejora observadas"></textarea></div>
+        </div>
+        <div class="grid g2" style="margin-top:14px">
+          <div class="field"><label for="compromiso">Compromiso del docente</label><textarea id="compromiso" style="min-height:80px" placeholder="Acción concreta y verificable"></textarea></div>
+          <div class="field"><label for="seguimiento">Fecha de seguimiento</label><input type="date" id="seguimiento"><span class="muted">Próxima revisión del compromiso.</span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Fotografías de la visita</h3>
+        <p class="hint">Hasta 2 fotografías. Son evidencia complementaria de la observación.</p>
+        <div class="photos">
+          <div class="slot"><div class="slot-h"><b>Foto 1</b><button type="button" class="btn sec sm hide" data-clear="0">Quitar</button></div>
+            <div class="drop" data-drop="0" tabindex="0" role="button" aria-label="Agregar foto 1"></div>
+            <input type="file" accept="image/*" class="hide" data-file="0">
+            <input type="text" data-desc="0" placeholder="Descripción: p. ej., estudiantes trabajando en equipo"></div>
+          <div class="slot"><div class="slot-h"><b>Foto 2</b><button type="button" class="btn sec sm hide" data-clear="1">Quitar</button></div>
+            <div class="drop" data-drop="1" tabindex="0" role="button" aria-label="Agregar foto 2"></div>
+            <input type="file" accept="image/*" class="hide" data-file="1">
+            <input type="text" data-desc="1" placeholder="Descripción: p. ej., docente usando recurso tecnológico"></div>
+        </div>
+        <div class="callout warn hide" id="photoNote" style="margin-top:14px"></div>
+      </div>
+    </div>
+
+    <!-- Paso 5 -->
+    <div class="step hide" data-panel="4">
+      <div class="panel">
+        <h3>Resultado de la visita</h3>
+        <p class="hint">Calificación sobre 100 y nivel de desempeño institucional.</p>
+        <div id="result"></div>
+      </div>
+      <div class="panel">
+        <h3>Revisión del registro</h3>
+        <p class="hint">Verifica la información antes de guardar.</p>
+        <div id="summary"></div>
+      </div>
+    </div>
+
+    <div class="actionbar">
+      <button type="button" class="btn sec" id="prevBtn">Anterior</button>
+      <div class="grow idp" id="idPreview"></div>
+      <div class="live" id="live"></div>
+      <span class="fmsg" id="formMsg"></span>
+      <button type="button" class="btn sec sm hide" id="cancelEdit">Cancelar edición</button>
+      <button type="button" class="btn" id="nextBtn">Siguiente</button>
+      <button type="submit" class="btn hide" id="saveBtn">Guardar visita</button>
+    </div>
+    </form>
+  </section>
+
+  <!-- ================= REGISTROS ================= -->
+  <section id="view-registros" class="hide">
+    <div class="view-h">
+      <div><h2>Registros de visitas</h2><p>Todas las visitas áulicas con su calificación. Toca una fila para abrir la ficha completa.</p></div>
+      <div class="end row"><button class="btn sec sm" id="expCsv">Exportar a Excel (CSV)</button><button class="btn w-only" id="goNew">Nueva visita</button></div>
+    </div>
+    <div class="panel" style="padding:16px 18px">
+      <div class="toolbar">
+        <div class="field"><label for="fTxt">Buscar</label><input type="search" id="fTxt" placeholder="Docente, asignatura, tema, ID…"></div>
+        <div class="field"><label for="fSec">Sección</label><select id="fSec"><option value="">Todas</option><option value="KIDS">Kids</option><option value="PRIMARIA">Primaria</option><option value="SECUNDARIA">Secundaria</option></select></div>
+        <div class="field"><label for="fObs">Observador/a</label><select id="fObs"><option value="">Todos</option></select></div>
+        <div class="field"><label for="fNiv">Nivel</label><select id="fNiv"><option value="">Todos</option><option value="SATISFACTORIO">Satisfactorio</option><option value="CONFORME">Conforme</option><option value="INSATISFACTORIO">Insatisfactorio</option></select></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="seg" id="fPer"><button data-p="hoy" aria-pressed="false">Hoy</button><button data-p="7" aria-pressed="false">7 días</button><button data-p="30" aria-pressed="false">30 días</button><button data-p="" aria-pressed="true">Todo</button></div>
+        <span class="muted" id="recCount" style="margin-left:auto"></span>
+        <button class="btn sec sm" id="fClear">Quitar filtros</button>
+      </div>
+    </div>
+    <div id="recList"></div>
+  </section>
+
+  <!-- ================= DOCENTES ================= -->
+  <section id="view-docentes" class="hide">
+    <div class="view-h"><div><h2>Docentes</h2><p>Historial de calificaciones por docente y nivel de su visita más reciente.</p></div></div>
+    <div class="panel" style="padding:16px 18px">
+      <div class="toolbar" style="grid-template-columns:2fr 1fr 1fr">
+        <div class="field"><label for="dTxt">Buscar docente</label><input type="search" id="dTxt" placeholder="Nombre"></div>
+        <div class="field"><label for="dSec">Sección</label><select id="dSec"><option value="">Todas</option><option value="KIDS">Kids</option><option value="PRIMARIA">Primaria</option><option value="SECUNDARIA">Secundaria</option></select></div>
+        <div class="field"><label for="dEst">Nivel actual</label><select id="dEst"><option value="">Todos</option><option value="SATISFACTORIO">Satisfactorio</option><option value="CONFORME">Conforme</option><option value="INSATISFACTORIO">Insatisfactorio</option><option value="none">Sin visitas</option></select></div>
+      </div>
+    </div>
+    <div id="docList"></div>
+  </section>
+
+  <!-- ================= TABLERO ================= -->
+  <section id="view-tablero" class="hide">
+    <div class="view-h">
+      <div><h2>Tablero de resultados</h2><p>Lectura consolidada de las calificaciones para la toma de decisiones del Departamento de Planificación.</p></div>
+    </div>
+    <div class="row" style="margin-bottom:16px">
+      <div class="seg" id="tPer"><button data-p="hoy" aria-pressed="false">Hoy</button><button data-p="7" aria-pressed="false">7 días</button><button data-p="30" aria-pressed="true">30 días</button><button data-p="" aria-pressed="false">Todo</button></div>
+      <div class="seg" id="tSec"><button data-s="" aria-pressed="true">Todas</button><button data-s="KIDS" aria-pressed="false">Kids</button><button data-s="PRIMARIA" aria-pressed="false">Primaria</button><button data-s="SECUNDARIA" aria-pressed="false">Secundaria</button></div>
+    </div>
+    <div id="dash"></div>
+  </section>
+
+  <!-- ================= AJUSTES ================= -->
+  <section id="view-ajustes" class="hide">
+    <div class="view-h"><div><h2>Ajustes</h2><p>Escala, listas de referencia, identidad y respaldo de la matriz.</p></div></div>
+
+    <div class="panel">
+      <h3>Escala y ponderación</h3>
+      <p class="hint">Puntaje del indicador = puntaje máximo × factor del nivel. Los 18 indicadores suman 100 puntos.</p>
+      <div id="scaleInfo"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Nómina y listas de apoyo</h3>
+      <p class="hint">Un nombre por línea. Alimentan el autocompletado y permiten saber qué docentes aún no han recibido visita.</p>
+      <div class="grid g3">
+        <div class="field"><label for="cDoc">Docentes</label><textarea id="cDoc" style="min-height:200px"></textarea></div>
+        <div class="field"><label for="cObs">Observadores</label><textarea id="cObs" style="min-height:200px"></textarea></div>
+        <div class="field"><label for="cMat">Asignaturas</label><textarea id="cMat" style="min-height:200px"></textarea></div>
+      </div>
+      <div class="row" style="margin-top:14px"><button class="btn" id="cSave">Guardar listas</button><span class="muted" id="cMsg"></span></div>
+    </div>
+
+    <div class="panel">
+      <h3>Logo institucional</h3>
+      <p class="hint">El logo ya está incorporado en la cabecera y en las fichas impresas. Reemplázalo solo si se actualiza la marca.</p>
+      <div class="row">
+        <button class="btn sec" id="logoBtn">Reemplazar logo</button>
+        <button class="btn sec hide" id="logoDel">Restaurar logo institucional</button>
+        <input type="file" id="logoFile" accept="image/png,image/svg+xml,image/jpeg,image/webp" class="hide">
+        <span class="muted" id="logoMsg"></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Acceso del equipo</h3>
+      <p class="hint" id="roleNote"></p>
+      <div id="accessAdmin" class="hide">
+        <div class="callout"><b>Editor:</b> registra y modifica visitas, y sube fotografías.<br><b>Lector:</b> consulta registros, docentes y tablero.<br><b>Administración:</b> se define en <code>firebase-config.js</code> y en las reglas; además gestiona accesos, listas y el logo, y puede eliminar registros.</div>
+        <div class="grid" style="grid-template-columns:minmax(0,1fr) 150px auto; margin-top:14px; align-items:end">
+          <div class="field"><label for="uMail">Correo de Google</label><input type="text" id="uMail" placeholder="nombre@eightacademy.edu.ec" inputmode="email"></div>
+          <div class="field"><label for="uRol">Rol</label><select id="uRol"><option value="editor">Editor</option><option value="lector">Lector</option></select></div>
+          <button class="btn" id="uAdd" type="button">Dar acceso</button>
+        </div>
+        <span class="muted" id="uMsg"></span>
+        <div class="users" id="uList"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Respaldo</h3>
+      <p class="hint" id="storeNote"></p>
+      <div class="row">
+        <button class="btn sec" id="expJson">Descargar respaldo JSON (con fotografías)</button>
+        <button class="btn sec" id="expCsv2">Descargar CSV completo</button>
+        <button class="btn sec a-only" id="impBtn">Importar respaldo</button>
+        <input type="file" id="impFile" accept="application/json,.json" class="hide">
+      </div>
+    </div>
+  </section>
+  </main>
+</div>
+
+<div class="mask" id="mask"><div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" tabindex="-1"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import * as CFG from "./firebase-config.js";
+const FIREBASE_CONFIG=CFG.FIREBASE_CONFIG, ADMIN_EMAILS=CFG.ADMIN_EMAILS;
+const BLOCKS=[
+ {k:"cg",n:"Criterios generales y planificación",step:1,items:[
+  ["CG1","Inicia la clase con puntualidad y registra la asistencia de los estudiantes.",3],
+  ["CG2","Presenta la planificación con adaptaciones curriculares para estudiantes con NEE.",4],
+  ["CG3","Espacio limpio, ordenado y funcional; comunica el objetivo de la clase (escrito y explicado).",3]]},
+ {k:"an",n:"Anticipación",step:1,items:[
+  ["A1","Realiza una micro dinámica de enganche al inicio de la clase.",3],
+  ["A2","Despierta el interés y activa conocimientos y destrezas previas mediante preguntas de indagación.",7]]},
+ {k:"co",n:"Construcción",step:1,items:[
+  ["C1","Domina el conocimiento disciplinar, la didáctica y la metodología de la asignatura.",6],
+  ["C2","Estimula el pensamiento crítico, creativo y digital (análisis, resolución de problemas, creación de contenido original).",7],
+  ["C3","Integra recursos tecnológicos y metodologías interactivas y colaborativas según la planificación.",7]]},
+ {k:"cs",n:"Consolidación",step:1,items:[
+  ["K1","Los estudiantes aplican las destrezas en forma práctica.",8],
+  ["K2","Realiza síntesis o ampliación con recursos multimedia (mapas conceptuales, infografías, presentaciones).",7]]},
+ {k:"ev",n:"Evaluación formativa",step:2,items:[
+  ["E1","Verifica el desarrollo de destrezas de la clase anterior y de la clase actual.",8],
+  ["E2","Aplica autoevaluación y/o coevaluación, apoyadas en plataformas digitales.",7]]},
+ {k:"dc",n:"Actuación del docente",step:2,items:[
+  ["D1","Usa vocabulario claro y respetuoso, y da consignas precisas.",5],
+  ["D2","Acompaña la construcción autónoma del aprendizaje y a los estudiantes con NEE.",5],
+  ["D3","Mantiene la disciplina del grupo.",5],
+  ["D4","Distribuye el tiempo de modo que se cumplen los objetivos y actividades planificadas.",5]]},
+ {k:"es",n:"Actuación del estudiante",step:2,items:[
+  ["S1","Participan activamente y cumplen las consignas recibidas.",5],
+  ["S2","Evidencian en el aula la práctica de los valores institucionales.",5]]}
+];
+BLOCKS.forEach(b=>b.max=b.items.reduce((a,x)=>a+x[2],0));
+const IND=[].concat(...BLOCKS.map(b=>b.items.map(([c,t,p])=>({c,t,p,b:b.k}))));
+const INDM=Object.fromEntries(IND.map(i=>[i.c,i]));
+const LVS=["CUMPLE","EN PROCESO","NO CUMPLE"], LVN={"CUMPLE":"Cumple","EN PROCESO":"En proceso","NO CUMPLE":"No cumple"};
+const FACT={"CUMPLE":1,"EN PROCESO":0.5,"NO CUMPLE":0};
+const SAT=90, CONF=70;
+const NIV=["SATISFACTORIO","CONFORME","INSATISFACTORIO"], NIVN={SATISFACTORIO:"Satisfactorio",CONFORME:"Conforme",INSATISFACTORIO:"Insatisfactorio",INCOMPLETA:"Incompleta"};
+const SECS=["KIDS","PRIMARIA","SECUNDARIA"], SECN={KIDS:"Kids",PRIMARIA:"Primaria",SECUNDARIA:"Secundaria"};
+
+let FB=null, AUTH=null, ME=null, ROLE="", UNSUB=[], USERS=[];
+let VISITS=[], CONFIG={docentes:[],observadores:[],materias:[],logo:""};
+let photos=[null,null], editingId=null, STEP=0, LEVELS={};
+// photosDirty: el usuario cambió fotos o descripciones; photosLoading: aún se descargan las fotos de la visita en edición.
+// Mientras photosDirty sea falso al editar, no se toca el documento de fotos (evita borrarlas).
+let TOKEN="", photosDirty=false, photosLoading=false, formDirty=false, listsDirty=false, saving=false;
+let fPer="", tPer="30", tSec="";
+
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad=(n,l=2)=>String(n).padStart(l,"0");
+const iso=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const todayISO=()=>iso(new Date());
+const isoMinus=n=>iso(new Date(Date.now()-n*864e5));
+const nowHM=()=>{const d=new Date();return pad(d.getHours())+":"+pad(d.getMinutes());};
+const MES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MESC=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const f2=n=>(Math.round(n*100)/100).toFixed(2);
+const pct=n=>Math.round(n*100)+"%";
+function fLarga(s){ if(!s) return "—"; const [y,m,d]=s.split("-").map(Number); return d+" de "+MES[m-1]+" de "+y; }
+function fCorta(s){ if(!s) return "—"; const [y,m,d]=s.split("-").map(Number); return d+" "+MESC[m-1]+" "+y; }
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),3200); }
+function periodFrom(p){ return p==="hoy"?todayISO():p==="7"?isoMinus(6):p==="30"?isoMinus(29):""; }
+// Clave para comparar nombres sin distinguir mayúsculas, tildes ni espacios repetidos.
+const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s+/g," ").trim().toLowerCase();
+const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,j)=>setTimeout(()=>j({code:"timeout"}),ms))]);
+const errMsg=(err,fallback)=>{ const c=err&&err.code||"";
+  if(c==="permission-denied") return "Tu acceso no permite esta acción o los datos no cumplen las reglas de Firestore.";
+  if(c==="timeout"||c==="unavailable"||!navigator.onLine) return "Sin conexión con el servidor. Nada se perdió: el borrador sigue en este dispositivo; intenta de nuevo cuando vuelva la conexión.";
+  return fallback; };
+
+/* ---------- cálculo ---------- */
+function calc(niv){
+  niv=niv||{}; const bl={}; let total=0, n=0;
+  BLOCKS.forEach(b=>{ let s=0; b.items.forEach(([c,,p])=>{ const l=niv[c]; if(l in FACT){ s+=p*FACT[l]; n++; } }); bl[b.k]=s; total+=s; });
+  total=Math.round(total*100)/100;
+  const nivel=n<IND.length?"INCOMPLETA":total>=SAT?"SATISFACTORIO":total>=CONF?"CONFORME":"INSATISFACTORIO";
+  return {bloques:bl,total,n,nivel};
+}
+const nivTag=n=>'<span class="tag nv '+esc(n)+'">'+esc(NIVN[n]||n)+'</span>';
+const lvTag=l=>l?'<span class="tag lvt '+(l==="CUMPLE"?"good":l==="EN PROCESO"?"warn":"prio")+'">'+esc(LVN[l])+'</span>':'<span class="muted">—</span>';
+
+/* ---------- selección ---------- */
+function wireSel(host, multi, onChange){
+  host.addEventListener("click", e=>{
+    const b=e.target.closest("[data-val]"); if(!b) return;
+    if(multi) b.setAttribute("aria-pressed", b.getAttribute("aria-pressed")==="true"?"false":"true");
+    else{ host.querySelectorAll("[data-val]").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); host.classList.remove("bad-group"); }
+    onChange && onChange();
+  });
+}
+const selVals=h=>Array.from(h.querySelectorAll('[data-val][aria-pressed="true"]')).map(b=>b.dataset.val);
+const selVal=h=>selVals(h)[0]||"";
+function setSel(h,v){ const a=Array.isArray(v)?v:(v?[v]:[]); h.querySelectorAll("[data-val]").forEach(b=>b.setAttribute("aria-pressed",a.includes(b.dataset.val)?"true":"false")); }
+function wireSeg(host, key, cb){
+  host.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return;
+    host.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); cb(b.dataset[key]); });
+}
+
+/* ---------- almacenamiento (Firebase) ---------- */
+const DEFAULT_LOGO="logo.png";
+const COLV="rctx_visitas", COLF="rctx_fotos", COLC="rctx_config", COLU="rctx_usuarios";
+const CONFIGURED=!!(FIREBASE_CONFIG&&FIREBASE_CONFIG.apiKey)&&!/REEMPLAZA/.test(JSON.stringify(FIREBASE_CONFIG));
+const ADMINS=(ADMIN_EMAILS||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x.indexOf("REEMPLAZA")<0&&x.indexOf("reemplaza")<0);
+const canWrite=()=>ROLE==="admin"||ROLE==="editor";
+const isAdmin=()=>ROLE==="admin";
+const ROLN={admin:"Administración",editor:"Editor",lector:"Lector"};
+function sortV(){ VISITS.sort((a,b)=>((b.fecha||"")+(b.id||"")).localeCompare((a.fecha||"")+(a.id||""))); }
+const clean=o=>JSON.parse(JSON.stringify(o));
+const myMail=()=>(ME&&ME.email||"").toLowerCase();
+const ID_RE=/^VA-\d{4}-\d{2}-\d{2}-\d{3,}$/;
+// Guarda la visita y sus fotos en una sola transacción: o se guarda todo o nada.
+// Para visitas nuevas el número VA-fecha-NNN se reserva dentro de la transacción,
+// así dos observadores que guardan a la vez nunca se sobrescriben.
+// fotos: lista a guardar, o null para no tocar las fotos existentes.
+async function saveVisit(v,fotos){
+  return withTimeout(runTransaction(FB, async tx=>{
+    let id=v.id, prev=null;
+    if(id){ const s=await tx.get(doc(FB,COLV,id)); if(!s.exists()) throw {code:"gone"}; prev=s.data(); }
+    else{
+      const p="VA-"+v.fecha+"-"; let n=parseInt(nextId(v.fecha).slice(p.length),10);
+      for(let k=0;;k++){ if(k>40) throw {code:"aborted"}; id=p+pad(n,3); const s=await tx.get(doc(FB,COLV,id)); if(!s.exists()) break; n++; }
+    }
+    const now=new Date().toISOString();
+    const data=Object.assign(clean(v),{ id, creado:prev&&prev.creado||now, creadoPor:prev&&prev.creadoPor||myMail(), actualizado:now, actualizadoPor:myMail() });
+    if(prev&&!prev.creadoPor) delete data.creadoPor;
+    if(fotos===null) data.fotos=prev&&prev.fotos||[];
+    tx.set(doc(FB,COLV,id),data);
+    if(fotos!==null){ if(fotos.length) tx.set(doc(FB,COLF,id),{fotos}); else tx.delete(doc(FB,COLF,id)); }
+    return data;
+  }),25000);
+}
+async function delVisit(id){ await deleteDoc(doc(FB,COLV,id)); try{ await deleteDoc(doc(FB,COLF,id)); }catch(e){} }
+async function putConfig(){ await setDoc(doc(FB,COLC,"institucion"),clean(CONFIG)); }
+// Devuelve null si la descarga falla (distinto de "sin fotos"), para no confundir un error con una lista vacía.
+async function getFotos(id){ try{ const s=await getDoc(doc(FB,COLF,id)); return s.exists()?(s.data().fotos||[]):[]; }catch(e){ return null; } }
+function state(cls,txt,note){ $("#storeState").className="state "+cls; $("#storeText").textContent=txt; if(note) $("#storeNote").textContent=note; }
+const GICON='<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.1 7.1l3.6 2.8C6.6 7.4 9.1 5.4 12 5.4z"/></svg>';
+function gate(mode,extra){
+  const g=$("#gate"), c=$("#gateCard"); g.classList.toggle("hide",!mode);
+  if(mode==="config") c.innerHTML='<h2>Configuración pendiente</h2><p>Falta completar <code>firebase-config.js</code> con los datos del proyecto de Firebase y el correo del administrador. Revisa el archivo README.md del repositorio.</p>';
+  if(mode==="login") c.innerHTML='<h2>Matriz de visita áulica</h2><p>Departamento de Planificación · Colegio Eight Academy.<br>Ingresa con tu cuenta de Google institucional.</p><button class="btn gbtn" id="loginBtn">'+GICON+'Iniciar sesión con Google</button><p class="fmsg" id="loginMsg" style="margin:12px 0 0"></p>';
+  if(mode==="denied") c.innerHTML='<h2>Sin acceso</h2><p>La cuenta <b>'+esc(extra||"")+'</b> no tiene permiso para usar la matriz. Solicita acceso al Departamento de Planificación.</p><button class="btn sec" id="gOut">Usar otra cuenta</button>';
+  if(mode==="error") c.innerHTML='<h2>No se pudo conectar</h2><p>'+esc(extra||"Revisa la conexión a internet e intenta nuevamente.")+'</p><button class="btn" onclick="location.reload()">Reintentar</button>';
+  const lb=$("#loginBtn"); if(lb) lb.onclick=login;
+  const go2=$("#gOut"); if(go2) go2.onclick=()=>signOut(AUTH);
+}
+async function login(){
+  const p=new GoogleAuthProvider(); p.setCustomParameters({prompt:"select_account"});
+  try{ await signInWithPopup(AUTH,p); }
+  catch(err){
+    const c=err&&err.code||"";
+    if(c==="auth/popup-blocked"||c==="auth/operation-not-supported-in-this-environment"){ try{ await signInWithRedirect(AUTH,p); return; }catch(e){} }
+    if(c==="auth/popup-closed-by-user"||c==="auth/cancelled-popup-request") return;
+    const m=$("#loginMsg"); if(m) m.textContent=c==="auth/unauthorized-domain"?"Este dominio no está autorizado en Firebase (Authentication › Configuración › Dominios autorizados).":"No se pudo iniciar sesión. Intenta nuevamente.";
+  }
+}
+function applyRole(){
+  document.body.classList.toggle("ro",!canWrite());
+  $$(".a-only").forEach(x=>x.classList.toggle("hide",!isAdmin()));
+  ["#cSave","#logoBtn"].forEach(k=>$(k).disabled=!isAdmin());
+  ["#cDoc","#cObs","#cMat"].forEach(k=>$(k).readOnly=!isAdmin());
+  $("#accessAdmin").classList.toggle("hide",!isAdmin());
+  $("#roleNote").textContent="Tu cuenta ("+(ME&&ME.email||"")+") tiene el rol: "+ROLN[ROLE]+"."+(isAdmin()?" Da acceso por correo a las personas del equipo.":"");
+  if(!canWrite()&&isView("nueva")) go("registros");
+}
+async function boot(){
+  renderLogo();
+  if(!CONFIGURED){ gate("config"); state("warn","Sin configurar"); return; }
+  // En Firebase Hosting (y en los dominios listados en AUTH_SAME_ORIGIN_HOSTS) el inicio de sesión
+  // usa el mismo dominio de la página: evita el bloqueo de cookies de terceros de Safari/iOS.
+  const cfg=Object.assign({},FIREBASE_CONFIG), h=location.hostname, same=(CFG.AUTH_SAME_ORIGIN_HOSTS||[]).map(x=>String(x).toLowerCase());
+  if(h===FIREBASE_CONFIG.projectId+".web.app"||h===FIREBASE_CONFIG.projectId+".firebaseapp.com"||same.includes(h)) cfg.authDomain=h;
+  let app; try{ app=initializeApp(cfg); AUTH=getAuth(app); FB=getFirestore(app); }catch(e){ gate("error","La configuración de Firebase no es válida."); return; }
+  try{ await getRedirectResult(AUTH); }catch(e){ if(e&&e.code==="auth/unauthorized-domain") gate("error","Este dominio no está autorizado en Firebase (Authentication › Configuración › Dominios autorizados)."); }
+  onAuthStateChanged(AUTH, startSession);
+}
+function stopSubs(){ UNSUB.forEach(f=>{ try{ f(); }catch(e){} }); UNSUB=[]; }
+function startSession(u){
+  stopSubs(); VISITS=[]; USERS=[]; ROLE=""; ME=u; renderAll();
+  $("#outBtn").classList.toggle("hide",!u);
+  if(!u){ resetForm(); gate("login"); state("warn","Sin sesión"); return; }
+  $("#gate").classList.remove("hide"); $("#gateCard").innerHTML='<h2>Verificando acceso</h2><p><span class="spin"></span></p>';
+  const mail=myMail();
+  const deny=()=>{ stopSubs(); ROLE=""; VISITS=[]; renderAll(); gate("denied",u.email); state("warn","Sin acceso"); };
+  if(ADMINS.includes(mail)){ ROLE="admin"; ready(); return; }
+  // El rol se escucha en vivo: si la administración lo cambia o retira, se aplica sin recargar.
+  let first=true;
+  UNSUB.push(onSnapshot(doc(FB,COLU,mail),s=>{
+    const r=s.exists()?(s.data().rol==="editor"?"editor":"lector"):"";
+    if(first){ first=false; if(!r) return deny(); ROLE=r; ready(); return; }
+    if(r===ROLE) return;
+    if(!r) return deny();
+    ROLE=r; applyRole(); state("ok",ROLN[ROLE]); toast("Tu rol cambió a: "+ROLN[ROLE]);
+  },err=>{ if(first){ first=false; if(err&&err.code==="permission-denied") deny(); else gate("error"); } }));
+}
+function ready(){
+  gate(""); applyRole();
+  state("ok",ROLN[ROLE],"Los registros se guardan en Firebase y los comparte todo el equipo con acceso.");
+  UNSUB.push(onSnapshot(collection(FB,COLV),s=>{ VISITS=s.docs.map(d=>Object.assign({id:d.id},d.data())); sortV(); renderAll(); state("ok",ROLN[ROLE]); },
+    err=>state("warn",err&&err.code==="permission-denied"?"Sin permiso de lectura":"Sin conexión")));
+  UNSUB.push(onSnapshot(doc(FB,COLC,"institucion"),s=>{ if(s.exists()){ const d=s.data()||{};
+    CONFIG={docentes:d.docentes||[],observadores:d.observadores||[],materias:d.materias||[],logo:d.logo||""}; renderLists(); renderLogo(); if(isView("docentes")) renderDocentes(); } },()=>{}));
+  if(isAdmin()) UNSUB.push(onSnapshot(collection(FB,COLU),s=>{ USERS=s.docs.map(d=>Object.assign({email:d.id},d.data())); renderUsers(); },()=>{}));
+  offerDraft();
+}
+$("#outBtn").onclick=()=>{ if(!confirm("¿Cerrar sesión?"+(formDirty?" La visita en curso quedará como borrador en este dispositivo.":""))) return; saveDraftNow(); formDirty=false; signOut(AUTH); };
+function renderUsers(){
+  const l=USERS.slice().sort((a,b)=>a.email.localeCompare(b.email));
+  $("#uList").innerHTML=l.length?l.map(u=>'<div class="urow"><span title="'+esc(u.email)+'">'+esc(u.email)+'</span><select data-urol="'+esc(u.email)+'"><option value="editor"'+(u.rol==="editor"?" selected":"")+'>Editor</option><option value="lector"'+(u.rol!=="editor"?" selected":"")+'>Lector</option></select><button type="button" class="btn danger sm" data-udel="'+esc(u.email)+'">Quitar</button></div>').join(""):'<p class="muted" style="margin:0">Aún no has dado acceso a otras personas.</p>';
+}
+$("#uAdd").onclick=async()=>{ const m=$("#uMail").value.trim().toLowerCase();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){ $("#uMsg").textContent="Escribe un correo válido."; return; }
+  try{ await setDoc(doc(FB,COLU,m),{rol:$("#uRol").value,agregado:new Date().toISOString()}); $("#uMail").value=""; $("#uMsg").textContent="Acceso otorgado a "+m+"."; }
+  catch(e){ $("#uMsg").textContent="No se pudo guardar. Verifica que publicaste las reglas de Firestore."; } };
+$("#uList").addEventListener("change",async e=>{ const k=e.target.dataset.urol; if(!k) return; try{ await setDoc(doc(FB,COLU,k),{rol:e.target.value},{merge:true}); toast("Rol actualizado"); }catch(err){ toast("No se pudo actualizar el rol"); } });
+$("#uList").addEventListener("click",async e=>{ const k=e.target.dataset&&e.target.dataset.udel; if(!k) return; if(!confirm("¿Quitar el acceso de "+k+"?")) return; try{ await deleteDoc(doc(FB,COLU,k)); toast("Acceso retirado"); }catch(err){ toast("No se pudo retirar el acceso"); } });
+
+/* ---------- matriz ---------- */
+function blockHTML(b){
+  return '<div class="panel blk"><div class="blk-h"><div><h3>'+esc(b.n)+'</h3><p class="hint" style="margin:0">'+b.items.length+' indicador'+(b.items.length>1?'es':'')+' · '+b.max+' puntos</p></div><span class="pill" data-sub="'+b.k+'">0.00 / '+b.max+'</span></div><div class="inds">'+
+   b.items.map(([c,t,p])=>'<div class="ind" data-ind="'+c+'"><div class="ind-h"><span class="code">'+c+'</span><p>'+esc(t)+'</p><span class="pts">'+p+' pts</span></div>'+
+    '<div class="lv" data-i="'+c+'" role="group" aria-label="Nivel de logro del indicador '+c+'">'+LVS.map(l=>'<button type="button" data-l="'+l+'" aria-pressed="false">'+LVN[l]+'</button>').join("")+'</div>'+
+    '<input type="text" class="ev" data-e="'+c+'" placeholder="Evidencia observada (opcional)"></div>').join("")+'</div></div>';
+}
+function paintLevels(){
+  $$(".lv").forEach(g=>{ const l=LEVELS[g.dataset.i]||""; g.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.l===l?"true":"false")); });
+  updateScore();
+}
+function updateScore(){
+  const r=calc(LEVELS);
+  BLOCKS.forEach(b=>{ const el=$('[data-sub="'+b.k+'"]'); if(el) el.textContent=f2(r.bloques[b.k])+" / "+b.max; });
+  $("#live").innerHTML='<span>Puntaje</span><b>'+f2(r.total)+'</b><span>/ 100 · '+r.n+'/'+IND.length+'</span>';
+}
+
+/* ---------- formulario por pasos ---------- */
+function initForm(){
+  $("#blk1").innerHTML=BLOCKS.filter(b=>b.step===1).map(blockHTML).join("");
+  $("#blk2").innerHTML=BLOCKS.filter(b=>b.step===2).map(blockHTML).join("");
+  $("#form").addEventListener("click",e=>{ const b=e.target.closest(".lv button"); if(!b) return;
+    const c=b.parentElement.dataset.i; LEVELS[c]=LEVELS[c]===b.dataset.l?"":b.dataset.l; if(!LEVELS[c]) delete LEVELS[c];
+    b.closest(".ind").classList.remove("bad"); paintLevels(); markDirty(); });
+  wireSel($("#secOpts"),false,markDirty);
+  $("#fecha").value=todayISO();
+  ["#fecha","#seguimiento"].forEach(s=>$(s).addEventListener("focus",()=>{ $("#fecha").max=todayISO(); }));
+  // Unifica nombres escritos con otra capitalización o sin tildes con el nombre ya registrado.
+  [["#docente","#dlDoc"],["#observador","#dlObs"],["#materia","#dlMat"]].forEach(([s,dl])=>$(s).addEventListener("change",()=>{
+    const k=norm($(s).value); if(!k) return; const o=Array.from($(dl).options).find(x=>norm(x.value)===k); if(o&&o.value!==$(s).value){ $(s).value=o.value; markDirty(); } }));
+  ["#hIni","#hFin"].forEach(s=>$(s).addEventListener("change",calcDur));
+  $("#nowIni").onclick=()=>{ $("#hIni").value=nowHM(); calcDur(); markDirty(); };
+  $("#nowFin").onclick=()=>{ $("#hFin").value=nowHM(); calcDur(); markDirty(); };
+  $("#fecha").addEventListener("change",idPrev);
+  $("#steps").addEventListener("click",e=>{ const b=e.target.closest("[data-step]"); if(!b) return; const t=+b.dataset.step;
+    if(t<=STEP) return showStep(t); for(let i=STEP;i<t;i++){ if(!validStep(i,true)) return showStep(i); } showStep(t); });
+  $("#nextBtn").onclick=()=>{ if(validStep(STEP,true)) showStep(STEP+1); };
+  $("#prevBtn").onclick=()=>showStep(STEP-1);
+  $("#cancelEdit").onclick=()=>{ const ed=!!editingId; if(!confirmDiscard(ed?"¿Cancelar la edición? Se perderán los cambios no guardados.":"¿Descartar la visita en curso? Se perderá lo registrado.")) return; resetForm(); toast(ed?"Edición cancelada":"Visita descartada"); };
+  $("#form").addEventListener("submit",onSave);
+  $("#form").addEventListener("input",e=>{ if(e.target.classList.contains("bad") && e.target.value) e.target.classList.remove("bad");
+    if(e.target.matches("[data-desc]")) photosDirty=true; markDirty(); });
+  $("#form").addEventListener("change",e=>{ if(e.target.matches("input[type=date],input[type=time]")) markDirty(); });
+  $("#draftUse").onclick=useDraft;
+  $("#draftDrop").onclick=()=>{ clearDraft(); $("#draftBar").classList.add("hide"); toast("Borrador descartado"); };
+  window.addEventListener("beforeunload",e=>{ if(formDirty&&!saving){ saveDraftNow(); e.preventDefault(); e.returnValue=""; } });
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden"&&formDirty) saveDraftNow(); });
+  TOKEN=newToken(); initPhotos(); paint(0); paint(1); idPrev(); paintLevels(); showStep(0,true);
+}
+function mins(a,b){ if(!a||!b) return null; const [h1,m1]=a.split(":").map(Number),[h2,m2]=b.split(":").map(Number); return (h2*60+m2)-(h1*60+m1); }
+function calcDur(){ const d=mins($("#hIni").value,$("#hFin").value), el=$("#dur");
+  el.classList.remove("bad");
+  if(d===null) el.value="—"; else if(d<0){ el.value="La hora de fin es anterior"; el.classList.add("bad"); } else el.value=d+" minuto"+(d===1?"":"s"); }
+function nextId(f){ const p="VA-"+f+"-"; let m=0; VISITS.forEach(v=>{ if(v.id&&v.id.indexOf(p)===0){ const n=parseInt(v.id.slice(p.length),10); if(n>m) m=n; } }); return p+pad(m+1,3); }
+function idPrev(){ const f=$("#fecha").value;
+  $("#idPreview").innerHTML = editingId ? 'Editando <b>'+esc(editingId)+'</b>'+(f&&editingId.indexOf("VA-"+f+"-")!==0?' · el ID se conserva aunque cambies la fecha':'') : (f?'Se registrará como <b>'+esc(nextId(f))+'</b> (número provisional)':''); }
+function showStep(i,quiet){
+  STEP=Math.max(0,Math.min(4,i));
+  $$(".step").forEach(p=>p.classList.toggle("hide",+p.dataset.panel!==STEP));
+  $$("#steps li").forEach((li,k)=>{ li.classList.toggle("cur",k===STEP); li.classList.toggle("done",k<STEP); if(k>=STEP) li.classList.remove("err"); });
+  $("#prevBtn").style.visibility=STEP===0?"hidden":"visible";
+  $("#nextBtn").classList.toggle("hide",STEP===4); $("#saveBtn").classList.toggle("hide",STEP!==4);
+  $("#formMsg").textContent="";
+  if(STEP===4) renderSummary();
+  const st=$("#steps"); if(!quiet) window.scrollTo({top:Math.max(0,st.getBoundingClientRect().top+window.scrollY-80),behavior:"smooth"});
+}
+function validStep(i,mark){
+  let ok=true, msg="Completa los campos marcados para continuar.";
+  const req=(sel)=>{ const el=$(sel), bad=!el.value.trim(); if(mark) el.classList.toggle("bad",bad); if(bad) ok=false; };
+  if(i===0){
+    if(!selVal($("#secOpts"))){ ok=false; if(mark) $("#secOpts").classList.add("bad-group"); }
+    ["#fecha","#observador","#docente","#curso","#materia","#hIni","#hFin"].forEach(req);
+    if(ok){
+      const d=mins($("#hIni").value,$("#hFin").value);
+      if(d!==null&&d<0){ ok=false; msg="La hora de finalización es anterior a la de inicio."; if(mark) $("#hFin").classList.add("bad"); }
+      else if($("#fecha").value>todayISO()){ ok=false; msg="La fecha de visita no puede ser posterior a hoy."; if(mark) $("#fecha").classList.add("bad"); }
+    }
+  }
+  if(i===1||i===2){
+    let miss=0;
+    BLOCKS.filter(b=>b.step===i).forEach(b=>b.items.forEach(([c])=>{ const bad=!LEVELS[c]; if(bad){ ok=false; miss++; } if(mark) $('[data-ind="'+c+'"]').classList.toggle("bad",bad); }));
+    if(miss) msg="Falta valorar "+miss+" indicador"+(miss>1?"es":"")+".";
+  }
+  if(i===3){ req("#fortalezas"); req("#mejoras");
+    const sg=$("#seguimiento").value, fe=$("#fecha").value;
+    if(ok&&sg&&fe&&sg<fe){ ok=false; msg="La fecha de seguimiento debe ser posterior a la visita."; if(mark) $("#seguimiento").classList.add("bad"); }
+    else if(mark&&!(sg&&fe&&sg<fe)) $("#seguimiento").classList.remove("bad");
+  }
+  if(!ok && mark){ $("#formMsg").textContent=msg; $$("#steps li")[i].classList.add("err"); }
+  return ok;
+}
+function collect(){
+  const ev={}; $$(".ev").forEach(x=>{ const t=x.value.trim(); if(t) ev[x.dataset.e]=t; });
+  const v={ seccion:selVal($("#secOpts")), fecha:$("#fecha").value, observador:$("#observador").value.trim(), docente:$("#docente").value.trim(),
+    curso:$("#curso").value.trim(), paralelo:$("#paralelo").value.trim(), materia:$("#materia").value.trim(), tema:$("#tema").value.trim(),
+    horaInicio:$("#hIni").value, horaFin:$("#hFin").value, niveles:Object.assign({},LEVELS), evidencias:ev,
+    fortalezas:$("#fortalezas").value.trim(), mejoras:$("#mejoras").value.trim(), compromiso:$("#compromiso").value.trim(), seguimiento:$("#seguimiento").value,
+    fotos:[0,1].filter(i=>photos[i]).map(i=>({desc:$('[data-desc="'+i+'"]').value.trim()})), token:TOKEN||undefined };
+  const d=mins(v.horaInicio,v.horaFin); v.duracion=(d!==null&&d>=0)?d:null;
+  const r=calc(v.niveles); v.puntajes=r.bloques; v.total=r.total; v.nivel=r.nivel;
+  return v;
+}
+function resultHTML(v){
+  const r=calc(v.niveles);
+  return '<div class="score"><div class="sc-card '+esc(r.nivel)+'"><div class="k">Calificación final</div><div class="big">'+f2(r.total)+'</div><div class="of">sobre 100 puntos</div><div class="nivel '+esc(r.nivel)+'">'+esc(NIVN[r.nivel])+(r.nivel==="INCOMPLETA"?' ('+r.n+'/'+IND.length+')':'')+'</div></div>'+
+   '<div class="bars">'+BLOCKS.map(b=>{ const s=r.bloques[b.k], p=s/b.max; return '<div class="bar" style="grid-template-columns:minmax(120px,40%) 1fr 92px"><span class="bl">'+esc(b.n)+'</span><span class="bt"><span class="bf '+(p>=.9?"good":p>=.7?"warn":"low")+'" style="width:'+Math.max(2,Math.round(p*100))+'%"></span></span><span class="bv">'+f2(s)+' / '+b.max+'</span></div>'; }).join("")+'</div></div>';
+}
+function renderSummary(){
+  const v=collect(), row=(k,x)=>'<dt>'+esc(k)+'</dt><dd>'+(x?esc(x):'<span class="muted">Sin registrar</span>')+'</dd>';
+  $("#result").innerHTML=resultHTML(v);
+  const low=IND.filter(i=>v.niveles[i.c]&&v.niveles[i.c]!=="CUMPLE").map(i=>i.c+" ("+LVN[v.niveles[i.c]].toLowerCase()+")");
+  $("#summary").innerHTML='<div class="summary"><div class="sh">'+esc(editingId||nextId(v.fecha||todayISO()))+(v.seccion?' | '+SECN[v.seccion]:'')+'</div><dl>'+
+    row("Fecha y horario",fLarga(v.fecha)+", "+(v.horaInicio||"—")+" a "+(v.horaFin||"—")+(v.duracion!=null?" ("+v.duracion+" min)":""))+
+    row("Docente y asignatura",[v.docente,v.materia].filter(Boolean).join(", "))+
+    row("Curso",[v.curso,v.paralelo].filter(Boolean).join(" "))+row("Tema",v.tema)+row("Observador/a",v.observador)+
+    row("Indicadores no cumplidos o en proceso",low.join(", ")||"Ninguno: todos cumplen")+
+    row("Fortalezas",v.fortalezas)+row("Aspectos por mejorar",v.mejoras)+row("Compromiso",v.compromiso)+row("Seguimiento",v.seguimiento?fLarga(v.seguimiento):"")+
+    row("Fotografías",v.fotos.length?v.fotos.length+" de 2":"")+'</dl></div>';
+}
+
+/* ---------- fotos ---------- */
+const CAM='<div><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>Toma o elige una foto</div>';
+function initPhotos(){
+  $$("[data-drop]").forEach(d=>{ const i=+d.dataset.drop, pick=()=>$('[data-file="'+i+'"]').click();
+    d.addEventListener("click",pick); d.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(); } });
+    d.addEventListener("dragover",e=>e.preventDefault()); d.addEventListener("drop",e=>{ e.preventDefault(); handleFiles(e.dataTransfer.files,i); }); });
+  $$("[data-file]").forEach(f=>f.addEventListener("change",e=>handleFiles(e.target.files,+f.dataset.file)));
+  $$("[data-clear]").forEach(b=>b.onclick=()=>{ photos[+b.dataset.clear]=null; photosDirty=true; paint(+b.dataset.clear); markDirty(); });
+}
+function handleFiles(files,i){
+  if(!files||!files.length||photosLoading) return;
+  const free=photos.filter(p=>!p).length+(photos[i]?1:0);
+  if(files.length>2||files.length>free){ const n=$("#photoNote"); n.className="callout warn"; n.textContent="El registro permite un máximo de 2 fotografías por visita."; }
+  const list=Array.from(files).slice(0,2);
+  if(list.length===1) return upload(list[0],i);
+  let s=0; list.forEach(f=>{ while(s<2&&photos[s]) s++; if(s<2){ upload(f,s); s++; } });
+}
+async function shrink(file){
+  const u=URL.createObjectURL(file); const im=await new Promise((r,j)=>{ const x=new Image(); x.onload=()=>r(x); x.onerror=j; x.src=u; });
+  let out="";
+  for(const [mx,q] of [[1100,.72],[900,.62],[720,.52],[560,.45]]){
+    const k=Math.min(1,mx/Math.max(im.width,im.height)), c=document.createElement("canvas");
+    c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    out=c.toDataURL("image/jpeg",q); if(out.length<380000) break;
+  }
+  URL.revokeObjectURL(u); return out;
+}
+async function upload(file,i){
+  if(!canWrite()||photosLoading) return;
+  const d=$('[data-drop="'+i+'"]'); d.classList.remove("has"); d.innerHTML='<span><span class="spin"></span> Procesando…</span>';
+  try{ const data=await shrink(file); if(data.length>=380000) throw {code:"too_large"}; photos[i]={data}; photosDirty=true; paint(i); $("#photoNote").classList.add("hide"); markDirty(); }
+  catch(err){ paint(i); const n=$("#photoNote"); n.className="callout err";
+    n.textContent=err&&err.code==="too_large"?"La imagen es demasiado pesada. Usa una fotografía más liviana.":"No se pudo procesar la fotografía. Intenta nuevamente."; }
+}
+function paint(i){
+  const d=$('[data-drop="'+i+'"]'), c=$('[data-clear="'+i+'"]');
+  d.classList.toggle("off",photosLoading);
+  if(photosLoading){ d.classList.remove("has"); d.innerHTML='<span><span class="spin"></span> Cargando fotografía guardada…</span>'; c.classList.add("hide"); return; }
+  if(photos[i]){ d.classList.add("has"); d.innerHTML='<img alt="Foto '+(i+1)+'" src="'+esc(photos[i].data)+'">'; c.classList.remove("hide"); }
+  else{ d.classList.remove("has"); d.innerHTML=CAM; c.classList.add("hide"); $('[data-file="'+i+'"]').value=""; }
+}
+
+/* ---------- guardar ---------- */
+async function onSave(e){
+  e.preventDefault();
+  if(saving) return;
+  for(let i=0;i<4;i++){ if(!validStep(i,true)){ showStep(i); validStep(i,true); return; } }
+  if(photosLoading){ $("#formMsg").textContent="Espera a que terminen de cargar las fotografías."; return; }
+  // Si un intento anterior sí llegó a guardarse (p. ej., se cortó la conexión justo después), se actualiza esa visita en vez de duplicarla.
+  if(!editingId&&TOKEN){ const dup=VISITS.find(x=>x.token===TOKEN); if(dup) editingId=dup.id; }
+  const v=collect(); v.id=editingId||"";
+  const fotos=(!editingId||photosDirty)?[0,1].filter(i=>photos[i]).map(i=>({data:photos[i].data, desc:$('[data-desc="'+i+'"]').value.trim()})):null;
+  saving=true; saveDraftNow(); const wasEdit=!!editingId;
+  $("#saveBtn").disabled=true; $("#saveBtn").innerHTML='<span class="spin"></span> Guardando';
+  try{ const saved=await saveVisit(v,fotos); formDirty=false; clearDraft();
+    toast((wasEdit?"Visita actualizada: ":"Visita registrada: ")+saved.id+" · "+f2(saved.total)+" pts"); resetForm(); go("registros"); setTimeout(()=>openVisit(saved.id),400); }
+  catch(err){ $("#formMsg").textContent=err&&err.code==="gone"?"Esta visita fue eliminada por otra persona y ya no se puede actualizar.":errMsg(err,"No se pudo guardar. Intenta nuevamente."); }
+  finally{ saving=false; $("#saveBtn").disabled=false; $("#saveBtn").textContent=editingId?"Guardar cambios":"Guardar visita"; }
+}
+const newToken=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
+function resetForm(){
+  editingId=null; photos=[null,null]; LEVELS={}; TOKEN=newToken(); photosDirty=false; photosLoading=false; formDirty=false; clearDraft();
+  $("#form").reset(); $("#fecha").value=todayISO();
+  setSel($("#secOpts"),[]); $("#dur").value="—"; $$(".bad").forEach(x=>x.classList.remove("bad")); $("#secOpts").classList.remove("bad-group");
+  $$("#steps li").forEach(li=>li.classList.remove("err")); paint(0); paint(1); paintLevels();
+  $("#photoNote").classList.add("hide"); $("#draftBar").classList.add("hide");
+  $("#formTitle").textContent="Nueva visita áulica"; $("#saveBtn").textContent="Guardar visita"; $("#cancelEdit").classList.add("hide");
+  idPrev(); showStep(0,true);
+}
+function confirmDiscard(msg){ return !formDirty||confirm(msg||"Hay una visita en curso sin guardar. ¿Descartarla?"); }
+const FIELDS=[["observador","observador"],["docente","docente"],["curso","curso"],["paralelo","paralelo"],["materia","materia"],["tema","tema"],["hIni","horaInicio"],["hFin","horaFin"],["fortalezas","fortalezas"],["mejoras","mejoras"],["compromiso","compromiso"],["seguimiento","seguimiento"]];
+function setEditingUI(){ $("#formTitle").textContent="Editar visita"; $("#saveBtn").textContent="Guardar cambios"; $("#cancelEdit").textContent="Cancelar edición"; $("#cancelEdit").classList.remove("hide"); }
+// Descarga las fotos de la visita en edición. Mientras cargan, los espacios quedan bloqueados;
+// si la descarga falla, las fotos guardadas no se tocan al guardar.
+function loadPhotos(id){
+  photosLoading=true; paint(0); paint(1);
+  getFotos(id).then(list=>{ if(editingId!==id) return; photosLoading=false;
+    if(list===null){ const n=$("#photoNote"); n.className="callout warn"; n.textContent="No se pudieron cargar las fotografías guardadas. Se conservarán sin cambios, salvo que agregues fotos nuevas (en ese caso las reemplazarán)."; }
+    else list.slice(0,2).forEach((f,i)=>{ photos[i]={data:f.data}; $('[data-desc="'+i+'"]').value=f.desc||""; });
+    paint(0); paint(1); });
+}
+function editVisit(v){
+  if(!confirmDiscard("Hay una visita en curso sin guardar. ¿Descartarla para editar "+v.id+"?")) return;
+  resetForm(); editingId=v.id; TOKEN=v.token||"";
+  setSel($("#secOpts"),v.seccion); $("#fecha").value=v.fecha||todayISO();
+  FIELDS.forEach(([id,k])=>$("#"+id).value=v[k]||"");
+  LEVELS=Object.assign({},v.niveles||{}); $$(".ev").forEach(x=>x.value=(v.evidencias||{})[x.dataset.e]||"");
+  calcDur(); paintLevels();
+  if((v.fotos||[]).length) loadPhotos(v.id);
+  setEditingUI(); idPrev(); closeModal(); go("nueva"); showStep(0);
+}
+
+/* ---------- borrador local ---------- */
+// El formulario en curso se guarda en este dispositivo (por cuenta) para no perderlo si se recarga o cierra la pestaña.
+const draftKey=()=>"rctx_draft_"+myMail();
+let draftT=null;
+function markDirty(){ formDirty=true; clearTimeout(draftT); draftT=setTimeout(saveDraftNow,600);
+  const c=$("#cancelEdit"); c.textContent=editingId?"Cancelar edición":"Descartar visita"; c.classList.remove("hide"); }
+function saveDraftNow(){
+  clearTimeout(draftT); if(!formDirty||!ME) return;
+  const d={ t:Date.now(), editingId, step:STEP, token:TOKEN, sec:selVal($("#secOpts")), fecha:$("#fecha").value,
+    f:Object.fromEntries(FIELDS.map(([id])=>[id,$("#"+id).value])), levels:LEVELS,
+    ev:Object.fromEntries($$(".ev").map(x=>[x.dataset.e,x.value]).filter(x=>x[1])), photosDirty,
+    photos:photosDirty?[0,1].map(i=>photos[i]?{data:photos[i].data,desc:$('[data-desc="'+i+'"]').value}:null):null };
+  try{ localStorage.setItem(draftKey(),JSON.stringify(d)); }
+  catch(e){ try{ d.photos=null; d.photosDirty=false; localStorage.setItem(draftKey(),JSON.stringify(d)); }catch(e2){} }
+}
+function readDraft(){ try{ const d=JSON.parse(localStorage.getItem(draftKey())||"null"); return d&&d.t?d:null; }catch(e){ return null; } }
+function clearDraft(){ clearTimeout(draftT); try{ if(ME) localStorage.removeItem(draftKey()); }catch(e){} }
+function offerDraft(){
+  const d=readDraft(); if(!d||!canWrite()||formDirty) return;
+  const who=(d.f&&d.f.docente)||"docente sin nombre";
+  $("#draftTxt").innerHTML='<b>Tienes una visita sin guardar</b> ('+(d.editingId?'edición de '+esc(d.editingId)+', ':'')+esc(who)+'), del '+esc(new Date(d.t).toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"}))+'.';
+  $("#draftBar").classList.remove("hide");
+}
+function useDraft(){
+  const d=readDraft(); if(!d) return;
+  resetForm(); editingId=d.editingId||null; TOKEN=d.token||TOKEN;
+  setSel($("#secOpts"),d.sec||""); $("#fecha").value=d.fecha||todayISO();
+  FIELDS.forEach(([id])=>$("#"+id).value=(d.f||{})[id]||"");
+  LEVELS=Object.assign({},d.levels||{}); $$(".ev").forEach(x=>x.value=(d.ev||{})[x.dataset.e]||"");
+  calcDur(); paintLevels();
+  if(d.photosDirty&&d.photos){ photosDirty=true; d.photos.forEach((p,i)=>{ if(p){ photos[i]={data:p.data}; $('[data-desc="'+i+'"]').value=p.desc||""; } paint(i); }); }
+  else if(editingId) loadPhotos(editingId);
+  if(editingId) setEditingUI();
+  formDirty=true; saveDraftNow(); idPrev(); go("nueva"); showStep(d.step||0); toast("Borrador recuperado");
+}
+
+/* ---------- registros ---------- */
+function blob(v){ return [v.docente,v.observador,v.materia,v.tema,v.curso,v.paralelo,v.id,v.fortalezas,v.mejoras,v.compromiso].join(" ").toLowerCase(); }
+function recFiltered(){
+  const t=$("#fTxt").value.trim().toLowerCase(), s=$("#fSec").value, o=$("#fObs").value, n=$("#fNiv").value, d=periodFrom(fPer);
+  return VISITS.filter(v=>(!s||v.seccion===s)&&(!o||norm(v.observador)===norm(o))&&(!n||calc(v.niveles).nivel===n)&&(!d||(v.fecha||"")>=d)&&(!t||blob(v).indexOf(t)>=0));
+}
+function visitTable(list){
+  return '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>ID de visita</th><th>Fecha</th><th>Docente y asignatura</th><th>Curso</th><th>Observador/a</th><th class="num">Calificación</th><th>Nivel</th></tr></thead><tbody>'+
+  list.map(v=>{ const r=calc(v.niveles); return '<tr class="'+esc(v.seccion)+'" data-id="'+esc(v.id)+'" tabindex="0">'+
+    '<td data-l="ID"><span class="secbar '+esc(v.seccion)+'"></span><span class="idc">'+esc(v.id)+'</span></td>'+
+    '<td data-l="Fecha">'+fCorta(v.fecha)+'<br><span class="muted">'+esc(v.horaInicio||"")+'–'+esc(v.horaFin||"")+'</span></td>'+
+    '<td data-l="Docente" class="who"><div><b>'+esc(v.docente||"—")+'</b><span>'+esc(v.materia||"")+(v.tema?' | '+esc(v.tema):'')+'</span></div></td>'+
+    '<td data-l="Curso"><span class="tag '+esc(v.seccion)+'">'+esc(SECN[v.seccion]||v.seccion||"")+'</span><br>'+esc([v.curso,v.paralelo].filter(Boolean).join(" "))+'</td>'+
+    '<td data-l="Observador">'+esc(v.observador||"—")+'</td>'+
+    '<td data-l="Puntaje" class="num"><b class="scn">'+f2(r.total)+'</b></td>'+
+    '<td data-l="Nivel">'+nivTag(r.nivel)+'</td></tr>'; }).join("")+'</tbody></table></div>';
+}
+function renderRecords(){
+  const l=recFiltered(); $("#recCount").textContent=l.length===1?"1 visita":l.length+" visitas";
+  $("#recList").innerHTML=l.length?visitTable(l):(VISITS.length?'<div class="empty"><b>Ninguna visita coincide</b>Ajusta o quita los filtros.</div>':'<div class="empty"><b>Todavía no hay visitas registradas</b>Registra la primera desde «Nueva visita».</div>');
+}
+document.addEventListener("click",e=>{ const tr=e.target.closest("tr[data-id],[data-open]"); if(tr) openVisit(tr.dataset.id||tr.dataset.open); });
+document.addEventListener("keydown",e=>{ if(e.key==="Enter"){ const tr=e.target.closest&&e.target.closest("tr[data-id]"); if(tr) openVisit(tr.dataset.id); } if(e.key==="Escape") closeModal(); });
+
+/* ---------- ficha de visita ---------- */
+function tr(k,v){ return v?'<tr><th>'+esc(k)+'</th><td>'+v+'</td></tr>':''; }
+function openVisit(id){
+  const v=VISITS.find(x=>x.id===id); if(!v) return; const r=calc(v.niveles);
+  const ph=(v.fotos||[]).length?'<div class="ficha" id="fichaFotos"><div class="sh">Evidencia fotográfica</div><div class="shots"><p class="muted" style="margin:0"><span class="spin"></span> Cargando fotografías</p></div></div>':'';
+  const mx='<div class="ficha"><div class="sh">Matriz de valoración</div><div style="overflow-x:auto"><table class="mx"><thead><tr><th>Cód.</th><th>Indicador</th><th class="c">Máx.</th><th class="c">Nivel</th><th class="c">Puntaje</th><th>Evidencia</th></tr></thead><tbody>'+
+   BLOCKS.map(b=>'<tr class="bh"><td colspan="4">'+esc(b.n)+'</td><td class="c">'+f2(r.bloques[b.k])+' / '+b.max+'</td><td></td></tr>'+
+    b.items.map(([c,t,p])=>{ const l=(v.niveles||{})[c]; return '<tr><td class="cd">'+c+'</td><td>'+esc(t)+'</td><td class="c">'+p+'</td><td class="c">'+lvTag(l)+'</td><td class="c">'+(l?f2(p*FACT[l]):"—")+'</td><td>'+esc((v.evidencias||{})[c]||"")+'</td></tr>'; }).join("")).join("")+
+   '<tr class="tt"><td colspan="4">CALIFICACIÓN FINAL</td><td class="c">'+f2(r.total)+'</td><td>'+esc(NIVN[r.nivel])+'</td></tr></tbody></table></div></div>';
+  $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">FICHA DE VISITA ÁULICA · MATRIZ RCTX<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
+  '<div class="m-top"><h3 id="mTitle">'+esc(v.id)+'</h3><span class="tag '+esc(v.seccion)+'">'+esc(SECN[v.seccion]||"")+'</span>'+nivTag(r.nivel)+'</div>'+
+  '<div class="m-body">'+
+   '<div class="ficha"><div class="sh">Información general</div><table>'+
+    tr("Fecha",fLarga(v.fecha))+tr("Horario",esc((v.horaInicio||"—")+" a "+(v.horaFin||"—"))+(v.duracion!=null?" ("+v.duracion+" minutos)":""))+
+    tr("Observador/a",esc(v.observador))+tr("Docente observado/a",esc(v.docente))+tr("Curso y paralelo",esc([v.curso,v.paralelo].filter(Boolean).join(" ")))+
+    tr("Asignatura",esc(v.materia))+tr("Tema de clase",esc(v.tema))+'</table></div>'+
+   '<div class="ficha"><div class="sh">Resultado</div><div style="padding:14px">'+resultHTML(v)+'</div></div>'+
+   mx+
+   '<div class="ficha"><div class="sh">Retroalimentación y compromisos</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+tr("Compromiso del docente",esc(v.compromiso))+tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento):"")+'</table></div>'+
+   ph+'<div class="firmas"><div>Firma del docente observado</div><div>Firma del observador(a) / coordinador(a)</div></div></div>'+
+  (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(new Date(v.creado).toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"})):''):'')+
+    (v.actualizadoPor&&v.actualizado&&v.actualizado!==v.creado?' · Última modificación: '+esc(v.actualizadoPor)+' el '+esc(new Date(v.actualizado).toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"})):'')+'</div>':'')+
+  '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir ficha</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
+  openModal();
+  if((v.fotos||[]).length) getFotos(v.id).then(list=>{ const b=$("#fichaFotos .shots"); if(b) b.innerHTML=list===null?'<p class="muted" style="margin:0">No se pudieron cargar las fotografías. Revisa la conexión y vuelve a abrir la ficha.</p>':list.length?list.map((f,i)=>'<figure><img src="'+esc(f.data)+'" alt="Foto '+(i+1)+'"><figcaption>Foto '+(i+1)+(f.desc?': '+esc(f.desc):'')+'</figcaption></figure>').join(""):'<p class="muted" style="margin:0">Sin fotografías.</p>'; });
+  if(!canWrite()) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove();
+  $("#mClose").onclick=closeModal; if($("#mEdit")) $("#mEdit").onclick=()=>editVisit(v); $("#mPrint").onclick=()=>window.print();
+  $("#mDoc").onclick=()=>openDocente(v.docente);
+  if($("#mDel")) $("#mDel").onclick=async()=>{ if(!confirm("¿Eliminar definitivamente el registro "+v.id+"?")) return;
+    try{ await delVisit(v.id); closeModal(); toast("Registro "+v.id+" eliminado"); }catch(e){ toast("No se pudo eliminar el registro"); } };
+}
+let lastFocus=null;
+function openModal(){ if(!$("#mask").classList.contains("open")) lastFocus=document.activeElement; $("#mask").classList.add("open"); $("#mask").scrollTop=0; $("#modal").focus({preventScroll:true}); }
+function closeModal(){ if(!$("#mask").classList.contains("open")) return; $("#mask").classList.remove("open"); if(lastFocus&&document.contains(lastFocus)) lastFocus.focus({preventScroll:true}); lastFocus=null; }
+// Mantiene el foco del teclado dentro de la ficha abierta.
+$("#modal").addEventListener("keydown",e=>{ if(e.key!=="Tab") return;
+  const f=Array.from($("#modal").querySelectorAll("button,[href],input,select,textarea,[tabindex]:not([tabindex='-1'])")).filter(x=>!x.disabled&&x.offsetParent!==null); if(!f.length) return;
+  const a=f[0], z=f[f.length-1];
+  if(e.shiftKey&&(document.activeElement===a||document.activeElement===$("#modal"))){ e.preventDefault(); z.focus(); }
+  else if(!e.shiftKey&&document.activeElement===z){ e.preventDefault(); a.focus(); } });
+$("#mask").addEventListener("click",e=>{ if(e.target.id==="mask") closeModal(); });
+
+/* ---------- docentes ---------- */
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+// Agrupa por nombre normalizado; se muestra el nombre de la nómina si existe, si no el más reciente registrado.
+function docStats(){
+  const m=new Map(), add=(n,v)=>{ const k=norm(n); if(!k) return; if(!m.has(k)) m.set(k,{n,vs:[]}); if(v) m.get(k).vs.push(v); };
+  (CONFIG.docentes||[]).forEach(d=>add(d)); VISITS.forEach(v=>add(v.docente,v));
+  return Array.from(m.values()).map(({n,vs})=>{ const last=vs[0], tots=vs.map(x=>calc(x.niveles)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
+    return { n, vs, last, lastR:last?calc(last.niveles):null, prom:avg(tots), secs:Array.from(new Set(vs.map(x=>x.seccion).filter(Boolean))) }; });
+}
+function renderDocentes(){
+  const t=$("#dTxt").value.trim().toLowerCase(), s=$("#dSec").value, e=$("#dEst").value;
+  let l=docStats().filter(d=>(!t||d.n.toLowerCase().indexOf(t)>=0)&&(!s||d.secs.includes(s)));
+  if(e==="none") l=l.filter(d=>!d.vs.length); else if(e) l=l.filter(d=>d.lastR&&d.lastR.nivel===e);
+  l.sort((a,b)=>a.n.localeCompare(b.n,"es"));
+  if(!l.length){ $("#docList").innerHTML='<div class="empty"><b>Sin docentes para mostrar</b>Los docentes aparecen al registrar visitas o al cargar la nómina en Ajustes.</div>'; return; }
+  $("#docList").innerHTML='<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Docente</th><th>Sección</th><th class="num">Visitas</th><th>Última visita</th><th class="num">Promedio</th><th class="num">Última calificación</th><th>Nivel actual</th></tr></thead><tbody>'+
+   l.map(d=>'<tr data-doc="'+esc(d.n)+'" tabindex="0" class="'+esc(d.secs[0]||"")+'">'+
+    '<td data-l="Docente" class="who"><b>'+esc(d.n)+'</b></td>'+
+    '<td data-l="Sección"><div class="tags">'+(d.secs.map(x=>'<span class="tag '+esc(x)+'">'+esc(SECN[x]||x)+'</span>').join("")||'<span class="muted">—</span>')+'</div></td>'+
+    '<td data-l="Visitas" class="num">'+d.vs.length+'</td>'+
+    '<td data-l="Última">'+(d.last?fCorta(d.last.fecha):'<span class="tag">Sin visitas</span>')+'</td>'+
+    '<td data-l="Promedio" class="num">'+(d.prom!=null?f2(d.prom):'—')+'</td>'+
+    '<td data-l="Última cal." class="num">'+(d.lastR?'<b class="scn">'+f2(d.lastR.total)+'</b>':'—')+'</td>'+
+    '<td data-l="Nivel">'+(d.lastR?nivTag(d.lastR.nivel):'<span class="muted">—</span>')+'</td></tr>').join("")+'</tbody></table></div>';
+}
+$("#docList").addEventListener("click",e=>{ const r=e.target.closest("tr[data-doc]"); if(r){ e.stopPropagation(); openDocente(r.dataset.doc); } },true);
+$("#docList").addEventListener("keydown",e=>{ const r=e.target.closest("tr[data-doc]"); if(r&&e.key==="Enter"){ e.stopPropagation(); openDocente(r.dataset.doc); } },true);
+function blockAvg(list){ return BLOCKS.map(b=>{ const a=avg(list.map(v=>calc(v.niveles).bloques[b.k]/b.max)); return [b.n,a]; }); }
+function weakInd(list){
+  return IND.map(i=>{ const f=list.map(v=>(v.niveles||{})[i.c]).filter(l=>l in FACT).map(l=>FACT[l]); return [i.c+" · "+i.t,avg(f),i.c]; }).filter(x=>x[1]!=null&&x[1]<1).sort((a,b)=>a[1]-b[1]);
+}
+function barsPct(p,note){
+  if(!p.length) return '<p class="muted" style="margin:0">'+(note||"Sin datos en el periodo.")+'</p>';
+  return '<div class="bars">'+p.map(([k,x])=>'<div class="bar"><span class="bl" title="'+esc(k)+'">'+esc(k)+'</span><span class="bt"><span class="bf '+(x>=.9?"good":x>=.7?"warn":"low")+'" style="width:'+Math.max(3,Math.round(x*100))+'%"></span></span><span class="bv">'+pct(x)+'</span></div>').join("")+'</div>';
+}
+function openDocente(name){
+  const vs=VISITS.filter(v=>norm(v.docente)===norm(name)), rs=vs.map(v=>calc(v.niveles)), comp=rs.filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
+  const coms=vs.map(v=>v.compromiso?fCorta(v.fecha)+": "+v.compromiso:"").filter(Boolean).slice(0,3);
+  $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">HISTORIAL DE VISITAS ÁULICAS DEL DOCENTE<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
+  '<div class="m-top"><h3 id="mTitle">'+esc(name)+'</h3>'+Array.from(new Set(vs.map(v=>v.seccion))).map(s=>'<span class="tag '+esc(s)+'">'+esc(SECN[s]||s)+'</span>').join("")+(rs[0]?nivTag(rs[0].nivel):'')+'</div>'+
+  '<div class="m-body">'+
+   '<div class="kpis" style="grid-template-columns:repeat(3,minmax(0,1fr)); margin:10px 0 0">'+
+    '<div class="kpi"><div class="n">'+vs.length+'</div><div class="k">Visitas recibidas</div></div>'+
+    '<div class="kpi c"><div class="n">'+(comp.length?f2(avg(comp)):"—")+'</div><div class="k">Calificación promedio</div></div>'+
+    '<div class="kpi t"><div class="n">'+(rs[0]?f2(rs[0].total):"—")+'</div><div class="k">Última calificación</div></div></div>'+
+   (vs.length?'<div class="ficha"><div class="sh">Logro promedio por bloque</div><div style="padding:14px">'+barsPct(blockAvg(vs))+'</div></div>'+
+   '<div class="ficha"><div class="sh">Indicadores por fortalecer</div><div style="padding:14px">'+barsPct(weakInd(vs).slice(0,6),"Cumple todos los indicadores en sus visitas.")+'</div></div>':'')+
+   '<div class="ficha"><div class="sh">Compromisos recientes</div><table>'+(coms.length?coms.map(c=>'<tr><td>'+esc(c)+'</td></tr>').join(""):'<tr><td class="muted">Sin compromisos registrados.</td></tr>')+'</table></div>'+
+   '<div class="ficha"><div class="sh">Visitas</div><table>'+(vs.length?vs.map((v,i)=>'<tr><th>'+fCorta(v.fecha)+'</th><td><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.id)+'</button> '+esc([v.materia,v.curso,v.paralelo].filter(Boolean).join(", "))+'<div class="tags" style="margin-top:5px"><span class="tag">'+f2(rs[i].total)+' pts</span>'+nivTag(rs[i].nivel)+'</div></td></tr>').join(""):'<tr><td class="muted">Este docente aún no ha recibido visitas.</td></tr>')+'</table></div>'+
+  '</div><div class="m-foot"><button class="btn sec" id="mPrint">Imprimir historial</button></div>';
+  openModal(); $("#mClose").onclick=closeModal; $("#mPrint").onclick=()=>window.print();
+}
+
+/* ---------- tablero ---------- */
+function tally(a){ const m=new Map(); a.forEach(k=>{ if(k) m.set(k,(m.get(k)||0)+1); }); return Array.from(m.entries()).sort((x,y)=>y[1]-x[1]); }
+function bars(p,cls){
+  if(!p.length) return '<p class="muted" style="margin:0">Sin datos en el periodo.</p>';
+  const mx=Math.max(...p.map(x=>x[1]))||1;
+  return '<div class="bars">'+p.map(([k,n])=>'<div class="bar"><span class="bl" title="'+esc(k)+'">'+esc(SECN[k]||k)+'</span><span class="bt"><span class="bf '+(cls==="sec"?esc(k):cls||"")+'" style="width:'+Math.max(4,Math.round(n/mx*100))+'%"></span></span><span class="bv">'+n+'</span></div>').join("")+'</div>';
+}
+function renderDash(){
+  const from=periodFrom(tPer), l=VISITS.filter(v=>(!from||(v.fecha||"")>=from)&&(!tSec||v.seccion===tSec));
+  const rs=l.map(v=>calc(v.niveles)), comp=rs.filter(r=>r.nivel!=="INCOMPLETA"), prom=avg(comp.map(r=>r.total));
+  const cnt=n=>comp.filter(r=>r.nivel===n).length;
+  const docs=new Set(l.map(v=>norm(v.docente)).filter(Boolean)), nom=CONFIG.docentes||[], sinV=nom.filter(d=>!docs.has(norm(d)));
+  const nd=tPer==="hoy"||tPer==="7"?7:30, days=[]; for(let i=nd-1;i>=0;i--) days.push(isoMinus(i));
+  const pd=days.map(f=>[f,l.filter(v=>v.fecha===f).length]), mxd=Math.max(1,...pd.map(x=>x[1]));
+  const lbl=tPer==="hoy"?"hoy":tPer==="7"?"en 7 días":tPer==="30"?"en 30 días":"en total";
+  const lastBy=new Map(); VISITS.forEach(v=>{ const k=norm(v.docente); if(k&&!lastBy.has(k)&&(!tSec||v.seccion===tSec)) lastBy.set(k,v); });
+  const needs=Array.from(lastBy.values()).map(v=>[v,calc(v.niveles)]).filter(([,r])=>r.nivel==="INSATISFACTORIO"||r.nivel==="CONFORME").sort((a,b)=>a[1].total-b[1].total);
+  const COL={SATISFACTORIO:"var(--teal)",CONFORME:"var(--orange)",INSATISFACTORIO:"var(--danger)"};
+  const secAvg=SECS.filter(s=>!tSec||s===tSec).map(s=>{ const a=avg(l.filter(v=>v.seccion===s).map(v=>calc(v.niveles)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total)); return [s,a]; }).filter(x=>x[1]!=null);
+
+  $("#dash").innerHTML=
+  '<div class="kpis">'+
+   '<div class="kpi"><div class="n">'+l.length+'</div><div class="k">Visitas '+lbl+'</div><div class="s">'+docs.size+' docentes observados</div></div>'+
+   '<div class="kpi c"><div class="n">'+(prom!=null?f2(prom):"—")+'</div><div class="k">Calificación promedio</div><div class="s">Sobre 100 puntos</div></div>'+
+   '<div class="kpi t"><div class="n">'+cnt("SATISFACTORIO")+'</div><div class="k">Satisfactorio</div><div class="s">90 puntos o más</div></div>'+
+   '<div class="kpi y"><div class="n">'+cnt("CONFORME")+'</div><div class="k">Conforme</div><div class="s">De 70 a 89.99</div></div>'+
+   '<div class="kpi r"><div class="n">'+cnt("INSATISFACTORIO")+'</div><div class="k">Insatisfactorio</div><div class="s">Menos de 70</div></div></div>'+
+
+  '<div class="panel"><h3>Distribución de niveles</h3><p class="hint">'+comp.length+' visita'+(comp.length===1?'':'s')+' con la matriz completa en el periodo.</p>'+
+   (comp.length?'<div class="stack" style="height:22px">'+NIV.map(n=>{ const c=cnt(n); return c?'<span style="width:'+(c/comp.length*100)+'%;background:'+COL[n]+'" title="'+NIVN[n]+': '+c+'"></span>':''; }).join("")+'</div><div class="legend">'+NIV.map(n=>'<span><i style="background:'+COL[n]+'"></i>'+NIVN[n]+' ('+cnt(n)+')</span>').join("")+'</div>':'<p class="muted" style="margin:0">Sin datos en el periodo.</p>')+'</div>'+
+
+  '<div class="two">'+
+   '<div class="panel"><h3>Logro promedio por bloque</h3><p class="hint">Qué parte de la clase se fortalece y cuál requiere atención.</p>'+(l.length?barsPct(blockAvg(l)):barsPct([]))+'</div>'+
+   '<div class="panel"><h3>Indicadores con menor logro</h3><p class="hint">Focos para el plan de acompañamiento institucional.</p>'+barsPct(weakInd(l).slice(0,7),l.length?"Todos los indicadores se cumplen en el periodo.":"")+'</div></div>'+
+
+  '<div class="two">'+
+   '<div class="panel"><h3>Calificación promedio por sección</h3><p class="hint">Sobre 100 puntos.</p>'+
+    (secAvg.length?'<div class="bars">'+secAvg.map(([s,a])=>'<div class="bar"><span class="bl">'+SECN[s]+'</span><span class="bt"><span class="bf '+s+'" style="width:'+Math.round(a)+'%"></span></span><span class="bv">'+f2(a)+'</span></div>').join("")+'</div>':'<p class="muted" style="margin:0">Sin datos en el periodo.</p>')+'</div>'+
+   '<div class="panel"><h3>Visitas por observador</h3><p class="hint">Cumplimiento de visitas del equipo.</p>'+bars(tally(l.map(v=>v.observador)).slice(0,8))+'</div></div>'+
+
+  '<div class="two">'+
+   '<div class="panel"><h3>Docentes que requieren acompañamiento</h3><p class="hint">Nivel conforme o insatisfactorio en su visita más reciente.</p>'+
+    (needs.length?'<ul class="plist">'+needs.slice(0,10).map(([v,r])=>'<li><span class="grow"><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.docente)+'</button><span>'+esc(v.materia||"")+' | '+fCorta(v.fecha)+' | '+f2(r.total)+' pts</span></span>'+nivTag(r.nivel)+'</li>').join("")+'</ul>':'<p class="muted" style="margin:0">Ningún docente con nivel conforme o insatisfactorio en su última visita.</p>')+'</div>'+
+   '<div class="panel"><h3>Visitas por día</h3><p class="hint">Últimos '+nd+' días.</p><div class="cols">'+
+    pd.map(([f,n])=>'<div class="'+(n?'':'z')+'" style="height:'+(n?Math.max(6,Math.round(n/mxd*100)):3)+'%" title="'+fCorta(f)+': '+n+'">'+(n?'<b>'+n+'</b>':'')+((nd<=14||days.indexOf(f)%5===0||f===days[days.length-1])?'<em>'+(+f.slice(8))+'</em>':'')+'</div>').join("")+'</div></div></div>'+
+
+  '<div class="panel"><h3>Cobertura de la nómina</h3>'+(!nom.length?'<p class="hint" style="margin:0">Carga la nómina de docentes en Ajustes para identificar quiénes aún no reciben visita.</p>':
+    (sinV.length?'<p class="hint">'+(nom.length-sinV.length)+' de '+nom.length+' docentes observados en el periodo. Pendientes de visita:</p><div class="tags">'+sinV.map(d=>'<span class="tag">'+esc(d)+'</span>').join("")+'</div>':'<p class="hint" style="margin:0">Todos los docentes de la nómina recibieron al menos una visita en el periodo.</p>'))+'</div>';
+}
+
+/* ---------- ajustes ---------- */
+function renderScale(){
+  $("#scaleInfo").innerHTML='<div class="grid g2"><div class="tbl-wrap"><table class="tbl sm"><thead><tr><th>Bloque</th><th class="num">Puntos</th><th>Indicadores</th></tr></thead><tbody>'+
+   BLOCKS.map(b=>'<tr><td>'+esc(b.n)+'</td><td class="num">'+b.max+'</td><td>'+b.items.map(i=>i[0]+' ('+i[2]+')').join(" · ")+'</td></tr>').join("")+
+   '<tr><td><b>Total</b></td><td class="num"><b>100</b></td><td>18 indicadores</td></tr></tbody></table></div>'+
+   '<div class="tbl-wrap"><table class="tbl sm"><thead><tr><th>Nivel del indicador</th><th class="num">Factor</th></tr></thead><tbody>'+LVS.map(l=>'<tr><td>'+lvTag(l)+'</td><td class="num">'+pct(FACT[l])+'</td></tr>').join("")+
+   '</tbody></table><table class="tbl sm"><thead><tr><th>Desempeño</th><th>Rango</th></tr></thead><tbody><tr><td>'+nivTag("SATISFACTORIO")+'</td><td>90 o más</td></tr><tr><td>'+nivTag("CONFORME")+'</td><td>70 a 89.99</td></tr><tr><td>'+nivTag("INSATISFACTORIO")+'</td><td>Menos de 70</td></tr></tbody></table></div></div>';
+}
+function opts(s){ return Array.from(s).sort((a,b)=>a.localeCompare(b,"es")).map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join(""); }
+// Une variantes del mismo nombre (mayúsculas, tildes); gana la primera aparición (la nómina va primero).
+function uniq(a){ const m=new Map(); a.forEach(x=>{ const k=norm(x); if(k&&!m.has(k)) m.set(k,String(x).trim()); }); return Array.from(m.values()); }
+function renderLists(){
+  const D=uniq([...(CONFIG.docentes||[]),...VISITS.map(v=>v.docente)]), O=uniq([...(CONFIG.observadores||[]),...VISITS.map(v=>v.observador)]), M=uniq([...(CONFIG.materias||[]),...VISITS.map(v=>v.materia)]);
+  $("#dlDoc").innerHTML=opts(D); $("#dlObs").innerHTML=opts(O); $("#dlMat").innerHTML=opts(M);
+  const k=$("#fObs").value; $("#fObs").innerHTML='<option value="">Todos</option>'+opts(O); $("#fObs").value=k;
+  // No se sobrescriben las listas mientras la administración tiene cambios sin guardar.
+  if(!listsDirty) [["#cDoc","docentes"],["#cObs","observadores"],["#cMat","materias"]].forEach(([s,k2])=>{ $(s).value=(CONFIG[k2]||[]).join("\n"); });
+}
+["#cDoc","#cObs","#cMat"].forEach(s=>$(s).addEventListener("input",()=>{ listsDirty=true; $("#cMsg").textContent="Cambios sin guardar."; }));
+function renderLogo(){
+  const has=!!CONFIG.logo; $("#logoDel").classList.toggle("hide",!has||!isAdmin());
+  $("#logoImg").src=has?CONFIG.logo:DEFAULT_LOGO;
+  $$(".m-logo").forEach(i=>i.src=$("#logoImg").src);
+}
+const lines=t=>t.split("\n").map(s=>s.trim()).filter(Boolean);
+$("#cSave").onclick=async()=>{ const next=Object.assign({},CONFIG,{docentes:uniq(lines($("#cDoc").value)),observadores:uniq(lines($("#cObs").value)),materias:uniq(lines($("#cMat").value))});
+  $("#cSave").disabled=true;
+  try{ const old=CONFIG; CONFIG=next; try{ await withTimeout(putConfig(),20000); }catch(e){ CONFIG=old; throw e; }
+    listsDirty=false; $("#cMsg").textContent="Listas guardadas."; renderLists(); setTimeout(()=>{ if(!listsDirty) $("#cMsg").textContent=""; },2800); }
+  catch(e){ $("#cMsg").textContent=errMsg(e,"No se pudieron guardar las listas."); }
+  finally{ $("#cSave").disabled=!isAdmin(); } };
+$("#logoBtn").onclick=()=>$("#logoFile").click();
+$("#logoFile").onchange=async e=>{ const f=e.target.files[0]; if(!f||!isAdmin()) return; $("#logoMsg").innerHTML='<span class="spin"></span> Cargando';
+  try{ const u=URL.createObjectURL(f); const im=await new Promise((r,j)=>{ const x=new Image(); x.onload=()=>r(x); x.onerror=j; x.src=u; });
+    const k=Math.min(1,180/im.height), c=document.createElement("canvas"); c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); c.getContext("2d").drawImage(im,0,0,c.width,c.height); URL.revokeObjectURL(u);
+    CONFIG=Object.assign({},CONFIG,{logo:c.toDataURL("image/png")}); await putConfig(); renderLogo(); $("#logoMsg").textContent="Logo actualizado."; }
+  catch(err){ $("#logoMsg").textContent="No se pudo cargar el logo."; } e.target.value=""; };
+$("#logoDel").onclick=async()=>{ if(!confirm("¿Restaurar el logo institucional original?")) return; const old=CONFIG; CONFIG=Object.assign({},CONFIG,{logo:""});
+  try{ await putConfig(); renderLogo(); $("#logoMsg").textContent="Logo institucional restaurado."; }catch(e){ CONFIG=old; $("#logoMsg").textContent=errMsg(e,"No se pudo restaurar el logo."); } };
+
+/* ---------- exportación ---------- */
+// Un texto que empieza con = + - @ se ejecutaría como fórmula en Excel: se antepone un apóstrofo.
+const cell=s=>{ let t=String(s==null?"":s); if(typeof s==="string"&&/^[=+\-@\t\r]/.test(t)) t="'"+t; return '"'+t.replace(/"/g,'""')+'"'; };
+const num=n=>String(f2(n)).replace(".",",");
+function csv(list){
+  const H=["ID","Fecha","Sección","Observador","Docente","Curso","Paralelo","Asignatura","Tema","Hora inicio","Hora fin","Duración (min)"]
+    .concat(BLOCKS.map(b=>b.n+" (/"+b.max+")"),["Calificación (/100)","Nivel"],IND.map(i=>i.c),["Fortalezas","Aspectos por mejorar","Compromiso","Fecha de seguimiento","Fotos"]);
+  return "\uFEFF"+[H].concat(list.map(v=>{ const r=calc(v.niveles); return [v.id,v.fecha,v.seccion,v.observador,v.docente,v.curso,v.paralelo,v.materia,v.tema,v.horaInicio,v.horaFin,v.duracion]
+    .concat(BLOCKS.map(b=>num(r.bloques[b.k])),[num(r.total),NIVN[r.nivel]],IND.map(i=>LVN[(v.niveles||{})[i.c]]||""),[v.fortalezas,v.mejoras,v.compromiso,v.seguimiento,(v.fotos||[]).length]); })).map(r=>r.map(cell).join(";")).join("\r\n");
+}
+async function offer(name,data){
+  try{ const b=new Blob([data],{type:name.endsWith(".json")?"application/json":"text/csv;charset=utf-8"}); const a=document.createElement("a");
+    a.href=URL.createObjectURL(b); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500); toast("Archivo descargado"); }
+  catch(e){ toast("No se pudo descargar el archivo"); }
+}
+const stamp=()=>todayISO().replace(/-/g,"");
+$("#expCsv").onclick=()=>offer("visitas-aulicas-rctx-"+stamp()+".csv",csv(recFiltered()));
+$("#expCsv2").onclick=()=>offer("visitas-aulicas-rctx-"+stamp()+".csv",csv(VISITS));
+$("#expJson").onclick=async()=>{
+  const b=$("#expJson"), t=b.textContent; b.disabled=true; b.innerHTML='<span class="spin"></span> Preparando respaldo';
+  try{ const fotos={}; (await withTimeout(getDocs(collection(FB,COLF)),60000)).forEach(s=>{ fotos[s.id]=s.data().fotos||[]; });
+    await offer("matriz-rctx-eight-academy-"+stamp()+".json",JSON.stringify({exportado:new Date().toISOString(),config:CONFIG,visitas:VISITS,fotos},null,1)); }
+  catch(e){ toast(errMsg(e,"No se pudo preparar el respaldo")); }
+  finally{ b.disabled=false; b.textContent=t; } };
+// Campos permitidos en una visita (deben coincidir con firestore.rules).
+const VKEYS=["id","token","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
+  "fortalezas","mejoras","compromiso","seguimiento","fotos","puntajes","total","nivel","creado","actualizado","creadoPor","actualizadoPor"];
+function validVisit(v){ return v&&typeof v==="object"&&ID_RE.test(v.id||"")&&SECS.includes(v.seccion)&&/^\d{4}-\d{2}-\d{2}$/.test(v.fecha||"")&&v.niveles&&typeof v.niveles==="object"; }
+$("#impBtn").onclick=()=>$("#impFile").click();
+$("#impFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f||!isAdmin()) return;
+  let d; try{ d=JSON.parse(await f.text()); }catch(err){ toast("El archivo no tiene el formato de respaldo de la matriz"); return; }
+  const a=Array.isArray(d)?d:(d.visitas||[]), ok=a.filter(validVisit), bad=a.length-ok.length, fotos=(!Array.isArray(d)&&d.fotos)||{};
+  if(!ok.length){ toast("El archivo no contiene visitas válidas"); return; }
+  const over=ok.filter(v=>VISITS.some(x=>x.id===v.id)).length;
+  if(!confirm("Se importarán "+ok.length+" visitas"+(over?" ("+over+" reemplazarán registros existentes con el mismo ID)":"")+(bad?". Se omitirán "+bad+" registros con formato no válido":"")+". ¿Continuar?")) return;
+  const withCfg=!Array.isArray(d)&&d.config&&confirm("El respaldo también trae las listas de apoyo y el logo. ¿Reemplazar los actuales?");
+  let n=0, nf=0, fail=0;
+  for(const v of ok){
+    const r=calc(v.niveles), x={};
+    VKEYS.forEach(k=>{ if(k in v&&v[k]!==undefined) x[k]=v[k]; });
+    Object.assign(x,{ total:r.total, nivel:r.nivel, puntajes:r.bloques, actualizado:new Date().toISOString(), actualizadoPor:myMail() });
+    if(!x.creadoPor) x.creadoPor=myMail();
+    try{ await setDoc(doc(FB,COLV,x.id),clean(x)); n++;
+      const ph=fotos[x.id]; if(Array.isArray(ph)&&ph.length){ await setDoc(doc(FB,COLF,x.id),{fotos:ph.slice(0,2)}); nf++; } }
+    catch(err){ fail++; }
+  }
+  if(withCfg){ const c=d.config; CONFIG={docentes:c.docentes||[],observadores:c.observadores||[],materias:c.materias||[],logo:c.logo||""}; try{ await putConfig(); listsDirty=false; renderLists(); renderLogo(); }catch(err){ fail++; } }
+  toast(n+" visitas importadas"+(nf?" · "+nf+" con fotografías":"")+(fail?" · "+fail+" con error":"")); };
+
+/* ---------- navegación ---------- */
+const isView=v=>!$("#view-"+v).classList.contains("hide");
+function go(v){
+  ["nueva","registros","docentes","tablero","ajustes"].forEach(x=>$("#view-"+x).classList.toggle("hide",x!==v));
+  $$("#nav button").forEach(b=>b.setAttribute("aria-current",b.dataset.view===v?"true":"false"));
+  if(v==="tablero") renderDash(); if(v==="docentes") renderDocentes(); if(v==="registros") renderRecords();
+  window.scrollTo({top:0});
+}
+$("#nav").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b){ if(b.dataset.view==="nueva"&&!canWrite()) return; go(b.dataset.view); } });
+// Si hay una visita en curso, «Nueva visita» vuelve a ella en lugar de borrarla.
+$("#goNew").onclick=()=>{ if(!canWrite()) return; if(!formDirty) resetForm(); go("nueva"); if(formDirty) toast("Continúa con la visita en curso o cancélala"); };
+["#fSec","#fObs","#fNiv"].forEach(s=>$(s).addEventListener("change",renderRecords)); $("#fTxt").addEventListener("input",renderRecords);
+wireSeg($("#fPer"),"p",p=>{ fPer=p; renderRecords(); });
+$("#fClear").onclick=()=>{ ["#fTxt","#fSec","#fObs","#fNiv"].forEach(s=>$(s).value=""); fPer=""; setSegs("#fPer","p",""); renderRecords(); };
+function setSegs(sel,key,val){ $$(sel+" button").forEach(b=>b.setAttribute("aria-pressed",b.dataset[key]===val?"true":"false")); }
+["#dSec","#dEst"].forEach(s=>$(s).addEventListener("change",renderDocentes)); $("#dTxt").addEventListener("input",renderDocentes);
+wireSeg($("#tPer"),"p",p=>{ tPer=p; renderDash(); }); wireSeg($("#tSec"),"s",s=>{ tSec=s; renderDash(); });
+$("#themeBtn").onclick=()=>{ const c=document.documentElement.getAttribute("data-theme"), dk=matchMedia("(prefers-color-scheme: dark)").matches;
+  const n=c?(c==="dark"?"light":"dark"):(dk?"light":"dark"); document.documentElement.setAttribute("data-theme",n); try{ localStorage.setItem("ea_theme",n); }catch(e){} };
+try{ const t=localStorage.getItem("ea_theme"); if(t) document.documentElement.setAttribute("data-theme",t); }catch(e){}
+
+function renderAll(){
+  renderLists(); if(isView("registros")) renderRecords(); if(isView("docentes")) renderDocentes(); if(isView("tablero")) renderDash();
+  const w=isoMinus(6), c=VISITS.map(v=>calc(v.niveles)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
+  $("#stTotal").textContent=VISITS.length; $("#stAvg").textContent=c.length?f2(avg(c)):"—"; $("#stWeek").textContent=VISITS.filter(v=>(v.fecha||"")>=w).length;
+  if(!editingId) idPrev();
+}
+initForm(); renderScale(); renderAll(); boot();
+</script>
+</body>
+</html>

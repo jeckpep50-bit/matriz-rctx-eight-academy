@@ -1,0 +1,32 @@
+# Netlify publica la carpeta docs tal cual (no hay paso de compilación).
+[build]
+  publish = "docs"
+  command = ""
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(self)"
+    Strict-Transport-Security = "max-age=31536000"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Inicio de sesión de Google en el mismo dominio (evita el bloqueo de cookies de terceros en Safari/iOS).
+# Solo se usa si el dominio de Netlify está en AUTH_SAME_ORIGIN_HOSTS (docs/firebase-config.js)
+# y su URL /__/auth/handler está autorizada en Google Cloud (ver README).
+[[redirects]]
+  from = "/__/auth/*"
+  to = "https://matriz-rctx-eight-academy.firebaseapp.com/__/auth/:splat"
+  status = 200
+  force = true
