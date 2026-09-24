@@ -410,10 +410,6 @@ table.mx{width:100%; border-collapse:collapse; font-size:13px}
 .gbtn{display:inline-flex; align-items:center; gap:10px}
 .gbtn svg{width:18px; height:18px}
 body.ro .w-only{display:none!important}
-.users{display:grid; gap:8px; margin-top:12px}
-.urow{display:grid; grid-template-columns:minmax(0,1fr) 150px auto; gap:8px; align-items:center; padding:8px 10px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2)}
-.urow span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13.5px}
-@media (max-width:560px){.urow{grid-template-columns:1fr} }
 @media (max-width:900px){.gate{top:calc(61px + env(safe-area-inset-top,0px))}}
 .draft{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:16px}
 .draft .grow{flex:1; min-width:200px}
@@ -657,16 +653,7 @@ body.ro .w-only{display:none!important}
     <div class="panel">
       <h3>Acceso del equipo</h3>
       <p class="hint" id="roleNote"></p>
-      <div id="accessAdmin" class="hide">
-        <div class="callout"><b>Editor:</b> registra y modifica visitas, y sube fotografías.<br><b>Lector:</b> consulta registros, docentes y tablero.<br><b>Administración:</b> se define en <code>firebase-config.js</code> y en las reglas; además gestiona accesos, listas y el logo, y puede eliminar registros.</div>
-        <div class="grid" style="grid-template-columns:minmax(0,1fr) 150px auto; margin-top:14px; align-items:end">
-          <div class="field"><label for="uMail">Correo de Google</label><input type="text" id="uMail" placeholder="nombre@eightacademy.edu.ec" inputmode="email"></div>
-          <div class="field"><label for="uRol">Rol</label><select id="uRol"><option value="editor">Editor</option><option value="lector">Lector</option></select></div>
-          <button class="btn" id="uAdd" type="button">Dar acceso</button>
-        </div>
-        <span class="muted" id="uMsg"></span>
-        <div class="users" id="uList"></div>
-      </div>
+      <div class="callout"><b>Súper administración:</b> registra, edita y elimina visitas; gestiona listas, logo y respaldos.<div class="tags" id="adminList" style="margin:8px 0 10px"></div><b>Resto de cuentas @eightacademy.edu.ec:</b> solo consultan registros, docentes y tablero.<br><b>Otros dominios:</b> sin acceso.</div>
     </div>
 
     <div class="panel">
@@ -727,7 +714,7 @@ const SAT=90, CONF=70;
 const NIV=["SATISFACTORIO","CONFORME","INSATISFACTORIO"], NIVN={SATISFACTORIO:"Satisfactorio",CONFORME:"Conforme",INSATISFACTORIO:"Insatisfactorio",INCOMPLETA:"Incompleta"};
 const SECS=["KIDS","PRIMARIA","SECUNDARIA"], SECN={KIDS:"Kids",PRIMARIA:"Primaria",SECUNDARIA:"Secundaria"};
 
-let FB=null, AUTH=null, ME=null, ROLE="", UNSUB=[], USERS=[];
+let FB=null, AUTH=null, ME=null, ROLE="", UNSUB=[];
 let VISITS=[], CONFIG={docentes:[],observadores:[],materias:[],logo:""};
 let photos=[null,null], editingId=null, STEP=0, LEVELS={};
 // photosDirty: el usuario cambió fotos o descripciones; photosLoading: aún se descargan las fotos de la visita en edición.
@@ -788,12 +775,13 @@ function wireSeg(host, key, cb){
 
 /* ---------- almacenamiento (Firebase) ---------- */
 const DEFAULT_LOGO="logo.png";
-const COLV="rctx_visitas", COLF="rctx_fotos", COLC="rctx_config", COLU="rctx_usuarios";
+const COLV="rctx_visitas", COLF="rctx_fotos", COLC="rctx_config";
+const DOMAIN=String(CFG.ALLOWED_DOMAIN||"eightacademy.edu.ec").toLowerCase();
 const CONFIGURED=!!(FIREBASE_CONFIG&&FIREBASE_CONFIG.apiKey)&&!/REEMPLAZA/.test(JSON.stringify(FIREBASE_CONFIG));
-const ADMINS=(ADMIN_EMAILS||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x.indexOf("REEMPLAZA")<0&&x.indexOf("reemplaza")<0);
-const canWrite=()=>ROLE==="admin"||ROLE==="editor";
+const ADMINS=(ADMIN_EMAILS||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x.indexOf("reemplaza")<0);
+const canWrite=()=>ROLE==="admin";
 const isAdmin=()=>ROLE==="admin";
-const ROLN={admin:"Administración",editor:"Editor",lector:"Lector"};
+const ROLN={admin:"Súper administración",lector:"Solo lectura"};
 function sortV(){ VISITS.sort((a,b)=>((b.fecha||"")+(b.id||"")).localeCompare((a.fecha||"")+(a.id||""))); }
 const clean=o=>JSON.parse(JSON.stringify(o));
 const myMail=()=>(ME&&ME.email||"").toLowerCase();
@@ -828,20 +816,25 @@ const GICON='<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1
 function gate(mode,extra){
   const g=$("#gate"), c=$("#gateCard"); g.classList.toggle("hide",!mode);
   if(mode==="config") c.innerHTML='<h2>Configuración pendiente</h2><p>Falta completar <code>firebase-config.js</code> con los datos del proyecto de Firebase y el correo del administrador. Revisa el archivo README.md del repositorio.</p>';
-  if(mode==="login") c.innerHTML='<h2>Matriz de visita áulica</h2><p>Departamento de Planificación · Colegio Eight Academy.<br>Ingresa con tu cuenta de Google institucional.</p><button class="btn gbtn" id="loginBtn">'+GICON+'Iniciar sesión con Google</button><p class="fmsg" id="loginMsg" style="margin:12px 0 0"></p>';
-  if(mode==="denied") c.innerHTML='<h2>Sin acceso</h2><p>La cuenta <b>'+esc(extra||"")+'</b> no tiene permiso para usar la matriz. Solicita acceso al Departamento de Planificación.</p><button class="btn sec" id="gOut">Usar otra cuenta</button>';
+  if(mode==="login") c.innerHTML='<h2>Matriz de visita áulica</h2><p>Departamento de Planificación · Colegio Eight Academy.<br>Ingresa con tu cuenta institucional <b>@'+esc(DOMAIN)+'</b>.</p><button class="btn gbtn" id="loginBtn">'+GICON+'Iniciar sesión con Google</button><p class="fmsg" id="loginMsg" style="margin:12px 0 0"></p>';
+  if(mode==="denied") c.innerHTML='<h2>Sin acceso</h2><p>La cuenta <b>'+esc(extra||"")+'</b> no pertenece al dominio institucional. Ingresa con tu correo <b>@'+esc(DOMAIN)+'</b>.</p><button class="btn sec" id="gOut">Usar otra cuenta</button>';
   if(mode==="error") c.innerHTML='<h2>No se pudo conectar</h2><p>'+esc(extra||"Revisa la conexión a internet e intenta nuevamente.")+'</p><button class="btn" onclick="location.reload()">Reintentar</button>';
   const lb=$("#loginBtn"); if(lb) lb.onclick=login;
   const go2=$("#gOut"); if(go2) go2.onclick=()=>signOut(AUTH);
 }
 async function login(){
-  const p=new GoogleAuthProvider(); p.setCustomParameters({prompt:"select_account"});
+  // hd sugiere a Google mostrar solo cuentas del dominio; la verificación real está en startSession y en las reglas.
+  const p=new GoogleAuthProvider(); p.setCustomParameters({prompt:"select_account",hd:DOMAIN});
   try{ await signInWithPopup(AUTH,p); }
   catch(err){
     const c=err&&err.code||"";
     if(c==="auth/popup-blocked"||c==="auth/operation-not-supported-in-this-environment"){ try{ await signInWithRedirect(AUTH,p); return; }catch(e){} }
     if(c==="auth/popup-closed-by-user"||c==="auth/cancelled-popup-request") return;
-    const m=$("#loginMsg"); if(m) m.textContent=c==="auth/unauthorized-domain"?"Este dominio no está autorizado en Firebase (Authentication › Configuración › Dominios autorizados).":"No se pudo iniciar sesión. Intenta nuevamente.";
+    const m=$("#loginMsg"); if(m) m.textContent=
+      c==="auth/unauthorized-domain"?"Este dominio no está autorizado en Firebase (Authentication › Configuración › Dominios autorizados).":
+      c==="auth/operation-not-allowed"||c==="auth/configuration-not-found"?"El inicio de sesión con Google no está habilitado en Firebase (Authentication › Método de acceso).":
+      c==="auth/network-request-failed"?"Sin conexión. Revisa tu internet e intenta nuevamente.":
+      "No se pudo iniciar sesión ("+c+"). Intenta nuevamente.";
   }
 }
 function applyRole(){
@@ -849,8 +842,8 @@ function applyRole(){
   $$(".a-only").forEach(x=>x.classList.toggle("hide",!isAdmin()));
   ["#cSave","#logoBtn"].forEach(k=>$(k).disabled=!isAdmin());
   ["#cDoc","#cObs","#cMat"].forEach(k=>$(k).readOnly=!isAdmin());
-  $("#accessAdmin").classList.toggle("hide",!isAdmin());
-  $("#roleNote").textContent="Tu cuenta ("+(ME&&ME.email||"")+") tiene el rol: "+ROLN[ROLE]+"."+(isAdmin()?" Da acceso por correo a las personas del equipo.":"");
+  $("#adminList").innerHTML=ADMINS.map(a=>'<span class="tag en">'+esc(a)+'</span>').join("");
+  $("#roleNote").textContent="Tu cuenta ("+(ME&&ME.email||"")+") tiene el rol: "+ROLN[ROLE]+".";
   if(!canWrite()&&isView("nueva")) go("registros");
 }
 async function boot(){
@@ -866,22 +859,13 @@ async function boot(){
 }
 function stopSubs(){ UNSUB.forEach(f=>{ try{ f(); }catch(e){} }); UNSUB=[]; }
 function startSession(u){
-  stopSubs(); VISITS=[]; USERS=[]; ROLE=""; ME=u; renderAll();
+  stopSubs(); VISITS=[]; ROLE=""; ME=u; renderAll();
   $("#outBtn").classList.toggle("hide",!u);
   if(!u){ resetForm(); gate("login"); state("warn","Sin sesión"); return; }
-  $("#gate").classList.remove("hide"); $("#gateCard").innerHTML='<h2>Verificando acceso</h2><p><span class="spin"></span></p>';
   const mail=myMail();
-  const deny=()=>{ stopSubs(); ROLE=""; VISITS=[]; renderAll(); gate("denied",u.email); state("warn","Sin acceso"); };
-  if(ADMINS.includes(mail)){ ROLE="admin"; ready(); return; }
-  // El rol se escucha en vivo: si la administración lo cambia o retira, se aplica sin recargar.
-  let first=true;
-  UNSUB.push(onSnapshot(doc(FB,COLU,mail),s=>{
-    const r=s.exists()?(s.data().rol==="editor"?"editor":"lector"):"";
-    if(first){ first=false; if(!r) return deny(); ROLE=r; ready(); return; }
-    if(r===ROLE) return;
-    if(!r) return deny();
-    ROLE=r; applyRole(); state("ok",ROLN[ROLE]); toast("Tu rol cambió a: "+ROLN[ROLE]);
-  },err=>{ if(first){ first=false; if(err&&err.code==="permission-denied") deny(); else gate("error"); } }));
+  // Solo cuentas verificadas del dominio institucional. Súper administración: lista fija; el resto, solo lectura.
+  if(!u.emailVerified||!mail.endsWith("@"+DOMAIN)){ gate("denied",u.email); state("warn","Sin acceso"); return; }
+  ROLE=ADMINS.includes(mail)?"admin":"lector"; ready();
 }
 function ready(){
   gate(""); applyRole();
@@ -890,20 +874,9 @@ function ready(){
     err=>state("warn",err&&err.code==="permission-denied"?"Sin permiso de lectura":"Sin conexión")));
   UNSUB.push(onSnapshot(doc(FB,COLC,"institucion"),s=>{ if(s.exists()){ const d=s.data()||{};
     CONFIG={docentes:d.docentes||[],observadores:d.observadores||[],materias:d.materias||[],logo:d.logo||""}; renderLists(); renderLogo(); if(isView("docentes")) renderDocentes(); } },()=>{}));
-  if(isAdmin()) UNSUB.push(onSnapshot(collection(FB,COLU),s=>{ USERS=s.docs.map(d=>Object.assign({email:d.id},d.data())); renderUsers(); },()=>{}));
   offerDraft();
 }
 $("#outBtn").onclick=()=>{ if(!confirm("¿Cerrar sesión?"+(formDirty?" La visita en curso quedará como borrador en este dispositivo.":""))) return; saveDraftNow(); formDirty=false; signOut(AUTH); };
-function renderUsers(){
-  const l=USERS.slice().sort((a,b)=>a.email.localeCompare(b.email));
-  $("#uList").innerHTML=l.length?l.map(u=>'<div class="urow"><span title="'+esc(u.email)+'">'+esc(u.email)+'</span><select data-urol="'+esc(u.email)+'"><option value="editor"'+(u.rol==="editor"?" selected":"")+'>Editor</option><option value="lector"'+(u.rol!=="editor"?" selected":"")+'>Lector</option></select><button type="button" class="btn danger sm" data-udel="'+esc(u.email)+'">Quitar</button></div>').join(""):'<p class="muted" style="margin:0">Aún no has dado acceso a otras personas.</p>';
-}
-$("#uAdd").onclick=async()=>{ const m=$("#uMail").value.trim().toLowerCase();
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){ $("#uMsg").textContent="Escribe un correo válido."; return; }
-  try{ await setDoc(doc(FB,COLU,m),{rol:$("#uRol").value,agregado:new Date().toISOString()}); $("#uMail").value=""; $("#uMsg").textContent="Acceso otorgado a "+m+"."; }
-  catch(e){ $("#uMsg").textContent="No se pudo guardar. Verifica que publicaste las reglas de Firestore."; } };
-$("#uList").addEventListener("change",async e=>{ const k=e.target.dataset.urol; if(!k) return; try{ await setDoc(doc(FB,COLU,k),{rol:e.target.value},{merge:true}); toast("Rol actualizado"); }catch(err){ toast("No se pudo actualizar el rol"); } });
-$("#uList").addEventListener("click",async e=>{ const k=e.target.dataset&&e.target.dataset.udel; if(!k) return; if(!confirm("¿Quitar el acceso de "+k+"?")) return; try{ await deleteDoc(doc(FB,COLU,k)); toast("Acceso retirado"); }catch(err){ toast("No se pudo retirar el acceso"); } });
 
 /* ---------- matriz ---------- */
 function blockHTML(b){

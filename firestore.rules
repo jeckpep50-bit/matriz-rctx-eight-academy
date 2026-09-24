@@ -9,11 +9,13 @@ service cloud.firestore {
     // ===== MATRIZ RCTX (inicio) =====
     function rctxSignedIn() { return request.auth != null && request.auth.token.email_verified == true; }
     function rctxEmail() { return request.auth.token.email.lower(); }
-    // Correo(s) de administración, en minúsculas. Deben coincidir con ADMIN_EMAILS de docs/firebase-config.js
-    function rctxAdmin() { return rctxSignedIn() && rctxEmail() in ['dsroblesl@eightacademy.edu.ec']; }
-    function rctxUser() { return /databases/$(database)/documents/rctx_usuarios/$(rctxEmail()); }
-    function rctxMember() { return rctxAdmin() || (rctxSignedIn() && exists(rctxUser())); }
-    function rctxEditor() { return rctxAdmin() || (rctxMember() && get(rctxUser()).data.rol == 'editor'); }
+    // Súper administración, en minúsculas. Debe coincidir con ADMIN_EMAILS de docs/firebase-config.js
+    function rctxAdmin() { return rctxSignedIn() && rctxEmail() in [
+      'dsroblesl@eightacademy.edu.ec', 'lemaciasb@eightacademy.edu.ec', 'slbustamantel@eightacademy.edu.ec']; }
+    // Cualquier cuenta verificada del dominio institucional puede consultar.
+    function rctxMember() { return rctxSignedIn() && rctxEmail().matches('^[^@]+@eightacademy[.]edu[.]ec$'); }
+    // Solo la súper administración modifica datos.
+    function rctxEditor() { return rctxAdmin(); }
 
     // Texto opcional con longitud máxima.
     function rctxStr(d, k, max) { return !(k in d) || (d[k] is string && d[k].size() <= max); }
@@ -62,11 +64,6 @@ service cloud.firestore {
     match /rctx_config/{id} {
       allow read: if rctxMember();
       allow write: if rctxAdmin();
-    }
-    match /rctx_usuarios/{mail} {
-      allow read: if rctxAdmin() || (rctxSignedIn() && rctxEmail() == mail);
-      allow create, update: if rctxAdmin() && mail == mail.lower() && request.resource.data.rol in ['editor', 'lector'];
-      allow delete: if rctxAdmin();
     }
     // ===== MATRIZ RCTX (fin) =====
   }

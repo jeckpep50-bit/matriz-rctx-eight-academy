@@ -5,7 +5,8 @@ Aplicación web del Departamento de Planificación para registrar visitas áulic
 Los datos se guardan en Firebase (Firestore). Las fotografías (máximo 2 por visita) se comprimen y se guardan en Firestore, así que **no hace falta el plan de pago ni Cloud Storage**.
 
 - **Proyecto Firebase:** `matriz-rctx-eight-academy`
-- **Administración:** `dsroblesl@eightacademy.edu.ec`
+- **Súper administración:** `dsroblesl`, `lemaciasb`, `slbustamantel` (@eightacademy.edu.ec)
+- **Acceso:** solo cuentas `@eightacademy.edu.ec`
 - **Publicación:** Netlify (desde la carpeta `docs`, se actualiza con cada `git push`) y Firebase Hosting (`https://matriz-rctx-eight-academy.web.app`).
 
 ## Estructura
@@ -38,8 +39,6 @@ git add -A && git commit -m "…" && git push      # Netlify publica automática
 firebase deploy --only hosting,firestore           # Firebase Hosting + reglas
 ```
 
-Si cambias el correo de administración, cámbialo **en los dos archivos**: `docs/firebase-config.js` (`ADMIN_EMAILS`) y `firestore.rules` (`rctxAdmin`), y vuelve a publicar las reglas.
-
 ## Inicio de sesión en Safari/iPhone desde Netlify (opcional)
 
 En Firebase Hosting el inicio de sesión usa el mismo dominio automáticamente. En Netlify, si alguien en iPhone no puede ingresar:
@@ -49,17 +48,15 @@ En Firebase Hosting el inicio de sesión usa el mismo dominio automáticamente. 
 
 `netlify.toml` ya incluye el proxy `/__/auth/*` necesario.
 
-## Dar acceso al equipo
+## Acceso
 
-Ingresa con el correo de administración › **Ajustes › Acceso del equipo** y agrega cada correo de Google:
-
-| Rol | Puede |
+| Cuenta | Puede |
 |---|---|
-| Administración | Todo: registrar, editar, eliminar, gestionar accesos, listas, logo y respaldos |
-| Editor | Registrar y editar visitas, subir fotografías |
-| Lector | Consultar registros, docentes y tablero |
+| Súper administración (3 correos) | Todo: registrar, editar, eliminar, listas, logo y respaldos |
+| Cualquier otra cuenta `@eightacademy.edu.ec` | Solo consultar registros, docentes y tablero |
+| Otros dominios (gmail, etc.) | Nada: ven «Sin acceso» |
 
-Los cambios de rol se aplican en vivo, sin que la persona tenga que recargar.
+No hay que dar acceso uno por uno. Para cambiar la súper administración edita **los dos archivos**: `ADMIN_EMAILS` en `docs/firebase-config.js` y `rctxAdmin()` en `firestore.rules`; luego publica (`firebase deploy --only firestore,hosting` y `git push`). El servidor aplica estas reglas aunque alguien modifique la página.
 
 ## Funcionamiento y protección de datos
 
