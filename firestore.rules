@@ -17,6 +17,8 @@ service cloud.firestore {
     // Solo la súper administración modifica datos.
     function rctxEditor() { return rctxAdmin(); }
 
+    // Códigos de la matriz versión 2.
+    function rctxCodes() { return ['CG1','CG2','CG3','A1','C1','C2','K1','E1','D1','D2','D3','S1','S2']; }
     // Texto opcional con longitud máxima.
     function rctxStr(d, k, max) { return !(k in d) || (d[k] is string && d[k].size() <= max); }
 
@@ -24,18 +26,21 @@ service cloud.firestore {
     // ID igual al del documento y autoría de quien escribe.
     function rctxVisitOk(id) {
       let d = request.resource.data;
-      return d.keys().hasOnly(['id','token','version','seccion','fecha','observador','docente','curso','paralelo','materia','tema',
-                               'horaInicio','horaFin','duracion','niveles','evidencias','fortalezas','mejoras',
-                               'seguimiento','fotos','puntajes','total','nivel','creado','actualizado','creadoPor','actualizadoPor'])
-        && d.keys().hasAll(['id','version','seccion','fecha','docente','observador','niveles','total','nivel','actualizadoPor'])
+      return d.keys().hasOnly(['id','token','version','seccion','fecha','observador','docente','docenteCorreo','curso','paralelo','materia','tema',
+                               'horaInicio','horaFin','duracion','niveles','evidencias','pesos','fortalezas','mejoras',
+                               'seguimiento','seguimientoHecho','conformidad','fotos','puntajes','total','nivel',
+                               'creado','actualizado','creadoPor','actualizadoPor'])
+        && d.keys().hasAll(['id','version','seccion','fecha','docente','docenteCorreo','observador','niveles','total','nivel','actualizadoPor'])
         && d.id == id
         && id.matches('^VA-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{3,}$')
         && d.seccion in ['KIDS','PRIMARIA','SECUNDARIA']
         && d.fecha is string && d.fecha.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
         && d.version == 2
-        && d.niveles is map && d.niveles.size() <= 13
-        && d.niveles.keys().hasOnly(['CG1','CG2','CG3','A1','C1','C2','K1','E1','D1','D2','D3','S1','S2'])
-        && (!('evidencias' in d) || (d.evidencias is map && d.evidencias.keys().hasOnly(['CG1','CG2','CG3','A1','C1','C2','K1','E1','D1','D2','D3','S1','S2'])))
+        && d.docenteCorreo is string && d.docenteCorreo.matches('^[^@]+@eightacademy[.]edu[.]ec$')
+        && d.niveles is map && d.niveles.keys().hasOnly(rctxCodes())
+        && (!('evidencias' in d) || (d.evidencias is map && d.evidencias.keys().hasOnly(rctxCodes())))
+        && (!('pesos' in d) || (d.pesos is map && d.pesos.keys().hasOnly(rctxCodes()) && d.pesos.size() == 13))
+        && (!('seguimientoHecho' in d) || d.seguimientoHecho == null || (d.seguimientoHecho is map && d.seguimientoHecho.keys().hasOnly(['fecha','por'])))
         && (!('fotos' in d) || (d.fotos is list && d.fotos.size() <= 2))
         && d.total is number && d.total >= 0 && d.total <= 100
         && d.nivel in ['SATISFACTORIO','CONFORME','INSATISFACTORIO','INCOMPLETA']
@@ -44,16 +49,33 @@ service cloud.firestore {
         && rctxStr(d, 'curso', 60) && rctxStr(d, 'paralelo', 30) && rctxStr(d, 'tema', 300) && rctxStr(d, 'token', 64)
         && rctxStr(d, 'fortalezas', 5000) && rctxStr(d, 'mejoras', 5000);
     }
+    // Conformidad escrita por el propio docente: una sola vez, solo ese campo, con su correo y la hora del servidor.
+    function rctxConfByTeacher() {
+      let c = request.resource.data.conformidad;
+      return rctxMember()
+        && resource.data.get('docenteCorreo', '') == rctxEmail()
+        && !('conformidad' in resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['conformidad'])
+        && c is map && c.keys().hasOnly(['estado','texto','fecha','por'])
+        && c.estado in ['CONFORME','OBSERVACIONES']
+        && c.texto is string && c.texto.size() <= 2000
+        && (c.estado == 'CONFORME' || c.texto.size() > 0)
+        && c.por == rctxEmail()
+        && c.fecha == request.time;
+    }
 
     match /rctx_visitas/{id} {
       allow read: if rctxMember();
-      // Al crear, quien registra queda como autor (la administración puede restaurar respaldos con su autor original).
+      // Al crear, quien registra queda como autor. Una conformidad solo puede venir de un respaldo y queda marcada como restaurada.
       allow create: if rctxEditor() && rctxVisitOk(id)
-        && (request.resource.data.get('creadoPor', '') == rctxEmail() || rctxAdmin());
-      // Al editar no se puede cambiar el autor ni la fecha de creación.
-      allow update: if rctxEditor() && rctxVisitOk(id)
-        && (!('creadoPor' in resource.data) || request.resource.data.get('creadoPor', '') == resource.data.creadoPor)
-        && (!('creado' in resource.data) || request.resource.data.get('creado', '') == resource.data.creado);
+        && (request.resource.data.get('creadoPor', '') == rctxEmail() || rctxAdmin())
+        && (!('conformidad' in request.resource.data) || request.resource.data.conformidad.get('restaurada', false) == true);
+      // Al editar no se puede cambiar el autor, la fecha de creación ni la conformidad del docente.
+      allow update: if (rctxEditor() && rctxVisitOk(id)
+          && (!('creadoPor' in resource.data) || request.resource.data.get('creadoPor', '') == resource.data.creadoPor)
+          && (!('creado' in resource.data) || request.resource.data.get('creado', '') == resource.data.creado)
+          && request.resource.data.get('conformidad', null) == resource.data.get('conformidad', null))
+        || rctxConfByTeacher();
       allow delete: if rctxAdmin();
     }
     match /rctx_fotos/{id} {

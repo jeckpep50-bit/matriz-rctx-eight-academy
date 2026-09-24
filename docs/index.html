@@ -431,6 +431,54 @@ body.ro .w-only{display:none!important}
 .mx .linkish{white-space:nowrap}
 .up{color:var(--teal-ink); font-weight:700} .down{color:var(--danger); font-weight:700}
 @media print{ .prog .band-i,.prog .band-c,.prog .band-s{-webkit-print-color-adjust:exact; print-color-adjust:exact} }
+/* series de gráficos (paleta validada para daltonismo; tonos propios en modo oscuro) */
+:root{--s-KIDS:#2a78d6; --s-PRIMARIA:#eb6834; --s-SECUNDARIA:#1baf7a; --b1:#2a78d6; --b2:#eb6834; --b3:#1baf7a; --b4:#eda100; --b5:#e87ba4; --b6:#008300; --b7:#4a3aa7}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--s-KIDS:#3987e5; --s-PRIMARIA:#d95926; --s-SECUNDARIA:#199e70; --b1:#3987e5; --b2:#d95926; --b3:#199e70; --b4:#c98500; --b5:#d55181; --b6:#008300; --b7:#9085e9} }
+:root[data-theme="dark"]{--s-KIDS:#3987e5; --s-PRIMARIA:#d95926; --s-SECUNDARIA:#199e70; --b1:#3987e5; --b2:#d95926; --b3:#199e70; --b4:#c98500; --b5:#d55181; --b6:#008300; --b7:#9085e9}
+.prog .pl polyline{fill:none; stroke-width:2; stroke-linejoin:round}
+.prog .pl circle{stroke:var(--surface); stroke-width:2}
+.prog .pl-tot polyline{stroke:var(--h2); stroke-width:3}
+.prog .bl1 polyline{stroke:var(--b1)} .prog .bl1 circle{fill:var(--b1)} .sw-b1{background:var(--b1)}
+.prog .bl2 polyline{stroke:var(--b2)} .prog .bl2 circle{fill:var(--b2)} .sw-b2{background:var(--b2)}
+.prog .bl3 polyline{stroke:var(--b3)} .prog .bl3 circle{fill:var(--b3)} .sw-b3{background:var(--b3)}
+.prog .bl4 polyline{stroke:var(--b4)} .prog .bl4 circle{fill:var(--b4)} .sw-b4{background:var(--b4)}
+.prog .bl5 polyline{stroke:var(--b5)} .prog .bl5 circle{fill:var(--b5)} .sw-b5{background:var(--b5)}
+.prog .bl6 polyline{stroke:var(--b6)} .prog .bl6 circle{fill:var(--b6)} .sw-b6{background:var(--b6)}
+.prog .bl7 polyline{stroke:var(--b7)} .prog .bl7 circle{fill:var(--b7)} .sw-b7{background:var(--b7)}
+.sw-tot{background:var(--h2)}
+.ptog{margin-bottom:8px} .ptog .chip{display:inline-flex; align-items:center; gap:6px; padding:5px 10px; font-size:12px}
+.ptog .chip i,.legend i[class^="sw-"]{display:inline-block; width:10px; height:10px; border-radius:3px; flex:none}
+.ptog .chip[aria-pressed="false"]{opacity:.55; background:var(--surface); color:var(--muted); border-color:var(--line)}
+.ptog .chip[aria-pressed="true"]{background:var(--surface-3); color:var(--ink); border-color:var(--line-2)}
+.ms polyline{fill:none; stroke-width:2.5; stroke-linejoin:round} .ms .mk *{stroke:var(--surface); stroke-width:1.5}
+.ms-KIDS polyline{stroke:var(--s-KIDS)} .ms-KIDS .mk *{fill:var(--s-KIDS)} .sw-KIDS{background:var(--s-KIDS)}
+.ms-PRIMARIA polyline{stroke:var(--s-PRIMARIA)} .ms-PRIMARIA .mk *{fill:var(--s-PRIMARIA)} .sw-PRIMARIA{background:var(--s-PRIMARIA)}
+.ms-SECUNDARIA polyline{stroke:var(--s-SECUNDARIA)} .ms-SECUNDARIA .mk *{fill:var(--s-SECUNDARIA)} .sw-SECUNDARIA{background:var(--s-SECUNDARIA)}
+.prog .lab{fill:var(--ink-2); font-weight:700}
+details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); font-weight:700; font-size:13px; padding:4px 0}
+.ist td:nth-child(2){min-width:220px} .ist .stack{height:12px}
+/* firmas con nombre */
+.firmas b{display:block; font-size:12px; color:#252733; margin-top:2px}
+/* PDF */
+.pdf-only{display:none}
+.pdfbox{position:fixed; left:-10000px; top:0; width:820px; background:#fff}
+.pdfmode{max-width:none; border:0; border-radius:0}
+.pdfmode .m-foot,.pdfmode #mClose,.pdfmode .no-pdf,.pdfmode .ptog,.pdfmode details.dt{display:none!important}
+.pdfmode .pdf-only{display:block}
+.pdfmode.pdf-firmas .firmas{display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:56px}
+.pdfmode.pdf-firmas .firmas div{border-top:1px solid #2F3C6F; padding-top:6px; text-align:center; font-size:11px; color:#434859}
+.pdfmode .ficha,.pdfmode .mx tr,.pdfmode .firmas,.pdfmode figure{break-inside:avoid}
+/* el PDF siempre usa el diseño de escritorio, aunque se genere desde un celular */
+.pdfmode .score{grid-template-columns:230px minmax(0,1fr)!important}
+.pdfmode .ficha table:not(.mx) th,.pdfmode .ficha table:not(.mx) td{display:table-cell!important}
+.pdfmode .ficha table:not(.mx) th{width:30%!important}
+.pdfmode .ficha table:not(.mx) td{width:auto!important; border-top:1px solid var(--line)!important; padding-top:9px!important}
+.pdfmode .shots{grid-template-columns:1fr 1fr!important}
+.pdfmode .kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.pdfmode .mx{font-size:11.5px} .pdfmode .mx td,.pdfmode .mx th{padding:6px 7px} .pdfmode .mx th{white-space:normal}
+.pdfmode .mx td:nth-child(2),.pdfmode .mx td:nth-child(6),.pdfmode .ist td:nth-child(2){min-width:0!important}
+.pdfmode [style*="overflow-x:auto"]{overflow:visible!important}
+.pdfmode .mx thead th:nth-child(2){width:46%}
 </style>
 </head>
 <body>
@@ -506,6 +554,7 @@ body.ro .w-only{display:none!important}
           <div class="field"><label for="fecha">Fecha de visita <span class="req">*</span></label><input type="date" id="fecha"></div>
           <div class="field"><label for="observador">Observador/a <span class="req">*</span></label><input type="text" id="observador" list="dlObs" placeholder="Quien realiza la visita"></div>
           <div class="field"><label for="docente">Docente observado/a <span class="req">*</span></label><input type="text" id="docente" list="dlDoc" placeholder="Docente a cargo"></div>
+          <div class="field"><label for="docCorreo">Correo del docente <span class="req">*</span></label><input type="text" id="docCorreo" inputmode="email" placeholder="nombre@eightacademy.edu.ec"><span class="muted">Con este correo el docente revisa su ficha y da su conformidad.</span></div>
           <div class="field"><label for="curso">Grado / curso <span class="req">*</span></label><input type="text" id="curso" placeholder="Ej.: 10.º EGB"></div>
           <div class="field"><label for="paralelo">Paralelo</label><input type="text" id="paralelo" placeholder="Ej.: D"></div>
           <div class="field"><label for="materia">Asignatura <span class="req">*</span></label><input type="text" id="materia" list="dlMat" placeholder="Asignatura o área"></div>
@@ -597,6 +646,7 @@ body.ro .w-only{display:none!important}
       <div><h2>Registros de visitas</h2><p>Todas las visitas áulicas con su calificación. Toca una fila para abrir la ficha completa.</p></div>
       <div class="end row"><button class="btn sec sm" id="expCsv">Exportar a Excel (CSV)</button><button class="btn w-only" id="goNew">Nueva visita</button></div>
     </div>
+    <div id="myPending"></div>
     <div class="panel" style="padding:16px 18px">
       <div class="toolbar">
         <div class="field"><label for="fTxt">Buscar</label><input type="search" id="fTxt" placeholder="Docente, asignatura, tema, ID…"></div>
@@ -605,7 +655,7 @@ body.ro .w-only{display:none!important}
         <div class="field"><label for="fNiv">Nivel</label><select id="fNiv"><option value="">Todos</option><option value="SATISFACTORIO">Satisfactorio</option><option value="CONFORME">Conforme</option><option value="INSATISFACTORIO">Insatisfactorio</option></select></div>
       </div>
       <div class="row" style="margin-top:12px">
-        <div class="seg" id="fPer"><button data-p="hoy" aria-pressed="false">Hoy</button><button data-p="7" aria-pressed="false">7 días</button><button data-p="30" aria-pressed="false">30 días</button><button data-p="" aria-pressed="true">Todo</button></div>
+        <div class="seg" id="fPer"><button data-p="hoy" aria-pressed="false">Hoy</button><button data-p="7" aria-pressed="false">7 días</button><button data-p="30" aria-pressed="false">30 días</button><button data-p="t1" aria-pressed="false">1.er trimestre</button><button data-p="t2" aria-pressed="false">2.º trimestre</button><button data-p="t3" aria-pressed="false">3.er trimestre</button><button data-p="anio" aria-pressed="false">Año lectivo</button><button data-p="" aria-pressed="true">Todo</button></div>
         <span class="muted" id="recCount" style="margin-left:auto"></span>
         <button class="btn sec sm" id="fClear">Quitar filtros</button>
       </div>
@@ -631,10 +681,11 @@ body.ro .w-only{display:none!important}
     <div class="view-h">
       <div><h2>Tablero de resultados</h2><p>Lectura consolidada de las calificaciones para la toma de decisiones del Departamento de Planificación.</p></div>
     </div>
-    <div class="row" style="margin-bottom:16px">
-      <div class="seg" id="tPer"><button data-p="hoy" aria-pressed="false">Hoy</button><button data-p="7" aria-pressed="false">7 días</button><button data-p="30" aria-pressed="true">30 días</button><button data-p="" aria-pressed="false">Todo</button></div>
+    <div class="row" style="margin-bottom:6px">
+      <div class="seg" id="tPer"><button data-p="hoy" aria-pressed="false">Hoy</button><button data-p="7" aria-pressed="false">7 días</button><button data-p="30" aria-pressed="true">30 días</button><button data-p="t1" aria-pressed="false">1.er trimestre</button><button data-p="t2" aria-pressed="false">2.º trimestre</button><button data-p="t3" aria-pressed="false">3.er trimestre</button><button data-p="anio" aria-pressed="false">Año lectivo</button><button data-p="" aria-pressed="false">Todo</button></div>
       <div class="seg" id="tSec"><button data-s="" aria-pressed="true">Todas</button><button data-s="KIDS" aria-pressed="false">Kids</button><button data-s="PRIMARIA" aria-pressed="false">Primaria</button><button data-s="SECUNDARIA" aria-pressed="false">Secundaria</button></div>
     </div>
+    <p class="muted" id="tPerLbl" style="margin:0 0 14px"></p>
     <div id="dash"></div>
   </section>
 
@@ -644,13 +695,36 @@ body.ro .w-only{display:none!important}
 
     <div class="panel">
       <h3>Escala y ponderación</h3>
-      <p class="hint">Puntaje del indicador = puntaje máximo × factor del nivel. Los <span class="nInd"></span> indicadores suman 100 puntos.</p>
+      <p class="hint">Puntaje del indicador = puntaje máximo × factor del nivel. Los <span class="nInd"></span> indicadores suman 100 puntos en cada sección.</p>
       <div id="scaleInfo"></div>
     </div>
 
     <div class="panel">
+      <h3>Pesos por sección</h3>
+      <p class="hint">Cada sección puede tener su propia ponderación. Cada columna debe sumar 100 y cada indicador valer entre 1 y 40 puntos. Las visitas ya registradas conservan los pesos con que se calificaron.</p>
+      <div id="wEditor"></div>
+      <div class="row" style="margin-top:14px"><button class="btn a-only" id="wSave" type="button">Guardar pesos</button><button class="btn sec a-only" id="wReset" type="button">Usar pesos base en las tres secciones</button><span class="muted" id="wMsg"></span></div>
+    </div>
+
+    <div class="panel">
+      <h3>Año lectivo y trimestres</h3>
+      <p class="hint">Definen los filtros «1.er, 2.º y 3.er trimestre» y «Año lectivo» del tablero, los registros y el historial de cada docente.</p>
+      <div class="grid g4" id="perEditor">
+        <div class="field"><label for="pNom">Año lectivo</label><input type="text" id="pNom" placeholder="2026-2027"></div>
+      </div>
+      <div class="row" style="margin-top:14px"><button class="btn a-only" id="pSave" type="button">Guardar periodos</button><span class="muted" id="pMsg"></span></div>
+    </div>
+
+    <div class="panel">
+      <h3>Duración de las clases</h3>
+      <p class="hint">Minutos que aparecen como botones en «Horario de la visita». Separa con comas; máximo 6 valores entre 10 y 240.</p>
+      <div class="row"><div class="field" style="flex:1; max-width:340px"><label for="durCfg">Duraciones (minutos)</label><input type="text" id="durCfg" placeholder="40, 45, 80, 90"></div><button class="btn a-only" id="durSave" type="button" style="align-self:flex-end">Guardar duraciones</button><span class="muted" id="durMsg" style="align-self:flex-end"></span></div>
+    </div>
+
+    <div class="panel">
       <h3>Nómina y listas de apoyo</h3>
-      <p class="hint">Un nombre por línea. Alimentan el autocompletado y permiten saber qué docentes aún no han recibido visita.</p>
+      <p class="hint">Un registro por línea. En docentes puedes agregar correo y sección separados por punto y coma: <code>Ana Pérez; aperez@eightacademy.edu.ec; Primaria</code>. Alimentan el autocompletado, el correo para la conformidad y la cobertura de visitas.</p>
+      <div class="row" style="margin-bottom:12px"><button class="btn sec a-only" id="nomImp" type="button">Importar desde Excel o CSV</button><input type="file" id="nomFile" accept=".xlsx,.xls,.csv,text/csv" class="hide"><span class="muted">Columnas reconocidas: Docente (o Nombres/Apellidos), Correo, Sección, Observador, Asignatura.</span></div>
       <div class="grid g3">
         <div class="field"><label for="cDoc">Docentes</label><textarea id="cDoc" style="min-height:200px"></textarea></div>
         <div class="field"><label for="cObs">Observadores</label><textarea id="cObs" style="min-height:200px"></textarea></div>
@@ -695,7 +769,7 @@ body.ro .w-only{display:none!important}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, runTransaction, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import * as CFG from "./firebase-config.js";
 const FIREBASE_CONFIG=CFG.FIREBASE_CONFIG, ADMIN_EMAILS=CFG.ADMIN_EMAILS;
 // Matriz versión 2: 13 indicadores, 100 puntos. Los códigos se numeran de forma consecutiva dentro de cada bloque.
@@ -734,7 +808,7 @@ const NIV=["SATISFACTORIO","CONFORME","INSATISFACTORIO"], NIVN={SATISFACTORIO:"S
 const SECS=["KIDS","PRIMARIA","SECUNDARIA"], SECN={KIDS:"Kids",PRIMARIA:"Primaria",SECUNDARIA:"Secundaria"};
 
 let FB=null, AUTH=null, ME=null, ROLE="", UNSUB=[];
-let VISITS=[], CONFIG={docentes:[],observadores:[],materias:[],logo:""};
+let VISITS=[], CONFIG={docentes:[],observadores:[],materias:[],logo:"",nomina:[],pesos:null,periodo:null,duraciones:null};
 let photos=[null,null], editingId=null, STEP=0, LEVELS={};
 // photosDirty: el usuario cambió fotos o descripciones; photosLoading: aún se descargan las fotos de la visita en edición.
 // Mientras photosDirty sea falso al editar, no se toca el documento de fotos (evita borrarlas).
@@ -755,7 +829,6 @@ const pct=n=>Math.round(n*100)+"%";
 function fLarga(s){ if(!s) return "—"; const [y,m,d]=s.split("-").map(Number); return d+" de "+MES[m-1]+" de "+y; }
 function fCorta(s){ if(!s) return "—"; const [y,m,d]=s.split("-").map(Number); return d+" "+MESC[m-1]+" "+y; }
 function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),3200); }
-function periodFrom(p){ return p==="hoy"?todayISO():p==="7"?isoMinus(6):p==="30"?isoMinus(29):""; }
 // Clave para comparar nombres sin distinguir mayúsculas, tildes ni espacios repetidos.
 const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s+/g," ").trim().toLowerCase();
 const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,j)=>setTimeout(()=>j({code:"timeout"}),ms))]);
@@ -765,13 +838,25 @@ const errMsg=(err,fallback)=>{ const c=err&&err.code||"";
   return fallback; };
 
 /* ---------- cálculo ---------- */
-function calc(niv){
-  niv=niv||{}; const bl={}; let total=0, n=0;
-  BLOCKS.forEach(b=>{ let s=0; b.items.forEach(([c,,p])=>{ const l=niv[c]; if(l in FACT){ s+=p*FACT[l]; n++; } }); bl[b.k]=s; total+=s; });
+/* ---------- pesos por sección ---------- */
+// Pesos base (los de BLOCKS). La administración puede definir pesos distintos por sección en Ajustes (CONFIG.pesos).
+// Cada visita guarda los pesos con que se calificó (v.pesos): cambiar los pesos después no altera notas ya registradas.
+const DEFAULT_W=Object.fromEntries(IND.map(i=>[i.c,i.p]));
+const sumW=w=>IND.reduce((a,i)=>a+(+w[i.c]||0),0);
+const validW=w=>!!w&&typeof w==="object"&&IND.every(i=>Number.isInteger(+w[i.c])&&+w[i.c]>=1&&+w[i.c]<=40)&&sumW(w)===100;
+const secW=sec=>{ const w=CONFIG.pesos&&CONFIG.pesos[sec]; return validW(w)?w:DEFAULT_W; };
+const vW=v=>validW(v&&v.pesos)?v.pesos:DEFAULT_W;
+// PESOS: pesos del formulario en curso (los de la sección elegida, o los guardados de la visita que se edita).
+let PESOS=null;
+const formW=()=>PESOS||secW(selVal($("#secOpts")));
+function calc(niv,w){
+  niv=niv||{}; w=w||DEFAULT_W; const bl={}, mx={}; let total=0, n=0;
+  BLOCKS.forEach(b=>{ let s=0, m=0; b.items.forEach(([c])=>{ const p=+w[c]||0, l=niv[c]; m+=p; if(l in FACT){ s+=p*FACT[l]; n++; } }); bl[b.k]=s; mx[b.k]=m; total+=s; });
   total=Math.round(total*100)/100;
   const nivel=n<IND.length?"INCOMPLETA":total>=SAT?"SATISFACTORIO":total>=CONF?"CONFORME":"INSATISFACTORIO";
-  return {bloques:bl,total,n,nivel};
+  return {bloques:bl,max:mx,total,n,nivel};
 }
+const calcV=v=>calc(v&&v.niveles,vW(v));
 const nivTag=n=>'<span class="tag nv '+esc(n)+'">'+esc(NIVN[n]||n)+'</span>';
 const lvTag=l=>l?'<span class="tag lvt '+(l==="CUMPLE"?"good":l==="EN PROCESO"?"warn":"prio")+'">'+esc(LVN[l])+'</span>':'<span class="muted">—</span>';
 
@@ -820,6 +905,9 @@ async function saveVisit(v,fotos){
     const now=new Date().toISOString();
     const data=Object.assign(clean(v),{ id, creado:prev&&prev.creado||now, creadoPor:prev&&prev.creadoPor||myMail(), actualizado:now, actualizadoPor:myMail() });
     if(prev&&!prev.creadoPor) delete data.creadoPor;
+    // La conformidad solo la escribe el docente; el seguimiento realizado se conserva mientras no cambie la fecha.
+    if(prev&&prev.conformidad) data.conformidad=prev.conformidad;
+    if(prev&&prev.seguimientoHecho&&prev.seguimiento===data.seguimiento) data.seguimientoHecho=prev.seguimientoHecho;
     if(fotos===null) data.fotos=prev&&prev.fotos||[];
     tx.set(doc(FB,COLV,id),data);
     if(fotos!==null){ if(fotos.length) tx.set(doc(FB,COLF,id),{fotos}); else tx.delete(doc(FB,COLF,id)); }
@@ -861,6 +949,7 @@ function applyRole(){
   $$(".a-only").forEach(x=>x.classList.toggle("hide",!isAdmin()));
   ["#cSave","#logoBtn"].forEach(k=>$(k).disabled=!isAdmin());
   ["#cDoc","#cObs","#cMat"].forEach(k=>$(k).readOnly=!isAdmin());
+  if(!wDirty) renderWEditor(); if(!pDirty) renderPerEditor(); $("#durCfg").disabled=!isAdmin();
   $("#adminList").innerHTML=ADMINS.map(a=>'<span class="tag en">'+esc(a)+'</span>').join("");
   $("#roleNote").textContent="Tu cuenta ("+(ME&&ME.email||"")+") tiene el rol: "+ROLN[ROLE]+".";
   if(!canWrite()&&isView("nueva")) go("registros");
@@ -892,15 +981,15 @@ function ready(){
   UNSUB.push(onSnapshot(collection(FB,COLV),s=>{ VISITS=s.docs.map(d=>Object.assign({id:d.id},d.data())); sortV(); renderAll(); state("ok",ROLN[ROLE]); },
     err=>state("warn",err&&err.code==="permission-denied"?"Sin permiso de lectura":"Sin conexión")));
   UNSUB.push(onSnapshot(doc(FB,COLC,"institucion"),s=>{ if(s.exists()){ const d=s.data()||{};
-    CONFIG={docentes:d.docentes||[],observadores:d.observadores||[],materias:d.materias||[],logo:d.logo||""}; renderLists(); renderLogo(); if(isView("docentes")) renderDocentes(); } },()=>{}));
+    CONFIG=parseConfig(d); renderConfig(); } },()=>{}));
   offerDraft();
 }
 $("#outBtn").onclick=()=>{ if(!confirm("¿Cerrar sesión?"+(formDirty?" La visita en curso quedará como borrador en este dispositivo.":""))) return; saveDraftNow(); formDirty=false; signOut(AUTH); };
 
 /* ---------- matriz ---------- */
 function blockHTML(b){
-  return '<div class="panel blk"><div class="blk-h"><div><h3>'+esc(b.n)+'</h3><p class="hint" style="margin:0">'+b.items.length+' indicador'+(b.items.length>1?'es':'')+' · '+b.max+' puntos</p></div><span class="pill" data-sub="'+b.k+'">0.00 / '+b.max+'</span></div><div class="inds">'+
-   b.items.map(([c,t,p])=>'<div class="ind" data-ind="'+c+'"><div class="ind-h"><span class="code">'+c+'</span><p>'+esc(t)+'</p><span class="pts">'+p+' pts</span></div>'+
+  return '<div class="panel blk"><div class="blk-h"><div><h3>'+esc(b.n)+'</h3><p class="hint" style="margin:0">'+b.items.length+' indicador'+(b.items.length>1?'es':'')+' · <span data-bmax="'+b.k+'">'+b.max+'</span> puntos</p></div><span class="pill" data-sub="'+b.k+'">0.00 / '+b.max+'</span></div><div class="inds">'+
+   b.items.map(([c,t,p])=>'<div class="ind" data-ind="'+c+'"><div class="ind-h"><span class="code">'+c+'</span><p>'+esc(t)+'</p><span class="pts" data-pts="'+c+'">'+p+' pts</span></div>'+
     '<div class="lv" data-i="'+c+'" role="group" aria-label="Nivel de logro del indicador '+c+'">'+LVS.map(l=>'<button type="button" data-l="'+l+'" aria-pressed="false">'+LVN[l]+'</button>').join("")+'</div>'+
     '<input type="text" class="ev" data-e="'+c+'" placeholder="Evidencia observada (opcional)"></div>').join("")+'</div></div>';
 }
@@ -909,8 +998,9 @@ function paintLevels(){
   updateScore();
 }
 function updateScore(){
-  const r=calc(LEVELS);
-  BLOCKS.forEach(b=>{ const el=$('[data-sub="'+b.k+'"]'); if(el) el.textContent=f2(r.bloques[b.k])+" / "+b.max; });
+  const w=formW(), r=calc(LEVELS,w);
+  IND.forEach(i=>{ const el=$('[data-pts="'+i.c+'"]'); if(el) el.textContent=w[i.c]+" pts"; });
+  BLOCKS.forEach(b=>{ const el=$('[data-sub="'+b.k+'"]'); if(el) el.textContent=f2(r.bloques[b.k])+" / "+r.max[b.k]; const m=$('[data-bmax="'+b.k+'"]'); if(m) m.textContent=r.max[b.k]; });
   $("#live").innerHTML='<span>Puntaje</span><b>'+f2(r.total)+'</b><span>/ 100 · '+r.n+'/'+IND.length+'</span>';
 }
 
@@ -921,13 +1011,15 @@ function initForm(){
   $("#form").addEventListener("click",e=>{ const b=e.target.closest(".lv button"); if(!b) return;
     const c=b.parentElement.dataset.i; LEVELS[c]=LEVELS[c]===b.dataset.l?"":b.dataset.l; if(!LEVELS[c]) delete LEVELS[c];
     b.closest(".ind").classList.remove("bad"); paintLevels(); markDirty(); });
-  wireSel($("#secOpts"),false,markDirty);
+  // Al cambiar de sección se aplican sus pesos (también al editar: la visita se recalifica con los pesos de la nueva sección).
+  wireSel($("#secOpts"),false,()=>{ if(PESOS){ PESOS=null; if(editingId) toast("Se aplican los pesos de la sección elegida"); } updateScore(); markDirty(); });
   $("#fecha").value=todayISO();
   ["#fecha","#seguimiento"].forEach(s=>$(s).addEventListener("focus",()=>{ $("#fecha").max=todayISO(); }));
   // Unifica nombres escritos con otra capitalización o sin tildes con el nombre ya registrado.
   [["#docente","#dlDoc"],["#observador","#dlObs"],["#materia","#dlMat"]].forEach(([s,dl])=>$(s).addEventListener("change",()=>{
     const k=norm($(s).value); if(!k) return; const o=Array.from($(dl).options).find(x=>norm(x.value)===k); if(o&&o.value!==$(s).value){ $(s).value=o.value; markDirty(); } }));
   initTimes();
+  $("#docente").addEventListener("change",()=>{ const x=nomOf($("#docente").value); if(x&&x.c&&$("#docCorreo").value.trim().toLowerCase()!==x.c){ if(!$("#docCorreo").value.trim()||confirm("La nómina tiene otro correo para este docente ("+x.c+"). ¿Usarlo?")){ $("#docCorreo").value=x.c; $("#docCorreo").classList.remove("bad"); markDirty(); } } });
   $("#fecha").addEventListener("change",idPrev);
   $("#steps").addEventListener("click",e=>{ const b=e.target.closest("[data-step]"); if(!b) return; const t=+b.dataset.step;
     if(t<=STEP) return showStep(t); for(let i=STEP;i<t;i++){ if(!validStep(i,true)) return showStep(i); } showStep(t); });
@@ -968,10 +1060,10 @@ function setTime(id,v){
 }
 function onTime(id){
   if(id==="hIni"&&DUR&&$("#hIni").value) setTime("hFin",addMin($("#hIni").value,DUR));
-  if(id==="hFin"){ const d=mins($("#hIni").value,$("#hFin").value); DUR=[40,45,80,90].includes(d)?d:0; }
+  if(id==="hFin"){ const d=mins($("#hIni").value,$("#hFin").value); DUR=durList().includes(d)?d:0; }
   calcDur(); markDirty();
 }
-function syncTimes(){ setTime("hIni",$("#hIni").value); setTime("hFin",$("#hFin").value); const d=mins($("#hIni").value,$("#hFin").value); DUR=[40,45,80,90].includes(d)?d:0; calcDur(); }
+function syncTimes(){ setTime("hIni",$("#hIni").value); setTime("hFin",$("#hFin").value); const d=mins($("#hIni").value,$("#hFin").value); DUR=durList().includes(d)?d:0; calcDur(); }
 function initTimes(){
   $$(".tsel").forEach(g=>{
     g.querySelector('[data-part="h"]').innerHTML='<option value="">hh</option>'+HOURS.map(h=>'<option value="'+pad(h)+'">'+pad(h)+'</option>').join("");
@@ -1007,10 +1099,11 @@ function validStep(i,mark){
   const req=(sel)=>{ const el=$(sel), bad=!el.value.trim(), vis=el.type==="hidden"?$('.tsel[data-t="'+el.id+'"]'):el; if(mark) vis.classList.toggle("bad",bad); if(bad) ok=false; };
   if(i===0){
     if(!selVal($("#secOpts"))){ ok=false; if(mark) $("#secOpts").classList.add("bad-group"); }
-    ["#fecha","#observador","#docente","#curso","#materia","#hIni","#hFin"].forEach(req);
+    ["#fecha","#observador","#docente","#docCorreo","#curso","#materia","#hIni","#hFin"].forEach(req);
     if(ok){
       const d=mins($("#hIni").value,$("#hFin").value);
-      if(d!==null&&d<0){ ok=false; msg="La hora de finalización es anterior a la de inicio."; if(mark) $('.tsel[data-t="hFin"]').classList.add("bad"); }
+      if(!MAIL_RE.test($("#docCorreo").value.trim().toLowerCase())){ ok=false; msg="El correo del docente debe ser una cuenta @"+DOMAIN+"."; if(mark) $("#docCorreo").classList.add("bad"); }
+      else if(d!==null&&d<0){ ok=false; msg="La hora de finalización es anterior a la de inicio."; if(mark) $('.tsel[data-t="hFin"]').classList.add("bad"); }
       else if($("#fecha").value>todayISO()){ ok=false; msg="La fecha de visita no puede ser posterior a hoy."; if(mark) $("#fecha").classList.add("bad"); }
     }
   }
@@ -1029,19 +1122,20 @@ function validStep(i,mark){
 }
 function collect(){
   const ev={}; $$(".ev").forEach(x=>{ const t=x.value.trim(); if(t) ev[x.dataset.e]=t; });
-  const v={ seccion:selVal($("#secOpts")), fecha:$("#fecha").value, observador:$("#observador").value.trim(), docente:$("#docente").value.trim(),
+  const v={ seccion:selVal($("#secOpts")), fecha:$("#fecha").value, observador:$("#observador").value.trim(), docente:$("#docente").value.trim(), docenteCorreo:$("#docCorreo").value.trim().toLowerCase(),
     curso:$("#curso").value.trim(), paralelo:$("#paralelo").value.trim(), materia:$("#materia").value.trim(), tema:$("#tema").value.trim(),
     horaInicio:$("#hIni").value, horaFin:$("#hFin").value, niveles:Object.assign({},LEVELS), evidencias:ev,
     fortalezas:$("#fortalezas").value.trim(), mejoras:$("#mejoras").value.trim(), seguimiento:$("#seguimiento").value,
     fotos:[0,1].filter(i=>photos[i]).map(i=>({desc:$('[data-desc="'+i+'"]').value.trim()})), token:TOKEN||undefined, version:MATRIZ_VERSION };
   const d=mins(v.horaInicio,v.horaFin); v.duracion=(d!==null&&d>=0)?d:null;
-  const r=calc(v.niveles); v.puntajes=r.bloques; v.total=r.total; v.nivel=r.nivel;
+  v.pesos=Object.assign({},formW());
+  const r=calcV(v); v.puntajes=r.bloques; v.total=r.total; v.nivel=r.nivel;
   return v;
 }
 function resultHTML(v){
-  const r=calc(v.niveles);
+  const r=calcV(v);
   return '<div class="score"><div class="sc-card '+esc(r.nivel)+'"><div class="k">Calificación final</div><div class="big">'+f2(r.total)+'</div><div class="of">sobre 100 puntos</div><div class="nivel '+esc(r.nivel)+'">'+esc(NIVN[r.nivel])+(r.nivel==="INCOMPLETA"?' ('+r.n+'/'+IND.length+')':'')+'</div></div>'+
-   '<div class="bars">'+BLOCKS.map(b=>{ const s=r.bloques[b.k], p=s/b.max; return '<div class="bar" style="grid-template-columns:minmax(120px,40%) 1fr 92px"><span class="bl">'+esc(b.n)+'</span><span class="bt"><span class="bf '+(p>=.9?"good":p>=.7?"warn":"low")+'" style="width:'+Math.max(2,Math.round(p*100))+'%"></span></span><span class="bv">'+f2(s)+' / '+b.max+'</span></div>'; }).join("")+'</div></div>';
+   '<div class="bars">'+BLOCKS.map(b=>{ const s=r.bloques[b.k], p=s/r.max[b.k]; return '<div class="bar" style="grid-template-columns:minmax(120px,40%) 1fr 92px"><span class="bl">'+esc(b.n)+'</span><span class="bt"><span class="bf '+(p>=.9?"good":p>=.7?"warn":"low")+'" style="width:'+Math.max(2,Math.round(p*100))+'%"></span></span><span class="bv">'+f2(s)+' / '+r.max[b.k]+'</span></div>'; }).join("")+'</div></div>';
 }
 function renderSummary(){
   const v=collect(), row=(k,x)=>'<dt>'+esc(k)+'</dt><dd>'+(x?esc(x):'<span class="muted">Sin registrar</span>')+'</dd>';
@@ -1117,7 +1211,7 @@ async function onSave(e){
 }
 const newToken=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
 function resetForm(){
-  editingId=null; photos=[null,null]; LEVELS={}; TOKEN=newToken(); photosDirty=false; photosLoading=false; formDirty=false; clearDraft();
+  editingId=null; photos=[null,null]; LEVELS={}; PESOS=null; TOKEN=newToken(); photosDirty=false; photosLoading=false; formDirty=false; clearDraft();
   $("#form").reset(); $("#fecha").value=todayISO();
   setSel($("#secOpts"),[]); DUR=0; setTime("hIni",""); setTime("hFin",""); calcDur(); $$(".bad").forEach(x=>x.classList.remove("bad")); $("#secOpts").classList.remove("bad-group");
   $$("#steps li").forEach(li=>li.classList.remove("err")); paint(0); paint(1); paintLevels();
@@ -1126,7 +1220,7 @@ function resetForm(){
   idPrev(); showStep(0,true);
 }
 function confirmDiscard(msg){ return !formDirty||confirm(msg||"Hay una visita en curso sin guardar. ¿Descartarla?"); }
-const FIELDS=[["observador","observador"],["docente","docente"],["curso","curso"],["paralelo","paralelo"],["materia","materia"],["tema","tema"],["hIni","horaInicio"],["hFin","horaFin"],["fortalezas","fortalezas"],["mejoras","mejoras"],["seguimiento","seguimiento"]];
+const FIELDS=[["observador","observador"],["docente","docente"],["docCorreo","docenteCorreo"],["curso","curso"],["paralelo","paralelo"],["materia","materia"],["tema","tema"],["hIni","horaInicio"],["hFin","horaFin"],["fortalezas","fortalezas"],["mejoras","mejoras"],["seguimiento","seguimiento"]];
 function setEditingUI(){ $("#formTitle").textContent="Editar visita"; $("#saveBtn").textContent="Guardar cambios"; $("#cancelEdit").textContent="Cancelar edición"; $("#cancelEdit").classList.remove("hide"); }
 // Descarga las fotos de la visita en edición. Mientras cargan, los espacios quedan bloqueados;
 // si la descarga falla, las fotos guardadas no se tocan al guardar.
@@ -1139,7 +1233,7 @@ function loadPhotos(id){
 }
 function editVisit(v){
   if(!confirmDiscard("Hay una visita en curso sin guardar. ¿Descartarla para editar "+v.id+"?")) return;
-  resetForm(); editingId=v.id; TOKEN=v.token||"";
+  resetForm(); editingId=v.id; TOKEN=v.token||""; PESOS=Object.assign({},vW(v));
   setSel($("#secOpts"),v.seccion); $("#fecha").value=v.fecha||todayISO();
   FIELDS.forEach(([id,k])=>$("#"+id).value=v[k]||"");
   LEVELS=Object.assign({},v.niveles||{}); $$(".ev").forEach(x=>x.value=(v.evidencias||{})[x.dataset.e]||"");
@@ -1156,7 +1250,7 @@ function markDirty(){ formDirty=true; clearTimeout(draftT); draftT=setTimeout(sa
   const c=$("#cancelEdit"); c.textContent=editingId?"Cancelar edición":"Descartar visita"; c.classList.remove("hide"); }
 function saveDraftNow(){
   clearTimeout(draftT); if(!formDirty||!ME) return;
-  const d={ t:Date.now(), editingId, step:STEP, token:TOKEN, sec:selVal($("#secOpts")), fecha:$("#fecha").value,
+  const d={ t:Date.now(), editingId, step:STEP, token:TOKEN, pesos:PESOS, sec:selVal($("#secOpts")), fecha:$("#fecha").value,
     f:Object.fromEntries(FIELDS.map(([id])=>[id,$("#"+id).value])), levels:LEVELS,
     ev:Object.fromEntries($$(".ev").map(x=>[x.dataset.e,x.value]).filter(x=>x[1])), photosDirty,
     photos:photosDirty?[0,1].map(i=>photos[i]?{data:photos[i].data,desc:$('[data-desc="'+i+'"]').value}:null):null };
@@ -1174,7 +1268,7 @@ function offerDraft(){
 }
 function useDraft(){
   const d=readDraft(); if(!d) return;
-  resetForm(); editingId=d.editingId||null; TOKEN=d.token||TOKEN;
+  resetForm(); editingId=d.editingId||null; TOKEN=d.token||TOKEN; PESOS=validW(d.pesos)?d.pesos:null;
   setSel($("#secOpts"),d.sec||""); $("#fecha").value=d.fecha||todayISO();
   FIELDS.forEach(([id])=>$("#"+id).value=(d.f||{})[id]||"");
   LEVELS=Object.assign({},d.levels||{}); $$(".ev").forEach(x=>x.value=(d.ev||{})[x.dataset.e]||"");
@@ -1188,21 +1282,23 @@ function useDraft(){
 /* ---------- registros ---------- */
 function blob(v){ return [v.docente,v.observador,v.materia,v.tema,v.curso,v.paralelo,v.id,v.fortalezas,v.mejoras].join(" ").toLowerCase(); }
 function recFiltered(){
-  const t=$("#fTxt").value.trim().toLowerCase(), s=$("#fSec").value, o=$("#fObs").value, n=$("#fNiv").value, d=periodFrom(fPer);
-  return VISITS.filter(v=>(!s||v.seccion===s)&&(!o||norm(v.observador)===norm(o))&&(!n||calc(v.niveles).nivel===n)&&(!d||(v.fecha||"")>=d)&&(!t||blob(v).indexOf(t)>=0));
+  const t=$("#fTxt").value.trim().toLowerCase(), s=$("#fSec").value, o=$("#fObs").value, n=$("#fNiv").value, rg=periodRange(fPer);
+  return VISITS.filter(v=>(!s||v.seccion===s)&&(!o||norm(v.observador)===norm(o))&&(!n||calcV(v).nivel===n)&&inRange(v.fecha,rg)&&(!t||blob(v).indexOf(t)>=0));
 }
 function visitTable(list){
   return '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>ID de visita</th><th>Fecha</th><th>Docente y asignatura</th><th>Curso</th><th>Observador/a</th><th class="num">Calificación</th><th>Nivel</th></tr></thead><tbody>'+
-  list.map(v=>{ const r=calc(v.niveles); return '<tr class="'+esc(v.seccion)+'" data-id="'+esc(v.id)+'" tabindex="0">'+
+  list.map(v=>{ const r=calcV(v); return '<tr class="'+esc(v.seccion)+'" data-id="'+esc(v.id)+'" tabindex="0">'+
     '<td data-l="ID"><span class="secbar '+esc(v.seccion)+'"></span><span class="idc">'+esc(v.id)+'</span></td>'+
     '<td data-l="Fecha">'+fCorta(v.fecha)+'<br><span class="muted">'+esc(v.horaInicio||"")+'–'+esc(v.horaFin||"")+'</span></td>'+
     '<td data-l="Docente" class="who"><div><b>'+esc(v.docente||"—")+'</b><span>'+esc(v.materia||"")+(v.tema?' | '+esc(v.tema):'')+'</span></div></td>'+
     '<td data-l="Curso"><span class="tag '+esc(v.seccion)+'">'+esc(SECN[v.seccion]||v.seccion||"")+'</span><br>'+esc([v.curso,v.paralelo].filter(Boolean).join(" "))+'</td>'+
     '<td data-l="Observador">'+esc(v.observador||"—")+'</td>'+
     '<td data-l="Puntaje" class="num"><b class="scn">'+f2(r.total)+'</b></td>'+
-    '<td data-l="Nivel">'+nivTag(r.nivel)+'</td></tr>'; }).join("")+'</tbody></table></div>';
+    '<td data-l="Nivel"><div class="tags">'+nivTag(r.nivel)+confTag(v)+'</div></td></tr>'; }).join("")+'</tbody></table></div>';
 }
 function renderRecords(){
+  const mp=ME?VISITS.filter(v=>v.docenteCorreo&&v.docenteCorreo===myMail()&&!v.conformidad):[];
+  $("#myPending").innerHTML=mp.length?'<div class="callout warn" style="margin-bottom:16px"><b>Tienes '+mp.length+' visita'+(mp.length===1?'':'s')+' pendiente'+(mp.length===1?'':'s')+' de tu conformidad.</b> '+(mp.length===1?'Ábrela, revísala y confirma.':'Ábrelas, revísalas y confirma cada una.')+'<div class="tags" style="margin-top:8px">'+mp.map(v=>'<button type="button" class="btn sec sm" data-open="'+esc(v.id)+'">'+esc(v.id)+' · '+fCorta(v.fecha)+'</button>').join("")+'</div></div>':'';
   const l=recFiltered(); $("#recCount").textContent=l.length===1?"1 visita":l.length+" visitas";
   $("#recList").innerHTML=l.length?visitTable(l):(VISITS.length?'<div class="empty"><b>Ninguna visita coincide</b>Ajusta o quita los filtros.</div>':'<div class="empty"><b>Todavía no hay visitas registradas</b>Registra la primera desde «Nueva visita».</div>');
 }
@@ -1211,35 +1307,103 @@ document.addEventListener("keydown",e=>{ if(e.key==="Enter"){ const tr=e.target.
 
 /* ---------- ficha de visita ---------- */
 function tr(k,v){ return v?'<tr><th>'+esc(k)+'</th><td>'+v+'</td></tr>':''; }
+const tsDate=x=>!x?null:x.toDate?x.toDate():typeof x==="string"?new Date(x):x.seconds?new Date(x.seconds*1000):null;
+const fHora=d=>d&&!isNaN(d)?d.toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"}):"";
+function confTag(v){ if(!v.docenteCorreo) return "";
+  const c=v.conformidad; return c?(c.estado==="CONFORME"?'<span class="tag good">✔ Conforme</span>':'<span class="tag warn">Conforme con observaciones</span>'):'<span class="tag">Conformidad pendiente</span>'; }
+// Conformidad del docente: la da el propio docente, desde su cuenta, una sola vez.
+function confHTML(v){
+  const c=v.conformidad, mine=v.docenteCorreo&&myMail()===v.docenteCorreo;
+  let body;
+  if(c){ const d=tsDate(c.fecha), mod=d&&v.actualizado&&new Date(v.actualizado)>d;
+    body='<p style="margin:0 0 6px"><b>'+(c.estado==="CONFORME"?'✔ El docente está conforme con la ficha.':'El docente está conforme, con observaciones:')+'</b></p>'+
+      (c.texto?'<p style="margin:0 0 8px;white-space:pre-wrap">'+esc(c.texto)+'</p>':'')+
+      '<p class="muted" style="margin:0">'+esc(c.por||"")+(d?' · '+esc(fHora(d)):'')+(c.restaurada?' · restaurada desde un respaldo':'')+'</p>'+
+      (mod?'<p class="fmsg" style="margin:8px 0 0">La ficha se modificó después de la conformidad.</p>':''); }
+  else if(!v.docenteCorreo) body='<p class="muted" style="margin:0">Sin correo del docente registrado. Edita la visita para agregarlo y que el docente pueda dar su conformidad.</p>';
+  else if(mine) body='<div class="no-pdf"><p style="margin:0 0 8px">Revisa la ficha. Tu conformidad queda registrada con tu cuenta, fecha y hora, y <b>no se puede cambiar después</b>.</p>'+
+      '<div class="field"><label for="cfTxt">Observaciones (opcional)</label><textarea id="cfTxt" maxlength="2000" style="min-height:80px" placeholder="Si tienes comentarios sobre la visita, escríbelos aquí"></textarea></div>'+
+      '<div class="row" style="margin-top:10px"><button type="button" class="btn" id="cfOk">Estoy conforme</button><button type="button" class="btn sec" id="cfObs">Enviar conformidad con observaciones</button><span class="fmsg" id="cfMsg"></span></div></div>'+
+      '<p class="muted pdf-only" style="margin:0">Pendiente de conformidad de '+esc(v.docenteCorreo)+'.</p>';
+  else body='<p class="muted" style="margin:0">Pendiente de conformidad de '+esc(v.docenteCorreo)+'.</p>';
+  return '<div class="ficha"><div class="sh">Conformidad del docente</div><div style="padding:12px 14px">'+body+'</div></div>';
+}
+async function giveConf(v,estado){
+  const t=($("#cfTxt").value||"").trim();
+  if(estado==="OBSERVACIONES"&&!t){ $("#cfMsg").textContent="Escribe tus observaciones."; $("#cfTxt").focus(); return; }
+  if(!confirm(estado==="CONFORME"?"¿Confirmas que estás conforme con esta ficha? No podrás cambiarlo después.":"¿Enviar tu conformidad con las observaciones escritas? No podrás cambiarla después.")) return;
+  $$("#cfOk,#cfObs").forEach(b=>b.disabled=true);
+  try{ await withTimeout(updateDoc(doc(FB,COLV,v.id),{conformidad:{estado,texto:estado==="CONFORME"?"":t,fecha:serverTimestamp(),por:myMail()}}),20000); toast("Conformidad registrada"); setTimeout(()=>openVisit(v.id),300); }
+  catch(e){ $("#cfMsg").textContent=errMsg(e,"No se pudo registrar la conformidad."); $$("#cfOk,#cfObs").forEach(b=>b.disabled=false); }
+}
+// Seguimiento: estado y marca de «realizado» (solo administración).
+function segState(v){ if(!v.seguimiento) return "";
+  if(v.seguimientoHecho) return '<span class="tag good">Realizado</span> <span class="muted">'+esc(fCorta(v.seguimientoHecho.fecha))+' · '+esc(v.seguimientoHecho.por||"")+'</span>';
+  const d=d2i(v.seguimiento)-d2i(todayISO());
+  return d<0?'<span class="tag prio">Vencido hace '+(-d)+' día'+(d===-1?'':'s')+'</span>':d<=SEG_DIAS?'<span class="tag warn">'+(d===0?'Es hoy':'En '+d+' día'+(d===1?'':'s'))+'</span>':'<span class="tag">Pendiente</span>'; }
+async function setSegHecho(id,hecho){
+  try{ await withTimeout(updateDoc(doc(FB,COLV,id),{seguimientoHecho:hecho?{fecha:todayISO(),por:myMail()}:null,actualizado:new Date().toISOString(),actualizadoPor:myMail()}),20000);
+    toast(hecho?"Seguimiento marcado como realizado":"Seguimiento marcado como pendiente"); }
+  catch(e){ toast(errMsg(e,"No se pudo actualizar el seguimiento")); } }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-segdone]"); if(!b||!isAdmin()) return; e.stopPropagation(); b.disabled=true; setSegHecho(b.dataset.segdone,true); },true);
 function openVisit(id){
-  const v=VISITS.find(x=>x.id===id); if(!v) return; const r=calc(v.niveles);
+  const v=VISITS.find(x=>x.id===id); if(!v) return; const r=calcV(v), w=vW(v);
   const ph=(v.fotos||[]).length?'<div class="ficha" id="fichaFotos"><div class="sh">Evidencia fotográfica</div><div class="shots"><p class="muted" style="margin:0"><span class="spin"></span> Cargando fotografías</p></div></div>':'';
   const mx='<div class="ficha"><div class="sh">Matriz de valoración</div><div style="overflow-x:auto"><table class="mx"><thead><tr><th>Cód.</th><th>Indicador</th><th class="c">Máx.</th><th class="c">Nivel</th><th class="c">Puntaje</th><th>Evidencia</th></tr></thead><tbody>'+
-   BLOCKS.map(b=>'<tr class="bh"><td colspan="4">'+esc(b.n)+'</td><td class="c">'+f2(r.bloques[b.k])+' / '+b.max+'</td><td></td></tr>'+
-    b.items.map(([c,t,p])=>{ const l=(v.niveles||{})[c]; return '<tr><td class="cd">'+c+'</td><td>'+esc(t)+'</td><td class="c">'+p+'</td><td class="c">'+lvTag(l)+'</td><td class="c">'+(l?f2(p*FACT[l]):"—")+'</td><td>'+esc((v.evidencias||{})[c]||"")+'</td></tr>'; }).join("")).join("")+
+   BLOCKS.map(b=>'<tr class="bh"><td colspan="4">'+esc(b.n)+'</td><td class="c">'+f2(r.bloques[b.k])+' / '+r.max[b.k]+'</td><td></td></tr>'+
+    b.items.map(([c,t])=>{ const p=w[c], l=(v.niveles||{})[c]; return '<tr><td class="cd">'+c+'</td><td>'+esc(t)+'</td><td class="c">'+p+'</td><td class="c">'+lvTag(l)+'</td><td class="c">'+(l?f2(p*FACT[l]):"—")+'</td><td>'+esc((v.evidencias||{})[c]||"")+'</td></tr>'; }).join("")).join("")+
    '<tr class="tt"><td colspan="4">CALIFICACIÓN FINAL</td><td class="c">'+f2(r.total)+'</td><td>'+esc(NIVN[r.nivel])+'</td></tr></tbody></table></div></div>';
   $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">FICHA DE VISITA ÁULICA · MATRIZ RCTX<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
-  '<div class="m-top"><h3 id="mTitle">'+esc(v.id)+'</h3><span class="tag '+esc(v.seccion)+'">'+esc(SECN[v.seccion]||"")+'</span>'+nivTag(r.nivel)+'</div>'+
+  '<div class="m-top"><h3 id="mTitle">'+esc(v.id)+'</h3><span class="tag '+esc(v.seccion)+'">'+esc(SECN[v.seccion]||"")+'</span>'+nivTag(r.nivel)+confTag(v)+'</div>'+
   '<div class="m-body">'+
    '<div class="ficha"><div class="sh">Información general</div><table>'+
     tr("Fecha",fLarga(v.fecha))+tr("Horario",esc((v.horaInicio||"—")+" a "+(v.horaFin||"—"))+(v.duracion!=null?" ("+v.duracion+" minutos)":""))+
-    tr("Observador/a",esc(v.observador))+tr("Docente observado/a",esc(v.docente))+tr("Curso y paralelo",esc([v.curso,v.paralelo].filter(Boolean).join(" ")))+
+    tr("Observador/a",esc(v.observador))+tr("Docente observado/a",esc(v.docente)+(v.docenteCorreo?' <span class="muted">· '+esc(v.docenteCorreo)+'</span>':''))+tr("Curso y paralelo",esc([v.curso,v.paralelo].filter(Boolean).join(" ")))+
     tr("Asignatura",esc(v.materia))+tr("Tema de clase",esc(v.tema))+'</table></div>'+
    '<div class="ficha"><div class="sh">Resultado</div><div style="padding:14px">'+resultHTML(v)+'</div></div>'+
    mx+
-   '<div class="ficha"><div class="sh">Retroalimentación y seguimiento</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento):"")+'</table></div>'+
-   ph+'<div class="firmas"><div>Firma del docente observado</div><div>Firma del observador(a) / coordinador(a)</div></div></div>'+
-  (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(new Date(v.creado).toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"})):''):'')+
-    (v.actualizadoPor&&v.actualizado&&v.actualizado!==v.creado?' · Última modificación: '+esc(v.actualizadoPor)+' el '+esc(new Date(v.actualizado).toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"})):'')+'</div>':'')+
-  '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir ficha</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
+   '<div class="ficha"><div class="sh">Retroalimentación y seguimiento</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+
+    tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(isAdmin()?' <button type="button" class="btn sec sm no-pdf" id="mSeg" style="margin-left:6px">'+(v.seguimientoHecho?'Marcar como pendiente':'Marcar como realizado')+'</button>':''):"")+'</table></div>'+
+   confHTML(v)+
+   ph+'<div class="firmas"><div><span class="fl"></span>Firma del docente observado<b>'+esc(v.docente||"")+'</b></div><div><span class="fl"></span>Firma del observador(a) / coordinador(a)<b>'+esc(v.observador||"")+'</b></div></div></div>'+
+  (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(fHora(new Date(v.creado))):''):'')+
+    (v.actualizadoPor&&v.actualizado&&v.actualizado!==v.creado?' · Última modificación: '+esc(v.actualizadoPor)+' el '+esc(fHora(new Date(v.actualizado))):'')+'</div>':'')+
+  '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir</button><button class="btn sec" id="mPdf">PDF</button><button class="btn sec" id="mPdfF">PDF con firmas</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
   openModal();
   if((v.fotos||[]).length) getFotos(v.id).then(list=>{ const b=$("#fichaFotos .shots"); if(b) b.innerHTML=list===null?'<p class="muted" style="margin:0">No se pudieron cargar las fotografías. Revisa la conexión y vuelve a abrir la ficha.</p>':list.length?list.map((f,i)=>'<figure><img src="'+esc(f.data)+'" alt="Foto '+(i+1)+'"><figcaption>Foto '+(i+1)+(f.desc?': '+esc(f.desc):'')+'</figcaption></figure>').join(""):'<p class="muted" style="margin:0">Sin fotografías.</p>'; });
   if(!canWrite()) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove();
   $("#mClose").onclick=closeModal; if($("#mEdit")) $("#mEdit").onclick=()=>editVisit(v); $("#mPrint").onclick=()=>window.print();
+  $("#mPdf").onclick=()=>downloadPdf(v.id+".pdf",false); $("#mPdfF").onclick=()=>downloadPdf(v.id+"-firmas.pdf",true);
   $("#mDoc").onclick=()=>openDocente(v.docente);
+  if($("#mSeg")) $("#mSeg").onclick=async()=>{ $("#mSeg").disabled=true; await setSegHecho(v.id,!v.seguimientoHecho); setTimeout(()=>openVisit(v.id),300); };
+  if($("#cfOk")){ $("#cfOk").onclick=()=>giveConf(v,"CONFORME"); $("#cfObs").onclick=()=>giveConf(v,"OBSERVACIONES"); }
   if($("#mDel")) $("#mDel").onclick=async()=>{ if(!confirm("¿Eliminar definitivamente el registro "+v.id+"?")) return;
     try{ await delVisit(v.id); closeModal(); toast("Registro "+v.id+" eliminado"); }catch(e){ toast("No se pudo eliminar el registro"); } };
 }
+/* ---------- PDF ---------- */
+// Se genera sobre una copia de la ficha en tema claro. Los estilos de los gráficos SVG se copian en línea,
+// porque el conversor dibuja los SVG como imágenes y no ve la hoja de estilos.
+const H2P_SRC="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+const loadScript=src=>new Promise((ok,ko)=>{ const s=document.createElement("script"); s.src=src; s.onload=ok; s.onerror=ko; document.head.appendChild(s); });
+const SVG_PROPS=["fill","stroke","stroke-width","stroke-dasharray","opacity","display","font-size","font-weight","font-family"];
+async function downloadPdf(name,firmas){
+  const btns=$$("#modal .m-foot button"); btns.forEach(b=>b.disabled=true); toast("Generando PDF…");
+  const root=document.documentElement, prev=root.getAttribute("data-theme"); let box=null;
+  try{
+    if(!window.html2pdf) await withTimeout(loadScript(H2P_SRC),20000);
+    root.setAttribute("data-theme","light");
+    const m=$("#modal"), c=m.cloneNode(true); c.removeAttribute("id"); c.classList.add("pdfmode"); if(firmas) c.classList.add("pdf-firmas");
+    const so=m.querySelectorAll("svg, svg *"), sc=c.querySelectorAll("svg, svg *");
+    so.forEach((el,i)=>{ const cs=getComputedStyle(el); sc[i].setAttribute("style",SVG_PROPS.map(p=>p+":"+cs.getPropertyValue(p)).join(";")); });
+    box=document.createElement("div"); box.className="pdfbox"; box.appendChild(c); document.body.appendChild(box);
+    await window.html2pdf().set({margin:[8,8,10,8],filename:name,image:{type:"jpeg",quality:.95},
+      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0},
+      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:["css","legacy"],avoid:["tr",".sc-card",".prog svg",".firmas","figure",".kpi",".bar"]}}).from(c).save();
+    toast("PDF descargado");
+  }catch(e){ toast("No se pudo generar el PDF. Revisa la conexión o usa «Imprimir» › Guardar como PDF."); }
+  finally{ if(box) box.remove(); if(prev) root.setAttribute("data-theme",prev); else root.removeAttribute("data-theme"); btns.forEach(b=>b.disabled=false); }
+}
+
 let lastFocus=null;
 function openModal(){ if(!$("#mask").classList.contains("open")) lastFocus=document.activeElement; $("#mask").classList.add("open"); $("#mask").scrollTop=0; $("#modal").focus({preventScroll:true}); }
 function closeModal(){ if(!$("#mask").classList.contains("open")) return; $("#mask").classList.remove("open"); if(lastFocus&&document.contains(lastFocus)) lastFocus.focus({preventScroll:true}); lastFocus=null; }
@@ -1257,8 +1421,8 @@ const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
 function docStats(){
   const m=new Map(), add=(n,v)=>{ const k=norm(n); if(!k) return; if(!m.has(k)) m.set(k,{n,vs:[]}); if(v) m.get(k).vs.push(v); };
   (CONFIG.docentes||[]).forEach(d=>add(d)); VISITS.forEach(v=>add(v.docente,v));
-  return Array.from(m.values()).map(({n,vs})=>{ const last=vs[0], tots=vs.map(x=>calc(x.niveles)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
-    return { n, vs, last, lastR:last?calc(last.niveles):null, prom:avg(tots), secs:Array.from(new Set(vs.map(x=>x.seccion).filter(Boolean))) }; });
+  return Array.from(m.values()).map(({n,vs})=>{ const last=vs[0], tots=vs.map(x=>calcV(x)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
+    return { n, vs, last, lastR:last?calcV(last):null, prom:avg(tots), secs:Array.from(new Set(vs.map(x=>x.seccion).filter(Boolean))) }; });
 }
 function renderDocentes(){
   const t=$("#dTxt").value.trim().toLowerCase(), s=$("#dSec").value, e=$("#dEst").value;
@@ -1278,7 +1442,7 @@ function renderDocentes(){
 }
 $("#docList").addEventListener("click",e=>{ const r=e.target.closest("tr[data-doc]"); if(r){ e.stopPropagation(); openDocente(r.dataset.doc); } },true);
 $("#docList").addEventListener("keydown",e=>{ const r=e.target.closest("tr[data-doc]"); if(r&&e.key==="Enter"){ e.stopPropagation(); openDocente(r.dataset.doc); } },true);
-function blockAvg(list){ return BLOCKS.map(b=>{ const a=avg(list.map(v=>calc(v.niveles).bloques[b.k]/b.max)); return [b.n,a]; }); }
+function blockAvg(list){ return BLOCKS.map(b=>{ const a=avg(list.map(v=>{ const r=calcV(v); return r.bloques[b.k]/r.max[b.k]; })); return [b.n,a]; }); }
 function weakInd(list){
   return IND.map(i=>{ const f=list.map(v=>(v.niveles||{})[i.c]).filter(l=>l in FACT).map(l=>FACT[l]); return [i.c+" · "+i.t,avg(f),i.c]; }).filter(x=>x[1]!=null&&x[1]<1).sort((a,b)=>a[1]-b[1]);
 }
@@ -1286,47 +1450,70 @@ function barsPct(p,note){
   if(!p.length) return '<p class="muted" style="margin:0">'+(note||"Sin datos en el periodo.")+'</p>';
   return '<div class="bars">'+p.map(([k,x])=>'<div class="bar"><span class="bl" title="'+esc(k)+'">'+esc(k)+'</span><span class="bt"><span class="bf '+(x>=.9?"good":x>=.7?"warn":"low")+'" style="width:'+Math.max(3,Math.round(x*100))+'%"></span></span><span class="bv">'+pct(x)+'</span></div>').join("")+'</div>';
 }
-// Progreso por visita: línea con la calificación de cada visita (orden cronológico) sobre franjas de nivel,
-// y tabla con la variación respecto a la visita anterior. Los puntos abren la ficha de la visita.
+// Progreso por visita: nota total (línea destacada con su valor) y % de logro de cada bloque (líneas finas),
+// en orden cronológico sobre franjas de nivel. Cada serie se puede ocultar; los puntos abren la ficha de la visita.
+let PHIDE=new Set();
 function progressHTML(vs){
-  const L=vs.slice().sort((a,b)=>((a.fecha||"")+a.id).localeCompare((b.fecha||"")+b.id)).map(v=>({v,r:calc(v.niveles)})).filter(x=>x.r.nivel!=="INCOMPLETA");
+  const L=vs.slice().sort((a,b)=>((a.fecha||"")+a.id).localeCompare((b.fecha||"")+b.id)).map(v=>({v,r:calcV(v)})).filter(x=>x.r.nivel!=="INCOMPLETA");
   if(!L.length) return "";
-  // El ancho del dibujo sigue al de la pantalla para que el texto conserve su tamaño en celular.
-  const W=Math.round(Math.max(300,Math.min(640,innerWidth-70))),H=230,ml=34,mr=18,mt=22,mb=34,iw=W-ml-mr,ih=H-mt-mb, y=s=>mt+ih*(1-s/100), n=L.length;
+  const W=Math.round(Math.max(300,Math.min(640,innerWidth-70))),H=250,ml=34,mr=18,mt=22,mb=34,iw=W-ml-mr,ih=H-mt-mb, y=s=>mt+ih*(1-s/100), n=L.length;
   const x=i=>n===1?ml+iw/2:ml+iw*i/(n-1), step=Math.ceil(n/10);
   const band=(a,b,c)=>'<rect class="'+c+'" x="'+ml+'" y="'+y(b)+'" width="'+iw+'" height="'+(y(a)-y(b))+'"/>';
+  const bp=(p,k)=>p.r.max[k]?p.r.bloques[k]/p.r.max[k]*100:0;
+  const hid=k=>PHIDE.has(k)?' hide':'';
+  const blk=BLOCKS.map((b,j)=>{ const pts=L.map((p,i)=>[x(i),y(bp(p,b.k))]);
+    return '<g class="pl pl-'+b.k+' bl'+(j+1)+hid(b.k)+'">'+(n>1?'<polyline points="'+pts.map(p=>p.join(",")).join(" ")+'"/>':'')+
+      L.map((p,i)=>'<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="4"><title>'+esc(b.n+" · "+fCorta(p.v.fecha)+": "+Math.round(bp(p,b.k))+" % de logro")+'</title></circle>').join("")+'</g>'; }).join("");
   const pts=L.map((p,i)=>[x(i),y(p.r.total)]);
+  const tot='<g class="pl pl-tot'+hid("tot")+'">'+(n>1?'<polyline class="ln" points="'+pts.map(p=>p.join(",")).join(" ")+'"/>':'')+
+    L.map((p,i)=>'<g data-open="'+esc(p.v.id)+'" style="cursor:pointer"><title>'+esc(p.v.id+" · "+fCorta(p.v.fecha)+" · "+f2(p.r.total)+" pts · "+NIVN[p.r.nivel])+'</title>'+
+      '<circle class="pt" cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="5.5"/><text class="pv" x="'+pts[i][0]+'" y="'+(pts[i][1]-10)+'" text-anchor="middle">'+f2(p.r.total)+'</text></g>').join("")+'</g>';
   const svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Calificación por visita: '+esc(L.map(p=>fCorta(p.v.fecha)+" "+f2(p.r.total)).join(", "))+'">'+
     band(0,CONF,"band-i")+band(CONF,SAT,"band-c")+band(SAT,100,"band-s")+
     [0,CONF,SAT,100].map(t=>'<line class="grid-l" x1="'+ml+'" x2="'+(W-mr)+'" y1="'+y(t)+'" y2="'+y(t)+'"/><text class="ax" x="'+(ml-6)+'" y="'+(y(t)+4)+'" text-anchor="end">'+t+'</text>').join("")+
-    (n>1?'<polyline class="ln" points="'+pts.map(p=>p.join(",")).join(" ")+'"/>':'')+
-    L.map((p,i)=>'<g data-open="'+esc(p.v.id)+'" style="cursor:pointer"><title>'+esc(p.v.id+" · "+fCorta(p.v.fecha)+" · "+f2(p.r.total)+" pts · "+NIVN[p.r.nivel])+'</title>'+
-      '<circle class="pt" cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="5.5"/><text class="pv" x="'+pts[i][0]+'" y="'+(pts[i][1]-10)+'" text-anchor="middle">'+f2(p.r.total)+'</text>'+
-      ((i%step===0||i===n-1)?'<text class="ax" x="'+pts[i][0]+'" y="'+(H-12)+'" text-anchor="middle">'+esc(fCorta(p.v.fecha).replace(/ \d{4}$/,""))+'</text>':'')+'</g>').join("")+'</svg>';
+    L.map((p,i)=>(i%step===0||i===n-1)?'<text class="ax" x="'+pts[i][0]+'" y="'+(H-12)+'" text-anchor="middle">'+esc(fCorta(p.v.fecha).replace(/ \d{4}$/,""))+'</text>':'').join("")+
+    blk+tot+'</svg>';
   const dl=d=>d>0?'<span class="up">▲ +'+f2(d)+'</span>':d<0?'<span class="down">▼ '+f2(d)+'</span>':'<span class="muted">= 0.00</span>';
-  const tot=n>1?L[n-1].r.total-L[0].r.total:null;
-  return '<div class="ficha"><div class="sh">Progreso por visita</div><div class="prog">'+svg+
+  const tv=n>1?L[n-1].r.total-L[0].r.total:null;
+  const tog='<div class="chips ptog" role="group" aria-label="Series del gráfico"><button type="button" class="chip" data-ptog="tot" aria-pressed="'+!PHIDE.has("tot")+'"><i class="sw-tot"></i>Calificación total</button>'+
+    BLOCKS.map((b,j)=>'<button type="button" class="chip" data-ptog="'+b.k+'" aria-pressed="'+!PHIDE.has(b.k)+'"><i class="sw-b'+(j+1)+'"></i>'+esc(b.n)+'</button>').join("")+'</div>';
+  return '<div class="ficha"><div class="sh">Progreso por visita</div><div class="prog">'+
+    '<p class="muted" style="margin:0 0 8px">Línea gruesa: calificación sobre 100. Líneas finas: % de logro de cada bloque. Toca un nombre para mostrarlo u ocultarlo.</p>'+tog+svg+
     '<div class="legend"><span><i style="background:var(--teal-soft);border:1px solid var(--teal)"></i>Satisfactorio (90+)</span><span><i style="background:var(--yellow-soft);border:1px solid var(--orange)"></i>Conforme (70–89.99)</span><span><i style="background:var(--danger-soft);border:1px solid var(--danger)"></i>Insatisfactorio (&lt;70)</span></div>'+
-    (tot!=null?'<p class="muted" style="margin:10px 0 0">Variación desde la primera visita: '+dl(tot)+' puntos.</p>':'')+'</div>'+
+    (tv!=null?'<p class="muted" style="margin:10px 0 0">Variación desde la primera visita del periodo: '+dl(tv)+' puntos.</p>':'')+'</div>'+
     '<div style="overflow-x:auto"><table class="mx"><thead><tr><th>#</th><th>Fecha</th><th>Visita</th><th class="c">Calificación</th><th>Nivel</th><th class="c">Variación</th></tr></thead><tbody>'+
     L.map((p,i)=>'<tr><td class="c">'+(i+1)+'</td><td>'+fCorta(p.v.fecha)+'</td><td><button class="linkish" data-open="'+esc(p.v.id)+'">'+esc(p.v.id)+'</button></td><td class="c"><b>'+f2(p.r.total)+'</b></td><td>'+nivTag(p.r.nivel)+'</td><td class="c">'+(i?dl(p.r.total-L[i-1].r.total):'<span class="muted">—</span>')+'</td></tr>').join("")+
-    '</tbody></table></div></div>';
+    '</tbody></table></div>'+
+    '<details class="dt" style="padding:0 14px 12px"><summary>Ver logro por bloque en cada visita</summary><div style="overflow-x:auto"><table class="mx"><thead><tr><th>Bloque</th>'+L.map(p=>'<th class="c">'+esc(fCorta(p.v.fecha))+'</th>').join("")+'</tr></thead><tbody>'+
+    BLOCKS.map(b=>'<tr><td>'+esc(b.n)+'</td>'+L.map(p=>'<td class="c">'+Math.round(bp(p,b.k))+' %</td>').join("")+'</tr>').join("")+'</tbody></table></div></details></div>';
 }
-function openDocente(name){
-  const vs=VISITS.filter(v=>norm(v.docente)===norm(name)), rs=vs.map(v=>calc(v.niveles)), comp=rs.filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
+$("#modal").addEventListener("click",e=>{ const b=e.target.closest("[data-ptog]"); if(!b) return; const k=b.dataset.ptog;
+  if(PHIDE.has(k)) PHIDE.delete(k); else PHIDE.add(k);
+  b.setAttribute("aria-pressed",String(!PHIDE.has(k))); const g=$("#modal .pl-"+k); if(g) g.classList.toggle("hide",PHIDE.has(k)); });
+// Historial del docente con filtro de periodo (Todo, año lectivo, trimestres).
+let DPER="";
+function openDocente(name,per){
+  if(per!==undefined) DPER=per;
+  const rg=periodRange(DPER), all=VISITS.filter(v=>norm(v.docente)===norm(name)), vs=all.filter(v=>inRange(v.fecha,rg));
+  const rs=vs.map(v=>calcV(v)), comp=rs.filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
+  const segB=[["","Todo"],["anio","Año lectivo"],["t1","1.er trim."],["t2","2.º trim."],["t3","3.er trim."]];
   $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">HISTORIAL DE VISITAS ÁULICAS DEL DOCENTE<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
-  '<div class="m-top"><h3 id="mTitle">'+esc(name)+'</h3>'+Array.from(new Set(vs.map(v=>v.seccion))).map(s=>'<span class="tag '+esc(s)+'">'+esc(SECN[s]||s)+'</span>').join("")+(rs[0]?nivTag(rs[0].nivel):'')+'</div>'+
+  '<div class="m-top"><h3 id="mTitle">'+esc(name)+'</h3>'+Array.from(new Set(all.map(v=>v.seccion))).map(s=>'<span class="tag '+esc(s)+'">'+esc(SECN[s]||s)+'</span>').join("")+(rs[0]?nivTag(rs[0].nivel):'')+'</div>'+
   '<div class="m-body">'+
+   '<div class="row no-pdf" style="margin-top:6px"><div class="seg" id="dPer">'+segB.map(([k,t])=>'<button type="button" data-dp="'+k+'" aria-pressed="'+(k===DPER)+'">'+t+'</button>').join("")+'</div></div>'+
+   '<p class="muted" style="margin:8px 0 0">Periodo: '+esc(rg.label)+' · '+vs.length+' de '+all.length+' visita'+(all.length===1?'':'s')+'</p>'+
    '<div class="kpis" style="grid-template-columns:repeat(3,minmax(0,1fr)); margin:10px 0 0">'+
-    '<div class="kpi"><div class="n">'+vs.length+'</div><div class="k">Visitas recibidas</div></div>'+
+    '<div class="kpi"><div class="n">'+vs.length+'</div><div class="k">Visitas en el periodo</div></div>'+
     '<div class="kpi c"><div class="n">'+(comp.length?f2(avg(comp)):"—")+'</div><div class="k">Calificación promedio</div></div>'+
     '<div class="kpi t"><div class="n">'+(rs[0]?f2(rs[0].total):"—")+'</div><div class="k">Última calificación</div></div></div>'+
    progressHTML(vs)+
    (vs.length?'<div class="ficha"><div class="sh">Logro promedio por bloque</div><div style="padding:14px">'+barsPct(blockAvg(vs))+'</div></div>'+
    '<div class="ficha"><div class="sh">Indicadores por fortalecer</div><div style="padding:14px">'+barsPct(weakInd(vs).slice(0,6),"Cumple todos los indicadores en sus visitas.")+'</div></div>':'')+
-   '<div class="ficha"><div class="sh">Visitas</div><table>'+(vs.length?vs.map((v,i)=>'<tr><th>'+fCorta(v.fecha)+'</th><td><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.id)+'</button> '+esc([v.materia,v.curso,v.paralelo].filter(Boolean).join(", "))+'<div class="tags" style="margin-top:5px"><span class="tag">'+f2(rs[i].total)+' pts</span>'+nivTag(rs[i].nivel)+'</div></td></tr>').join(""):'<tr><td class="muted">Este docente aún no ha recibido visitas.</td></tr>')+'</table></div>'+
-  '</div><div class="m-foot"><button class="btn sec" id="mPrint">Imprimir historial</button></div>';
+   '<div class="ficha"><div class="sh">Visitas</div><table>'+(vs.length?vs.map((v,i)=>'<tr><th>'+fCorta(v.fecha)+'</th><td><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.id)+'</button> '+esc([v.materia,v.curso,v.paralelo].filter(Boolean).join(", "))+'<div class="tags" style="margin-top:5px"><span class="tag">'+f2(rs[i].total)+' pts</span>'+nivTag(rs[i].nivel)+confTag(v)+'</div></td></tr>').join(""):'<tr><td class="muted">'+(all.length?'Sin visitas en este periodo.':'Este docente aún no ha recibido visitas.')+'</td></tr>')+'</table></div>'+
+  '</div><div class="m-foot"><button class="btn sec" id="mPrint">Imprimir historial</button><button class="btn sec" id="mPdf">Descargar PDF</button></div>';
   openModal(); $("#mClose").onclick=closeModal; $("#mPrint").onclick=()=>window.print();
+  $("#mPdf").onclick=()=>downloadPdf("historial-"+norm(name).replace(/[^a-z0-9]+/g,"-")+(DPER?"-"+DPER:"")+".pdf",false);
+  $("#dPer").onclick=e=>{ const b=e.target.closest("[data-dp]"); if(!b) return; const st=$("#mask").scrollTop; openDocente(name,b.dataset.dp); $("#mask").scrollTop=st; };
 }
 
 /* ---------- tablero ---------- */
@@ -1337,32 +1524,38 @@ function bars(p,cls){
   return '<div class="bars">'+p.map(([k,n])=>'<div class="bar"><span class="bl" title="'+esc(k)+'">'+esc(SECN[k]||k)+'</span><span class="bt"><span class="bf '+(cls==="sec"?esc(k):cls||"")+'" style="width:'+Math.max(4,Math.round(n/mx*100))+'%"></span></span><span class="bv">'+n+'</span></div>').join("")+'</div>';
 }
 function renderDash(){
-  const from=periodFrom(tPer), l=VISITS.filter(v=>(!from||(v.fecha||"")>=from)&&(!tSec||v.seccion===tSec));
-  const rs=l.map(v=>calc(v.niveles)), comp=rs.filter(r=>r.nivel!=="INCOMPLETA"), prom=avg(comp.map(r=>r.total));
+  const rg=periodRange(tPer), l=VISITS.filter(v=>inRange(v.fecha,rg)&&(!tSec||v.seccion===tSec));
+  $("#tPerLbl").textContent="Periodo: "+rg.label+(tSec?" · Sección "+SECN[tSec]:" · Todas las secciones");
+  const rs=l.map(v=>calcV(v)), comp=rs.filter(r=>r.nivel!=="INCOMPLETA"), prom=avg(comp.map(r=>r.total));
   const cnt=n=>comp.filter(r=>r.nivel===n).length;
-  const docs=new Set(l.map(v=>norm(v.docente)).filter(Boolean)), nom=CONFIG.docentes||[], sinV=nom.filter(d=>!docs.has(norm(d)));
-  const nd=tPer==="hoy"||tPer==="7"?7:30, days=[]; for(let i=nd-1;i>=0;i--) days.push(isoMinus(i));
-  const pd=days.map(f=>[f,l.filter(v=>v.fecha===f).length]), mxd=Math.max(1,...pd.map(x=>x[1]));
-  const lbl=tPer==="hoy"?"hoy":tPer==="7"?"en 7 días":tPer==="30"?"en 30 días":"en total";
+  const docs=new Set(l.map(v=>norm(v.docente)).filter(Boolean));
+  const conSec=CONFIG.nomina.some(x=>x.s), nom=(tSec&&conSec)?CONFIG.nomina.filter(x=>x.s===tSec):CONFIG.nomina, sinV=nom.filter(x=>!docs.has(norm(x.n)));
   const lastBy=new Map(); VISITS.forEach(v=>{ const k=norm(v.docente); if(k&&!lastBy.has(k)&&(!tSec||v.seccion===tSec)) lastBy.set(k,v); });
-  const needs=Array.from(lastBy.values()).map(v=>[v,calc(v.niveles)]).filter(([,r])=>r.nivel==="INSATISFACTORIO"||r.nivel==="CONFORME").sort((a,b)=>a[1].total-b[1].total);
+  const needs=Array.from(lastBy.values()).map(v=>[v,calcV(v)]).filter(([,r])=>r.nivel==="INSATISFACTORIO"||r.nivel==="CONFORME").sort((a,b)=>a[1].total-b[1].total);
   const COL={SATISFACTORIO:"var(--teal)",CONFORME:"var(--orange)",INSATISFACTORIO:"var(--danger)"};
-  const secAvg=SECS.filter(s=>!tSec||s===tSec).map(s=>{ const a=avg(l.filter(v=>v.seccion===s).map(v=>calc(v.niveles)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total)); return [s,a]; }).filter(x=>x[1]!=null);
+  const secAvg=SECS.filter(s=>!tSec||s===tSec).map(s=>{ const a=avg(l.filter(v=>v.seccion===s).map(v=>calcV(v)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total)); return [s,a]; }).filter(x=>x[1]!=null);
+  const conf=l.filter(v=>v.docenteCorreo), cOk=conf.filter(v=>v.conformidad&&v.conformidad.estado==="CONFORME").length, cObs=conf.filter(v=>v.conformidad&&v.conformidad.estado==="OBSERVACIONES").length;
 
   $("#dash").innerHTML=
   '<div class="kpis">'+
-   '<div class="kpi"><div class="n">'+l.length+'</div><div class="k">Visitas '+lbl+'</div><div class="s">'+docs.size+' docentes observados</div></div>'+
+   '<div class="kpi"><div class="n">'+l.length+'</div><div class="k">Visitas en el periodo</div><div class="s">'+docs.size+' docentes observados</div></div>'+
    '<div class="kpi c"><div class="n">'+(prom!=null?f2(prom):"—")+'</div><div class="k">Calificación promedio</div><div class="s">Sobre 100 puntos</div></div>'+
    '<div class="kpi t"><div class="n">'+cnt("SATISFACTORIO")+'</div><div class="k">Satisfactorio</div><div class="s">90 puntos o más</div></div>'+
    '<div class="kpi y"><div class="n">'+cnt("CONFORME")+'</div><div class="k">Conforme</div><div class="s">De 70 a 89.99</div></div>'+
    '<div class="kpi r"><div class="n">'+cnt("INSATISFACTORIO")+'</div><div class="k">Insatisfactorio</div><div class="s">Menos de 70</div></div></div>'+
 
+  segHTML()+
+
   '<div class="panel"><h3>Distribución de niveles</h3><p class="hint">'+comp.length+' visita'+(comp.length===1?'':'s')+' con la matriz completa en el periodo.</p>'+
    (comp.length?'<div class="stack" style="height:22px">'+NIV.map(n=>{ const c=cnt(n); return c?'<span style="width:'+(c/comp.length*100)+'%;background:'+COL[n]+'" title="'+NIVN[n]+': '+c+'"></span>':''; }).join("")+'</div><div class="legend">'+NIV.map(n=>'<span><i style="background:'+COL[n]+'"></i>'+NIVN[n]+' ('+cnt(n)+')</span>').join("")+'</div>':'<p class="muted" style="margin:0">Sin datos en el periodo.</p>')+'</div>'+
+
+  monthlyHTML()+
 
   '<div class="two">'+
    '<div class="panel"><h3>Logro promedio por bloque</h3><p class="hint">Qué parte de la clase se fortalece y cuál requiere atención.</p>'+(l.length?barsPct(blockAvg(l)):barsPct([]))+'</div>'+
    '<div class="panel"><h3>Indicadores con menor logro</h3><p class="hint">Focos para el plan de acompañamiento institucional.</p>'+barsPct(weakInd(l).slice(0,7),l.length?"Todos los indicadores se cumplen en el periodo.":"")+'</div></div>'+
+
+  indStatsHTML(l)+
 
   '<div class="two">'+
    '<div class="panel"><h3>Calificación promedio por sección</h3><p class="hint">Sobre 100 puntos.</p>'+
@@ -1372,16 +1565,166 @@ function renderDash(){
   '<div class="two">'+
    '<div class="panel"><h3>Docentes que requieren acompañamiento</h3><p class="hint">Nivel conforme o insatisfactorio en su visita más reciente.</p>'+
     (needs.length?'<ul class="plist">'+needs.slice(0,10).map(([v,r])=>'<li><span class="grow"><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.docente)+'</button><span>'+esc(v.materia||"")+' | '+fCorta(v.fecha)+' | '+f2(r.total)+' pts</span></span>'+nivTag(r.nivel)+'</li>').join("")+'</ul>':'<p class="muted" style="margin:0">Ningún docente con nivel conforme o insatisfactorio en su última visita.</p>')+'</div>'+
-   '<div class="panel"><h3>Visitas por día</h3><p class="hint">Últimos '+nd+' días.</p><div class="cols">'+
-    pd.map(([f,n])=>'<div class="'+(n?'':'z')+'" style="height:'+(n?Math.max(6,Math.round(n/mxd*100)):3)+'%" title="'+fCorta(f)+': '+n+'">'+(n?'<b>'+n+'</b>':'')+((nd<=14||days.indexOf(f)%5===0||f===days[days.length-1])?'<em>'+(+f.slice(8))+'</em>':'')+'</div>').join("")+'</div></div></div>'+
+   activityHTML(l,rg)+'</div>'+
 
-  '<div class="panel"><h3>Cobertura de la nómina</h3>'+(!nom.length?'<p class="hint" style="margin:0">Carga la nómina de docentes en Ajustes para identificar quiénes aún no reciben visita.</p>':
-    (sinV.length?'<p class="hint">'+(nom.length-sinV.length)+' de '+nom.length+' docentes observados en el periodo. Pendientes de visita:</p><div class="tags">'+sinV.map(d=>'<span class="tag">'+esc(d)+'</span>').join("")+'</div>':'<p class="hint" style="margin:0">Todos los docentes de la nómina recibieron al menos una visita en el periodo.</p>'))+'</div>';
+  '<div class="two">'+
+   '<div class="panel"><h3>Conformidad de los docentes</h3><p class="hint">Visitas del periodo con correo del docente registrado.</p>'+
+    (conf.length?'<div class="stack" style="height:18px">'+[[cOk,"var(--teal)","Conforme"],[cObs,"var(--orange)","Con observaciones"],[conf.length-cOk-cObs,"var(--line-2)","Pendiente"]].map(([c,col,t])=>c?'<span style="width:'+(c/conf.length*100)+'%;background:'+col+'" title="'+t+': '+c+'"></span>':'').join("")+'</div>'+
+     '<div class="legend"><span><i style="background:var(--teal)"></i>Conforme ('+cOk+')</span><span><i style="background:var(--orange)"></i>Con observaciones ('+cObs+')</span><span><i style="background:var(--line-2)"></i>Pendiente ('+(conf.length-cOk-cObs)+')</span></div>':'<p class="muted" style="margin:0">Sin visitas con correo del docente en el periodo.</p>')+'</div>'+
+   '<div class="panel"><h3>Cobertura de la nómina</h3>'+(!nom.length?'<p class="hint" style="margin:0">'+(tSec&&CONFIG.nomina.length&&!conSec?'Agrega la sección de cada docente en la nómina para ver la cobertura por sección.':'Carga la nómina de docentes en Ajustes para identificar quiénes aún no reciben visita.')+'</p>':
+    (sinV.length?'<p class="hint">'+(nom.length-sinV.length)+' de '+nom.length+' docentes observados en el periodo. Pendientes de visita:</p><div class="tags">'+sinV.map(x=>'<span class="tag">'+esc(x.n)+'</span>').join("")+'</div>':'<p class="hint" style="margin:0">Todos los docentes de la nómina recibieron al menos una visita en el periodo.</p>'))+'</div></div>';
+}
+
+/* ---------- utilidades de fechas para gráficos ---------- */
+const d2i=s=>{ const [y,m,d]=s.split("-").map(Number); return Date.UTC(y,m-1,d)/864e5; };
+const i2d=n=>new Date(n*864e5).toISOString().slice(0,10);
+// Visitas en el tiempo: por día (≤31 días), por semana (≤26 semanas) o por mes.
+function activityHTML(l,rg){
+  const t=todayISO(); let a=rg.from||(l.length?l[l.length-1].fecha:isoMinus(29)), b=rg.to||t; if(b>t&&a<=t) b=t; if(a>b) a=b;
+  const A=d2i(a), B=d2i(b), nd=B-A+1; let bk=[], unit;
+  if(nd<=31){ unit="día"; for(let i=A;i<=B;i++){ const f=i2d(i); bk.push({lab:String(+f.slice(8)),tip:fCorta(f),n:l.filter(v=>v.fecha===f).length}); } }
+  else if(nd<=26*7){ unit="semana"; for(let i=A;i<=B;i+=7){ const f=i2d(i), g=i2d(Math.min(B,i+6)); bk.push({lab:(+f.slice(8))+"/"+(+f.slice(5,7)),tip:fCorta(f)+" – "+fCorta(g),n:l.filter(v=>v.fecha>=f&&v.fecha<=g).length}); } }
+  else { unit="mes"; let [y,m]=a.split("-").map(Number); const [yb,mb]=b.split("-").map(Number); while(y<yb||(y===yb&&m<=mb)){ const p=y+"-"+pad(m); bk.push({lab:MESC[m-1],tip:MES[m-1]+" "+y,n:l.filter(v=>(v.fecha||"").slice(0,7)===p).length}); m++; if(m>12){ m=1; y++; } } }
+  const mx=Math.max(1,...bk.map(x=>x.n)), every=Math.ceil(bk.length/12);
+  return '<div class="panel"><h3>Visitas por '+unit+'</h3><p class="hint">'+esc(rg.label)+'.</p><div class="cols">'+
+    bk.map((x,i)=>'<div class="'+(x.n?'':'z')+'" style="height:'+(x.n?Math.max(6,Math.round(x.n/mx*100)):3)+'%" title="'+esc(x.tip)+': '+x.n+' visita'+(x.n===1?'':'s')+'">'+(x.n?'<b>'+x.n+'</b>':'')+((i%every===0||i===bk.length-1)?'<em>'+esc(x.lab)+'</em>':'')+'</div>').join("")+'</div></div>';
+}
+// Evolución mensual del promedio por sección (una línea por sección, sin cortar el eje: 0–100 con franjas de nivel).
+function monthlyHTML(){
+  const P=getPer(), t=todayISO();
+  let rg=/^t[123]$|^anio$/.test(tPer)?periodRange(tPer):tPer===""?{from:VISITS.length?VISITS[VISITS.length-1].fecha:t,to:t,label:"Todas las visitas"}:periodRange("anio");
+  const note=/^(hoy|7|30)$/.test(tPer)?" (para ver la evolución se usa el año lectivo completo)":"";
+  const to=rg.to>t&&rg.from<=t?t:rg.to;
+  const months=[]; let [y,m]=rg.from.split("-").map(Number); const [yb,mb]=to.split("-").map(Number);
+  while((y<yb||(y===yb&&m<=mb))&&months.length<24){ months.push(y+"-"+pad(m)); m++; if(m>12){ m=1; y++; } }
+  const secs=SECS.filter(s=>!tSec||s===tSec);
+  const data=secs.map(s=>({s,pts:months.map(mo=>{ const vs=VISITS.filter(v=>v.seccion===s&&(v.fecha||"").slice(0,7)===mo&&inRange(v.fecha,{from:rg.from,to})).map(v=>calcV(v)).filter(r=>r.nivel!=="INCOMPLETA");
+    return vs.length?{a:avg(vs.map(r=>r.total)),n:vs.length}:null; })}));
+  const any=data.some(d=>d.pts.some(Boolean));
+  const head='<div class="panel"><h3>Evolución mensual del promedio por sección</h3><p class="hint">'+esc(rg.label)+esc(note)+'. Calificación promedio de las visitas de cada mes.</p>';
+  if(!any||!months.length) return head+'<p class="muted" style="margin:0">Sin datos en el periodo.</p></div>';
+  const W=Math.round(Math.max(300,Math.min(900,innerWidth-(innerWidth>900?360:70)))),H=240,ml=34,mr=104,mt=20,mB=30,iw=W-ml-mr,ih=H-mt-mB,n=months.length;
+  const x=i=>n===1?ml+iw/2:ml+iw*i/(n-1), yv=v=>mt+ih*(1-v/100);
+  const band=(a,b,c)=>'<rect class="'+c+'" x="'+ml+'" y="'+yv(b)+'" width="'+iw+'" height="'+(yv(a)-yv(b))+'"/>';
+  const MK={KIDS:(cx,cy)=>'<circle cx="'+cx+'" cy="'+cy+'" r="4.5"/>',PRIMARIA:(cx,cy)=>'<rect x="'+(cx-4.5)+'" y="'+(cy-4.5)+'" width="9" height="9" rx="1.5"/>',SECUNDARIA:(cx,cy)=>'<path d="M'+cx+' '+(cy-5.5)+'L'+(cx+5.5)+' '+(cy+4.5)+'L'+(cx-5.5)+' '+(cy+4.5)+'Z"/>'};
+  let lastY=[];
+  const series=data.map(d=>{ let seg=[], segs=[]; d.pts.forEach((p,i)=>{ if(p) seg.push([x(i),yv(p.a)]); else if(seg.length){ segs.push(seg); seg=[]; } }); if(seg.length) segs.push(seg);
+    const li=d.pts.map((p,i)=>p?i:-1).filter(i=>i>=0).pop(); let ly=yv(d.pts[li].a); while(lastY.some(v=>Math.abs(v-ly)<13)) ly+=13; lastY.push(ly);
+    return '<g class="ms ms-'+d.s+'">'+segs.map(sg=>sg.length>1?'<polyline points="'+sg.map(p=>p.join(",")).join(" ")+'"/>':'').join("")+
+      d.pts.map((p,i)=>p?'<g class="mk">'+MK[d.s](x(i),yv(p.a))+'<title>'+esc(SECN[d.s]+" · "+MES[+months[i].slice(5)-1]+" "+months[i].slice(0,4)+": "+f2(p.a)+" ("+p.n+" visita"+(p.n===1?"":"s")+")")+'</title></g>':'').join("")+
+      '<g class="mk">'+MK[d.s](x(li)+16,ly)+'</g><text class="ax lab" x="'+(x(li)+25)+'" y="'+(ly+4)+'">'+SECN[d.s]+'</text></g>'; }).join("");
+  const svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Promedio mensual por sección">'+band(0,CONF,"band-i")+band(CONF,SAT,"band-c")+band(SAT,100,"band-s")+
+    [0,CONF,SAT,100].map(tk=>'<line class="grid-l" x1="'+ml+'" x2="'+(ml+iw)+'" y1="'+yv(tk)+'" y2="'+yv(tk)+'"/><text class="ax" x="'+(ml-6)+'" y="'+(yv(tk)+4)+'" text-anchor="end">'+tk+'</text>').join("")+
+    months.map((mo,i)=>(n<=12||i%Math.ceil(n/12)===0)?'<text class="ax" x="'+x(i)+'" y="'+(H-10)+'" text-anchor="middle">'+MESC[+mo.slice(5)-1]+'</text>':'').join("")+series+'</svg>';
+  return head+'<div class="prog" style="padding:0">'+svg+'</div><div class="legend">'+secs.map(s=>'<span><i class="sw-'+s+'"></i>'+SECN[s]+'</span>').join("")+'</div>'+
+    '<details class="dt"><summary>Ver datos en tabla</summary><div style="overflow-x:auto"><table class="mx"><thead><tr><th>Mes</th>'+secs.map(s=>'<th class="c">'+SECN[s]+'</th>').join("")+'</tr></thead><tbody>'+
+    months.map((mo,i)=>'<tr><td>'+MES[+mo.slice(5)-1]+' '+mo.slice(0,4)+'</td>'+data.map(d=>'<td class="c">'+(d.pts[i]?f2(d.pts[i].a)+' <span class="muted">('+d.pts[i].n+')</span>':'<span class="muted">—</span>')+'</td>').join("")+'</tr>').join("")+'</tbody></table></div></details></div>';
+}
+// Tabla estadística por indicador: distribución de niveles y logro promedio.
+function indStatsHTML(l){
+  const head='<div class="panel"><h3>Estadística por indicador</h3><p class="hint">Porcentaje de visitas del periodo en cada nivel y logro promedio (Cumple = 100 %, En proceso = 50 %, No cumple = 0 %).</p>';
+  if(!l.length) return head+'<p class="muted" style="margin:0">Sin datos en el periodo.</p></div>';
+  const rows=IND.map(i=>{ const ls=l.map(v=>(v.niveles||{})[i.c]).filter(x=>x in FACT), n=ls.length, c=k=>n?ls.filter(x=>x===k).length/n:0;
+    return {i,n,pc:c("CUMPLE"),pe:c("EN PROCESO"),pn:c("NO CUMPLE"),lg:n?avg(ls.map(x=>FACT[x])):null}; });
+  const P=x=>Math.round(x*100)+" %";
+  return head+'<div style="overflow-x:auto"><table class="mx ist"><thead><tr><th>Cód.</th><th>Indicador</th><th class="c">Visitas</th><th class="c">Cumple</th><th class="c">En proceso</th><th class="c">No cumple</th><th style="min-width:130px">Distribución</th><th class="c">Logro</th></tr></thead><tbody>'+
+    rows.map(r=>'<tr><td class="cd">'+r.i.c+'</td><td>'+esc(r.i.t)+'</td><td class="c">'+r.n+'</td><td class="c">'+P(r.pc)+'</td><td class="c">'+P(r.pe)+'</td><td class="c">'+P(r.pn)+'</td>'+
+      '<td><div class="stack" title="Cumple '+P(r.pc)+' · En proceso '+P(r.pe)+' · No cumple '+P(r.pn)+'">'+[[r.pc,"var(--teal)"],[r.pe,"var(--orange)"],[r.pn,"var(--danger)"]].map(([p,col])=>p?'<span style="width:'+(p*100)+'%;background:'+col+'"></span>':'').join("")+'</div></td>'+
+      '<td class="c"><b>'+(r.lg!=null?P(r.lg):"—")+'</b></td></tr>').join("")+'</tbody></table></div>'+
+    '<div class="legend"><span><i style="background:var(--teal)"></i>Cumple</span><span><i style="background:var(--orange)"></i>En proceso</span><span><i style="background:var(--danger)"></i>No cumple</span></div></div>';
+}
+// Seguimientos vencidos y próximos (7 días), sin importar el periodo elegido.
+const SEG_DIAS=7;
+function segHTML(){
+  const t=todayISO(), lim=i2d(d2i(t)+SEG_DIAS);
+  const p=VISITS.filter(v=>v.seguimiento&&!v.seguimientoHecho&&(!tSec||v.seccion===tSec)&&v.seguimiento<=lim).sort((a,b)=>a.seguimiento.localeCompare(b.seguimiento));
+  if(!p.length) return '';
+  const venc=p.filter(v=>v.seguimiento<t), prox=p.filter(v=>v.seguimiento>=t);
+  const li=v=>{ const d=d2i(v.seguimiento)-d2i(t);
+    return '<li><span class="grow"><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.docente||"—")+'</button><span>Seguimiento: '+fCorta(v.seguimiento)+' · '+(d<0?'venció hace '+(-d)+' día'+(d===-1?'':'s'):d===0?'es hoy':'en '+d+' día'+(d===1?'':'s'))+' · '+esc(v.id)+'</span></span>'+
+      (d<0?'<span class="tag prio">Vencido</span>':'<span class="tag warn">Próximo</span>')+(isAdmin()?'<button class="btn sec sm" data-segdone="'+esc(v.id)+'">Marcar realizado</button>':'')+'</li>'; };
+  return '<div class="panel" style="border-left:4px solid '+(venc.length?'var(--danger)':'var(--orange)')+'"><h3>Seguimientos pendientes</h3><p class="hint">'+
+    (venc.length?venc.length+' vencido'+(venc.length===1?'':'s'):'Ninguno vencido')+' · '+prox.length+' en los próximos '+SEG_DIAS+' días.</p><ul class="plist">'+venc.concat(prox).map(li).join("")+'</ul></div>';
 }
 
 /* ---------- ajustes ---------- */
+/* ---------- configuración institucional ---------- */
+const DEFAULT_DUR=[40,45,80,90];
+// Fechas provisionales (régimen Sierra 2026-2027): la administración las ajusta en Ajustes.
+const DEFAULT_PERIODO={nombre:"2026-2027",t:[{i:"2026-09-01",f:"2026-11-27"},{i:"2026-11-30",f:"2027-03-05"},{i:"2027-03-08",f:"2027-06-30"}]};
+const ISO_RE=/^\d{4}-\d{2}-\d{2}$/, MAIL_RE=new RegExp("^[^@\\s]+@"+DOMAIN.replace(/\./g,"\\.")+"$");
+const validPer=p=>!!p&&Array.isArray(p.t)&&p.t.length===3&&p.t.every((x,k)=>x&&ISO_RE.test(x.i)&&ISO_RE.test(x.f)&&x.i<=x.f&&(!k||p.t[k-1].f<x.i));
+const validDur=a=>Array.isArray(a)&&a.length>=1&&a.length<=6&&a.every(n=>Number.isInteger(n)&&n>=10&&n<=240);
+const getPer=()=>validPer(CONFIG.periodo)?CONFIG.periodo:DEFAULT_PERIODO;
+const durList=()=>validDur(CONFIG.duraciones)?CONFIG.duraciones:DEFAULT_DUR;
+let wDirty=false, pDirty=false;
+function parseConfig(d){ d=d||{};
+  const nomina=Array.isArray(d.nomina)?d.nomina.filter(x=>x&&x.n).map(x=>({n:String(x.n),c:String(x.c||""),s:SECS.includes(x.s)?x.s:""})):(d.docentes||[]).map(n=>({n:String(n),c:"",s:""}));
+  return {docentes:nomina.map(x=>x.n),nomina,observadores:d.observadores||[],materias:d.materias||[],logo:d.logo||"",
+    pesos:d.pesos&&SECS.every(k=>validW(d.pesos[k]))?d.pesos:null, periodo:validPer(d.periodo)?d.periodo:null, duraciones:validDur(d.duraciones)?d.duraciones:null};
+}
+function renderConfig(){ renderLists(); renderLogo(); renderDurChips(); if(!wDirty) renderWEditor(); if(!pDirty) renderPerEditor();
+  if(document.activeElement!==$("#durCfg")) $("#durCfg").value=durList().join(", ");
+  updateScore(); renderAll(); }
+// Nómina: "Nombre; correo; sección" por línea (correo y sección opcionales).
+const SEC_BY_NAME={kids:"KIDS",inicial:"KIDS","educacion inicial":"KIDS",primaria:"PRIMARIA",secundaria:"SECUNDARIA",bachillerato:"SECUNDARIA"};
+function parseNomina(t){ const list=[], bad=[], seen=new Set();
+  lines(t).forEach(l=>{ const p=l.split(/\s*[;|\t]\s*/).map(x=>x.trim()); const n=p[0]; if(!n) return;
+    let c="", sec=""; p.slice(1).forEach(x=>{ if(!x) return; if(x.includes("@")) c=x.toLowerCase(); else if(SEC_BY_NAME[norm(x)]) sec=SEC_BY_NAME[norm(x)]; else bad.push(l); });
+    if(c&&!MAIL_RE.test(c)) bad.push(l);
+    const k=norm(n); if(seen.has(k)) return; seen.add(k); list.push({n,c,s:sec}); });
+  return {list,bad:Array.from(new Set(bad))}; }
+const nominaText=a=>a.map(x=>[x.n,x.c,x.s?SECN[x.s]:""].filter(Boolean).join("; ")).join("\n");
+const nomOf=name=>{ const k=norm(name); return k?CONFIG.nomina.find(x=>norm(x.n)===k):null; };
+// Botones de duración (se generan desde la configuración).
+function renderDurChips(){ const d=mins($("#hIni").value,$("#hFin").value);
+  $("#durOpts").innerHTML=durList().map(n=>'<button type="button" class="chip" data-min="'+n+'" aria-pressed="'+(n===d||(!$("#hIni").value&&n===DUR))+'">'+n+' min</button>').join(""); }
+$("#durSave").onclick=async()=>{ const a=$("#durCfg").value.split(/[,;\s]+/).filter(Boolean).map(Number);
+  if(!validDur(a)){ $("#durMsg").textContent="Escribe de 1 a 6 números enteros entre 10 y 240."; return; }
+  const u=Array.from(new Set(a)).sort((x,y)=>x-y), old=CONFIG; CONFIG=Object.assign({},CONFIG,{duraciones:u});
+  try{ await withTimeout(putConfig(),20000); $("#durMsg").textContent="Duraciones guardadas."; renderDurChips(); }catch(e){ CONFIG=old; $("#durMsg").textContent=errMsg(e,"No se pudieron guardar."); } };
+// Editor de pesos por sección.
+function renderWEditor(){ const ro=!isAdmin(), P=SECS.map(sc=>secW(sc));
+  const inp=(k,c,v)=>'<input type="number" min="1" max="40" step="1" data-ws="'+k+'" data-wc="'+c+'" value="'+v+'"'+(ro?' disabled':'')+' aria-label="Peso de '+c+' en '+SECN[SECS[k]]+'" style="width:74px;min-height:34px;padding:5px 8px;text-align:right">';
+  $("#wEditor").innerHTML='<div style="overflow-x:auto"><table class="mx"><thead><tr><th>Cód.</th><th>Indicador</th><th class="c">Base</th>'+SECS.map(sc=>'<th class="c">'+SECN[sc]+'</th>').join("")+'</tr></thead><tbody>'+
+    BLOCKS.map(b=>'<tr class="bh"><td colspan="3">'+esc(b.n)+'</td>'+SECS.map((sc,k)=>'<td class="c" data-wb="'+k+'-'+b.k+'"></td>').join("")+'</tr>'+
+      b.items.map(([c,t,p])=>'<tr><td class="cd">'+c+'</td><td>'+esc(t)+'</td><td class="c">'+p+'</td>'+SECS.map((sc,k)=>'<td class="c">'+inp(k,c,P[k][c])+'</td>').join("")+'</tr>').join("")).join("")+
+    '<tr class="tt"><td colspan="3">TOTAL (debe ser 100)</td>'+SECS.map((sc,k)=>'<td class="c" data-wt="'+k+'"></td>').join("")+'</tr></tbody></table></div>';
+  wSums(); }
+function wRead(){ return SECS.map((sc,k)=>Object.fromEntries(IND.map(i=>[i.c,parseInt($('[data-ws="'+k+'"][data-wc="'+i.c+'"]').value,10)]))); }
+function wSums(){ wRead().forEach((w,k)=>{ BLOCKS.forEach(b=>{ $('[data-wb="'+k+'-'+b.k+'"]').textContent=b.items.reduce((a,[c])=>a+(w[c]||0),0); });
+  $('[data-wt="'+k+'"]').textContent=sumW(w)+(validW(w)?" ✓":" ✗"); }); }
+$("#wEditor").addEventListener("input",()=>{ wDirty=true; wSums(); $("#wMsg").textContent="Cambios sin guardar."; });
+$("#wSave").onclick=async()=>{ const W=wRead(), badK=W.map((w,k)=>validW(w)?null:SECN[SECS[k]]).filter(Boolean);
+  if(badK.length){ $("#wMsg").textContent="Revisa "+badK.join(", ")+": cada columna debe sumar 100 y cada indicador valer de 1 a 40."; return; }
+  if(!confirm("¿Guardar los pesos? Se aplicarán a las visitas nuevas y a las que se editen; las ya registradas conservan su calificación.")) return;
+  const old=CONFIG; CONFIG=Object.assign({},CONFIG,{pesos:Object.fromEntries(SECS.map((sc,k)=>[sc,W[k]]))});
+  try{ await withTimeout(putConfig(),20000); wDirty=false; $("#wMsg").textContent="Pesos guardados."; renderConfig(); }catch(e){ CONFIG=old; $("#wMsg").textContent=errMsg(e,"No se pudieron guardar los pesos."); } };
+$("#wReset").onclick=async()=>{ if(!confirm("¿Usar los pesos base en Kids, Primaria y Secundaria?")) return;
+  const old=CONFIG; CONFIG=Object.assign({},CONFIG,{pesos:null});
+  try{ await withTimeout(putConfig(),20000); wDirty=false; $("#wMsg").textContent="Se usan los pesos base."; renderConfig(); }catch(e){ CONFIG=old; $("#wMsg").textContent=errMsg(e,"No se pudo restablecer."); } };
+// Editor de año lectivo y trimestres.
+const TRN=["1.er trimestre","2.º trimestre","3.er trimestre"];
+function renderPerEditor(){ const p=getPer(), ro=isAdmin()?"":" disabled";
+  $("#perEditor").innerHTML='<div class="field"><label for="pNom">Año lectivo</label><input type="text" id="pNom" value="'+esc(p.nombre||"")+'" placeholder="2026-2027"'+ro+'></div>'+
+    p.t.map((x,k)=>'<div class="field"><span class="lbl">'+TRN[k]+' (inicio y fin)</span><div class="row" style="flex-wrap:nowrap;gap:6px"><input type="date" data-pi="'+k+'" value="'+x.i+'" aria-label="Inicio del '+TRN[k]+'"'+ro+'><input type="date" data-pf="'+k+'" value="'+x.f+'" aria-label="Fin del '+TRN[k]+'"'+ro+'></div></div>').join("");
+  $("#pMsg").textContent=validPer(CONFIG.periodo)?"":"Fechas provisionales: ajústalas al calendario del colegio."; }
+$("#perEditor").addEventListener("input",()=>{ pDirty=true; $("#pMsg").textContent="Cambios sin guardar."; });
+$("#pSave").onclick=async()=>{ const p={nombre:$("#pNom").value.trim()||"Año lectivo",t:[0,1,2].map(k=>({i:$('[data-pi="'+k+'"]').value,f:$('[data-pf="'+k+'"]').value}))};
+  if(!validPer(p)){ $("#pMsg").textContent="Revisa las fechas: cada trimestre debe terminar después de empezar y comenzar después del anterior."; return; }
+  const old=CONFIG; CONFIG=Object.assign({},CONFIG,{periodo:p});
+  try{ await withTimeout(putConfig(),20000); pDirty=false; $("#pMsg").textContent="Periodos guardados."; renderConfig(); }catch(e){ CONFIG=old; $("#pMsg").textContent=errMsg(e,"No se pudieron guardar los periodos."); } };
+// Rango de fechas de un periodo: hoy, 7, 30, t1, t2, t3, anio o "" (todo).
+function periodRange(p){ const P=getPer(), t=todayISO();
+  if(p==="hoy") return {from:t,to:t,label:"Hoy"};
+  if(p==="7") return {from:isoMinus(6),to:t,label:"Últimos 7 días"};
+  if(p==="30") return {from:isoMinus(29),to:t,label:"Últimos 30 días"};
+  if(/^t[123]$/.test(p)){ const k=+p[1]-1, x=P.t[k]; return {from:x.i,to:x.f,label:TRN[k]+" "+P.nombre+" ("+fCorta(x.i)+" – "+fCorta(x.f)+")"}; }
+  if(p==="anio") return {from:P.t[0].i,to:P.t[2].f,label:"Año lectivo "+P.nombre+" ("+fCorta(P.t[0].i)+" – "+fCorta(P.t[2].f)+")"};
+  return {from:"",to:"",label:"Todas las visitas"}; }
+const inRange=(f,r)=>(!r.from||(f||"")>=r.from)&&(!r.to||(f||"")<=r.to);
 function renderScale(){
-  $("#scaleInfo").innerHTML='<div class="grid g2"><div class="tbl-wrap"><table class="tbl sm"><thead><tr><th>Bloque</th><th class="num">Puntos</th><th>Indicadores</th></tr></thead><tbody>'+
+  $("#scaleInfo").innerHTML='<div class="grid g2"><div class="tbl-wrap"><table class="tbl sm"><thead><tr><th>Bloque</th><th class="num">Puntos base</th><th>Indicadores</th></tr></thead><tbody>'+
    BLOCKS.map(b=>'<tr><td>'+esc(b.n)+'</td><td class="num">'+b.max+'</td><td>'+b.items.map(i=>i[0]+' ('+i[2]+')').join(" · ")+'</td></tr>').join("")+
    '<tr><td><b>Total</b></td><td class="num"><b>'+IND.reduce((a,i)=>a+i.p,0)+'</b></td><td>'+IND.length+' indicadores</td></tr></tbody></table></div>'+
    '<div class="tbl-wrap"><table class="tbl sm"><thead><tr><th>Nivel del indicador</th><th class="num">Factor</th></tr></thead><tbody>'+LVS.map(l=>'<tr><td>'+lvTag(l)+'</td><td class="num">'+pct(FACT[l])+'</td></tr>').join("")+
@@ -1391,11 +1734,11 @@ function opts(s){ return Array.from(s).sort((a,b)=>a.localeCompare(b,"es")).map(
 // Une variantes del mismo nombre (mayúsculas, tildes); gana la primera aparición (la nómina va primero).
 function uniq(a){ const m=new Map(); a.forEach(x=>{ const k=norm(x); if(k&&!m.has(k)) m.set(k,String(x).trim()); }); return Array.from(m.values()); }
 function renderLists(){
-  const D=uniq([...(CONFIG.docentes||[]),...VISITS.map(v=>v.docente)]), O=uniq([...(CONFIG.observadores||[]),...VISITS.map(v=>v.observador)]), M=uniq([...(CONFIG.materias||[]),...VISITS.map(v=>v.materia)]);
+  const D=uniq([...CONFIG.nomina.map(x=>x.n),...(CONFIG.docentes||[]),...VISITS.map(v=>v.docente)]), O=uniq([...(CONFIG.observadores||[]),...VISITS.map(v=>v.observador)]), M=uniq([...(CONFIG.materias||[]),...VISITS.map(v=>v.materia)]);
   $("#dlDoc").innerHTML=opts(D); $("#dlObs").innerHTML=opts(O); $("#dlMat").innerHTML=opts(M);
   const k=$("#fObs").value; $("#fObs").innerHTML='<option value="">Todos</option>'+opts(O); $("#fObs").value=k;
   // No se sobrescriben las listas mientras la administración tiene cambios sin guardar.
-  if(!listsDirty) [["#cDoc","docentes"],["#cObs","observadores"],["#cMat","materias"]].forEach(([s,k2])=>{ $(s).value=(CONFIG[k2]||[]).join("\n"); });
+  if(!listsDirty){ $("#cDoc").value=nominaText(CONFIG.nomina); [["#cObs","observadores"],["#cMat","materias"]].forEach(([s,k2])=>{ $(s).value=(CONFIG[k2]||[]).join("\n"); }); }
 }
 ["#cDoc","#cObs","#cMat"].forEach(s=>$(s).addEventListener("input",()=>{ listsDirty=true; $("#cMsg").textContent="Cambios sin guardar."; }));
 function renderLogo(){
@@ -1404,7 +1747,9 @@ function renderLogo(){
   $$(".m-logo").forEach(i=>i.src=$("#logoImg").src);
 }
 const lines=t=>t.split("\n").map(s=>s.trim()).filter(Boolean);
-$("#cSave").onclick=async()=>{ const next=Object.assign({},CONFIG,{docentes:uniq(lines($("#cDoc").value)),observadores:uniq(lines($("#cObs").value)),materias:uniq(lines($("#cMat").value))});
+$("#cSave").onclick=async()=>{ const nom=parseNomina($("#cDoc").value);
+  if(nom.bad.length){ $("#cMsg").textContent="Revisa estas líneas de docentes (correo o sección no válidos): "+nom.bad.slice(0,3).join(" · ")+(nom.bad.length>3?"…":""); return; }
+  const next=Object.assign({},CONFIG,{nomina:nom.list,docentes:nom.list.map(x=>x.n),observadores:uniq(lines($("#cObs").value)),materias:uniq(lines($("#cMat").value))});
   $("#cSave").disabled=true;
   try{ const old=CONFIG; CONFIG=next; try{ await withTimeout(putConfig(),20000); }catch(e){ CONFIG=old; throw e; }
     listsDirty=false; $("#cMsg").textContent="Listas guardadas."; renderLists(); setTimeout(()=>{ if(!listsDirty) $("#cMsg").textContent=""; },2800); }
@@ -1419,15 +1764,74 @@ $("#logoFile").onchange=async e=>{ const f=e.target.files[0]; if(!f||!isAdmin())
 $("#logoDel").onclick=async()=>{ if(!confirm("¿Restaurar el logo institucional original?")) return; const old=CONFIG; CONFIG=Object.assign({},CONFIG,{logo:""});
   try{ await putConfig(); renderLogo(); $("#logoMsg").textContent="Logo institucional restaurado."; }catch(e){ CONFIG=old; $("#logoMsg").textContent=errMsg(e,"No se pudo restaurar el logo."); } };
 
+/* ---------- importar nómina (Excel / CSV) ---------- */
+const XLSX_SRC="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+// CSV: detecta separador (; o ,) y codificación (UTF-8 o la de Excel en Windows).
+async function readCSV(f){ const buf=await f.arrayBuffer(); let t;
+  try{ t=new TextDecoder("utf-8",{fatal:true}).decode(buf); }catch(e){ t=new TextDecoder("windows-1252").decode(buf); }
+  t=t.replace(/^﻿/,""); const first=t.split(/\r?\n/)[0]||"", sep=(first.split(";").length>=first.split(",").length)?";":",";
+  const rows=[]; let row=[], cell="", q=false;
+  for(let i=0;i<t.length;i++){ const ch=t[i];
+    if(q){ if(ch==='"'){ if(t[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=ch; }
+    else if(ch==='"') q=true; else if(ch===sep){ row.push(cell); cell=""; } else if(ch==="\n"){ row.push(cell.replace(/\r$/,"")); rows.push(row); row=[]; cell=""; } else cell+=ch; }
+  if(cell||row.length){ row.push(cell); rows.push(row); } return rows; }
+const NOM_KEYS={docente:["docente","docentes","nombre completo","nombres y apellidos","apellidos y nombres","profesor","profesora"],apellidos:["apellidos","apellido"],nombres:["nombres","nombre"],
+  correo:["correo","correo electronico","correo institucional","email","e-mail","mail"],seccion:["seccion","nivel"],observador:["observador","observadores","observador/a"],asignatura:["asignatura","asignaturas","materia","materias","area"]};
+function mapNomRows(rows){
+  rows=rows.map(r=>r.map(c=>String(c==null?"":c).trim())).filter(r=>r.some(Boolean));
+  let hi=-1, col={};
+  for(let i=0;i<Math.min(5,rows.length)&&hi<0;i++){ const c={}; rows[i].forEach((h,j)=>{ const k=norm(h); Object.entries(NOM_KEYS).forEach(([key,al])=>{ if(al.includes(k)&&c[key]==null) c[key]=j; }); });
+    if(c.docente!=null||c.nombres!=null||c.apellidos!=null||c.observador!=null||c.asignatura!=null){ hi=i; col=c; } }
+  const data=hi<0?rows:rows.slice(hi+1); if(hi<0) col={docente:0};
+  const doc=[], obs=[], mat=[], bad=[];
+  data.forEach((r,i)=>{ const g=k=>col[k]!=null?(r[col[k]]||"").trim():"";
+    let n=g("docente")||[g("nombres"),g("apellidos")].filter(Boolean).join(" ");
+    if(n){ const c=g("correo").toLowerCase(), sx=SEC_BY_NAME[norm(g("seccion"))]||"";
+      if(c&&!MAIL_RE.test(c)) bad.push("Fila "+(i+(hi<0?1:hi+2))+": correo no institucional ("+c+")");
+      doc.push({n,c:c&&MAIL_RE.test(c)?c:"",s:sx}); }
+    if(g("observador")) obs.push(g("observador")); if(g("asignatura")) mat.push(g("asignatura")); });
+  return {doc,obs:uniq(obs),mat:uniq(mat),bad,header:hi>=0}; }
+$("#nomImp").onclick=()=>$("#nomFile").click();
+$("#nomFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f||!isAdmin()) return;
+  try{ let rows;
+    if(/\.csv$/i.test(f.name)) rows=await readCSV(f);
+    else{ if(!window.XLSX) await withTimeout(loadScript(XLSX_SRC),20000); const wb=XLSX.read(await f.arrayBuffer(),{type:"array"}); rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:"",raw:false}); }
+    nomPreview(mapNomRows(rows),f.name); }
+  catch(err){ toast("No se pudo leer el archivo. Usa un .xlsx o .csv."); } };
+function nomPreview(r,fname){
+  const cur=parseNomina($("#cDoc").value).list, curK=new Set(cur.map(x=>norm(x.n)));
+  const seen=new Set(), nuevos=[], upd=[];
+  r.doc.forEach(x=>{ const k=norm(x.n); if(seen.has(k)) return; seen.add(k);
+    if(!curK.has(k)) nuevos.push(x); else { const o=cur.find(y=>norm(y.n)===k); if((x.c&&!o.c)||(x.s&&!o.s)) upd.push(x); } });
+  const oN=r.obs.filter(x=>!lines($("#cObs").value).some(y=>norm(y)===norm(x))), mN=r.mat.filter(x=>!lines($("#cMat").value).some(y=>norm(y)===norm(x)));
+  const tot=nuevos.length+upd.length+oN.length+mN.length;
+  $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">IMPORTAR NÓMINA<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
+   '<div class="m-top"><h3 id="mTitle">'+esc(fname)+'</h3></div><div class="m-body">'+
+   (r.header?'':'<div class="callout warn" style="margin-bottom:12px">No se encontraron encabezados reconocibles: se tomó la primera columna como nombres de docentes.</div>')+
+   '<div class="kpis" style="grid-template-columns:repeat(4,minmax(0,1fr))"><div class="kpi t"><div class="n">'+nuevos.length+'</div><div class="k">Docentes nuevos</div></div><div class="kpi c"><div class="n">'+upd.length+'</div><div class="k">Docentes con correo o sección nuevos</div></div><div class="kpi"><div class="n">'+oN.length+'</div><div class="k">Observadores nuevos</div></div><div class="kpi"><div class="n">'+mN.length+'</div><div class="k">Asignaturas nuevas</div></div></div>'+
+   (r.bad.length?'<div class="callout err" style="margin-top:12px"><b>Correos omitidos:</b><br>'+r.bad.slice(0,8).map(esc).join("<br>")+(r.bad.length>8?'<br>…':'')+'</div>':'')+
+   (nuevos.length||upd.length?'<div class="ficha"><div class="sh">Docentes</div><div style="overflow-x:auto"><table class="mx"><thead><tr><th>Nombre</th><th>Correo</th><th>Sección</th><th>Estado</th></tr></thead><tbody>'+
+     nuevos.concat(upd).slice(0,40).map(x=>'<tr><td>'+esc(x.n)+'</td><td>'+esc(x.c||"—")+'</td><td>'+esc(x.s?SECN[x.s]:"—")+'</td><td>'+(curK.has(norm(x.n))?'<span class="tag warn">Completa datos</span>':'<span class="tag good">Nuevo</span>')+'</td></tr>').join("")+
+     '</tbody></table></div>'+(nuevos.length+upd.length>40?'<p class="muted" style="padding:0 14px">… y '+(nuevos.length+upd.length-40)+' más.</p>':'')+'</div>':'')+
+   '<p class="muted" style="margin-top:12px">Los docentes que ya están en la nómina no se duplican; solo se completa su correo o sección si faltaban. Después de agregar, revisa y pulsa «Guardar listas».</p></div>'+
+   '<div class="m-foot"><button class="btn" id="nomOk"'+(tot?'':' disabled')+'>Agregar a las listas</button><button class="btn sec" id="nomNo">Cancelar</button></div>';
+  openModal(); $("#mClose").onclick=closeModal; $("#nomNo").onclick=closeModal;
+  $("#nomOk").onclick=()=>{ const list=cur.map(o=>{ const u=upd.find(x=>norm(x.n)===norm(o.n)); return u?{n:o.n,c:o.c||u.c,s:o.s||u.s}:o; }).concat(nuevos);
+    $("#cDoc").value=nominaText(list);
+    if(oN.length) $("#cObs").value=lines($("#cObs").value).concat(oN).join("\n");
+    if(mN.length) $("#cMat").value=lines($("#cMat").value).concat(mN).join("\n");
+    listsDirty=true; closeModal(); $("#cMsg").textContent="Importación agregada: revisa las listas y pulsa «Guardar listas»."; $("#cSave").scrollIntoView({block:"center"}); };
+}
 /* ---------- exportación ---------- */
 // Un texto que empieza con = + - @ se ejecutaría como fórmula en Excel: se antepone un apóstrofo.
 const cell=s=>{ let t=String(s==null?"":s); if(typeof s==="string"&&/^[=+\-@\t\r]/.test(t)) t="'"+t; return '"'+t.replace(/"/g,'""')+'"'; };
 const num=n=>String(f2(n)).replace(".",",");
 function csv(list){
   const H=["ID","Fecha","Sección","Observador","Docente","Curso","Paralelo","Asignatura","Tema","Hora inicio","Hora fin","Duración (min)"]
-    .concat(BLOCKS.map(b=>b.n+" (/"+b.max+")"),["Calificación (/100)","Nivel"],IND.map(i=>i.c),["Fortalezas","Aspectos por mejorar","Fecha de seguimiento","Fotos"]);
-  return "\uFEFF"+[H].concat(list.map(v=>{ const r=calc(v.niveles); return [v.id,v.fecha,v.seccion,v.observador,v.docente,v.curso,v.paralelo,v.materia,v.tema,v.horaInicio,v.horaFin,v.duracion]
-    .concat(BLOCKS.map(b=>num(r.bloques[b.k])),[num(r.total),NIVN[r.nivel]],IND.map(i=>LVN[(v.niveles||{})[i.c]]||""),[v.fortalezas,v.mejoras,v.seguimiento,(v.fotos||[]).length]); })).map(r=>r.map(cell).join(";")).join("\r\n");
+    .concat(BLOCKS.map(b=>b.n+" (puntos)"),["Calificación (/100)","Nivel"],IND.map(i=>i.c),["Fortalezas","Aspectos por mejorar","Fecha de seguimiento","Seguimiento realizado","Fotos","Correo del docente","Conformidad","Fecha de conformidad","Observaciones del docente"]);
+  return "\uFEFF"+[H].concat(list.map(v=>{ const r=calcV(v); return [v.id,v.fecha,v.seccion,v.observador,v.docente,v.curso,v.paralelo,v.materia,v.tema,v.horaInicio,v.horaFin,v.duracion]
+    .concat(BLOCKS.map(b=>num(r.bloques[b.k])),[num(r.total),NIVN[r.nivel]],IND.map(i=>LVN[(v.niveles||{})[i.c]]||""),[v.fortalezas,v.mejoras,v.seguimiento,v.seguimientoHecho?v.seguimientoHecho.fecha:"",(v.fotos||[]).length,v.docenteCorreo||"",
+      v.conformidad?(v.conformidad.estado==="CONFORME"?"Conforme":"Con observaciones"):(v.docenteCorreo?"Pendiente":""),v.conformidad?fHora(tsDate(v.conformidad.fecha)):"",v.conformidad?v.conformidad.texto||"":""]); })).map(r=>r.map(cell).join(";")).join("\r\n");
 }
 async function offer(name,data){
   try{ const b=new Blob([data],{type:name.endsWith(".json")?"application/json":"text/csv;charset=utf-8"}); const a=document.createElement("a");
@@ -1444,7 +1848,7 @@ $("#expJson").onclick=async()=>{
   catch(e){ toast(errMsg(e,"No se pudo preparar el respaldo")); }
   finally{ b.disabled=false; b.textContent=t; } };
 // Campos permitidos en una visita (deben coincidir con firestore.rules).
-const VKEYS=["id","token","version","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
+const VKEYS=["id","token","version","docenteCorreo","pesos","conformidad","seguimientoHecho","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
   "fortalezas","mejoras","seguimiento","fotos","puntajes","total","nivel","creado","actualizado","creadoPor","actualizadoPor"];
 // Solo se importan visitas de la matriz vigente: una visita de la matriz anterior (18 indicadores) tiene otros códigos.
 function validVisit(v){ return v&&typeof v==="object"&&v.version===MATRIZ_VERSION&&ID_RE.test(v.id||"")&&SECS.includes(v.seccion)&&/^\d{4}-\d{2}-\d{2}$/.test(v.fecha||"")&&v.niveles&&typeof v.niveles==="object"; }
@@ -1458,15 +1862,17 @@ $("#impFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; 
   const withCfg=!Array.isArray(d)&&d.config&&confirm("El respaldo también trae las listas de apoyo y el logo. ¿Reemplazar los actuales?");
   let n=0, nf=0, fail=0;
   for(const v of ok){
-    const r=calc(v.niveles), x={};
+    const r=calcV(v), x={};
     VKEYS.forEach(k=>{ if(k in v&&v[k]!==undefined) x[k]=v[k]; });
     Object.assign(x,{ total:r.total, nivel:r.nivel, puntajes:r.bloques, actualizado:new Date().toISOString(), actualizadoPor:myMail() });
     if(!x.creadoPor) x.creadoPor=myMail();
+    if(x.conformidad){ const d=tsDate(x.conformidad.fecha); x.conformidad={estado:x.conformidad.estado==="CONFORME"?"CONFORME":"OBSERVACIONES",texto:String(x.conformidad.texto||""),fecha:d&&!isNaN(d)?d.toISOString():"",por:String(x.conformidad.por||""),restaurada:true}; }
+    if(x.pesos&&!validW(x.pesos)) delete x.pesos;
     try{ await setDoc(doc(FB,COLV,x.id),clean(x)); n++;
       const ph=fotos[x.id]; if(Array.isArray(ph)&&ph.length){ await setDoc(doc(FB,COLF,x.id),{fotos:ph.slice(0,2)}); nf++; } }
     catch(err){ fail++; }
   }
-  if(withCfg){ const c=d.config; CONFIG={docentes:c.docentes||[],observadores:c.observadores||[],materias:c.materias||[],logo:c.logo||""}; try{ await putConfig(); listsDirty=false; renderLists(); renderLogo(); }catch(err){ fail++; } }
+  if(withCfg){ CONFIG=parseConfig(d.config); try{ await putConfig(); listsDirty=false; wDirty=false; pDirty=false; renderConfig(); }catch(err){ fail++; } }
   toast(n+" visitas importadas"+(nf?" · "+nf+" con fotografías":"")+(fail?" · "+fail+" con error":"")); };
 
 /* ---------- navegación ---------- */
@@ -1492,11 +1898,11 @@ try{ const t=localStorage.getItem("ea_theme"); if(t) document.documentElement.se
 
 function renderAll(){
   renderLists(); if(isView("registros")) renderRecords(); if(isView("docentes")) renderDocentes(); if(isView("tablero")) renderDash();
-  const w=isoMinus(6), c=VISITS.map(v=>calc(v.niveles)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
+  const w=isoMinus(6), c=VISITS.map(v=>calcV(v)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
   $("#stTotal").textContent=VISITS.length; $("#stAvg").textContent=c.length?f2(avg(c)):"—"; $("#stWeek").textContent=VISITS.filter(v=>(v.fecha||"")>=w).length;
   if(!editingId) idPrev();
 }
-initForm(); renderScale(); renderAll(); boot();
+initForm(); renderScale(); renderConfig(); boot();
 </script>
 </body>
 </html>

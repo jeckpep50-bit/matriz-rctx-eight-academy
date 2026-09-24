@@ -68,6 +68,29 @@ No hay que dar acceso uno por uno. Para cambiar la súper administración edita 
 - **Respaldo JSON:** incluye visitas, listas, logo y fotografías. Importarlo valida cada registro y pide confirmación antes de reemplazar.
 - **CSV:** protegido contra fórmulas maliciosas al abrirlo en Excel.
 
+## Funciones para la administración (Ajustes)
+
+- **Pesos por sección:** Kids, Primaria y Secundaria pueden tener ponderaciones propias (cada una suma 100). Cada visita guarda los pesos con que se calificó; cambiarlos no altera notas ya registradas.
+- **Año lectivo y trimestres:** fechas de inicio y fin de cada trimestre. Alimentan los filtros del tablero, los registros y el historial del docente. *Las fechas iniciales son provisionales (régimen Sierra 2026-2027): ajústalas.*
+- **Duración de las clases:** los botones de «Horario de la visita» (por defecto 40, 45, 80 y 90 min).
+- **Nómina:** una línea por docente con `Nombre; correo; sección`. Se puede importar desde Excel (.xlsx) o CSV con columnas Docente (o Nombres/Apellidos), Correo, Sección, Observador y Asignatura, con vista previa antes de agregar.
+
+## Conformidad del docente
+
+Cada visita registra el correo institucional del docente. Al ingresar con esa cuenta, el docente ve el aviso de sus visitas pendientes, revisa la ficha y pulsa «Estoy conforme» o envía su conformidad con observaciones. Queda registrada con su correo y la hora del servidor, **una sola vez**, y nadie (ni la administración) puede modificarla. Si la ficha se edita después, se muestra el aviso correspondiente.
+
+## Tablero
+
+Filtros por día, 7/30 días, trimestre, año lectivo o todo; y por sección. Incluye seguimientos vencidos y próximos (7 días, con «Marcar realizado»), evolución mensual del promedio por sección, estadística por indicador (% Cumple / En proceso / No cumple y logro), conformidad de los docentes y cobertura de la nómina.
+
+## Fichas y PDF
+
+Cada ficha se puede imprimir o descargar en PDF (A4) en dos versiones: **PDF** (sin firmas) y **PDF con firmas** (líneas de firma con el nombre del docente y del observador). El historial del docente también se descarga en PDF, con su gráfico de progreso (calificación total y % de logro por bloque).
+
+## Fotografías
+
+Se guardan comprimidas en Firestore para mantener el plan gratuito (Spark). Cloud Storage requiere el plan Blaze.
+
 ## Matriz (versión 2)
 
 | Bloque | Indicadores (puntos) | Total |
