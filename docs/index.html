@@ -308,7 +308,7 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13.5px}
 .ficha table{width:100%; border-collapse:collapse}
 .ficha th{width:30%; text-align:left; background:var(--surface-2); color:var(--muted); font-size:12.5px; padding:9px 14px; border-top:1px solid var(--line); vertical-align:top}
 .ficha td{padding:9px 14px; border-top:1px solid var(--line); font-size:13.5px; white-space:pre-wrap}
-@media (max-width:560px){.ficha th,.ficha td{display:block; width:100%} .ficha td{border-top:0; padding-top:0}}
+@media (max-width:560px){.ficha table:not(.mx) th,.ficha table:not(.mx) td{display:block; width:100%} .ficha table:not(.mx) td{border-top:0; padding-top:0}}
 .shots{display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px 14px}
 .shots img{border-radius:8px; border:1px solid var(--line); width:100%}
 .shots figure{margin:0} .shots figcaption{font-size:12px; color:var(--muted); margin-top:5px}
@@ -414,6 +414,23 @@ body.ro .w-only{display:none!important}
 .draft{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:16px}
 .draft .grow{flex:1; min-width:200px}
 .audit{font-size:12px; color:var(--muted); padding:0 24px 12px}
+/* selector de hora (24 h) */
+.tsel{display:flex; gap:6px; align-items:center; border-radius:10px}
+.tsel select{width:auto; min-width:72px; font-variant-numeric:tabular-nums}
+.tsel b{color:var(--muted)}
+.tsel.bad{outline:2px solid var(--danger); outline-offset:2px; background:none!important}
+/* progreso del docente */
+.prog{padding:12px 14px}
+.prog svg{width:100%; height:auto; display:block}
+.prog .ax{font-size:11px; fill:var(--muted)}
+.prog .pv{font-size:11.5px; font-weight:700; fill:var(--ink)}
+.prog .ln{fill:none; stroke:var(--h2); stroke-width:2.5}
+.prog .pt{fill:var(--surface); stroke:var(--h2); stroke-width:2.5}
+.prog .band-i{fill:var(--danger-soft)} .prog .band-c{fill:var(--yellow-soft)} .prog .band-s{fill:var(--teal-soft)}
+.prog .grid-l{stroke:var(--line); stroke-dasharray:3 4}
+.mx .linkish{white-space:nowrap}
+.up{color:var(--teal-ink); font-weight:700} .down{color:var(--danger); font-weight:700}
+@media print{ .prog .band-i,.prog .band-c,.prog .band-s{-webkit-print-color-adjust:exact; print-color-adjust:exact} }
 </style>
 </head>
 <body>
@@ -456,7 +473,7 @@ body.ro .w-only{display:none!important}
     <div class="view-h">
       <div>
         <h2 id="formTitle">Nueva visita áulica</h2>
-        <p>Matriz optimizada de 18 indicadores sobre 100 puntos. Puedes avanzar y regresar sin perder lo registrado: se guarda un borrador en este dispositivo mientras escribes.</p>
+        <p>Matriz de <span class="nInd"></span> indicadores sobre 100 puntos. Puedes avanzar y regresar sin perder lo registrado: se guarda un borrador en este dispositivo mientras escribes.</p>
       </div>
     </div>
     <div class="callout warn draft hide" id="draftBar"><span class="grow" id="draftTxt"></span><button type="button" class="btn sm" id="draftUse">Recuperar borrador</button><button type="button" class="btn sec sm" id="draftDrop">Descartar</button></div>
@@ -499,13 +516,17 @@ body.ro .w-only{display:none!important}
 
       <div class="panel">
         <h3>Horario de la visita</h3>
-        <p class="hint">La duración se calcula automáticamente con las dos horas.</p>
+        <p class="hint">Elige la hora de inicio y la duración de la clase: la hora de finalización se calcula sola. Si la clase terminó a otra hora, ajústala.</p>
         <div class="grid g3">
-          <div class="field"><label for="hIni">Hora de inicio <span class="req">*</span></label>
-            <div class="row" style="flex-wrap:nowrap"><input type="time" id="hIni"><button type="button" class="btn sec sm" id="nowIni">Ahora</button></div></div>
-          <div class="field"><label for="hFin">Hora de finalización <span class="req">*</span></label>
-            <div class="row" style="flex-wrap:nowrap"><input type="time" id="hFin"><button type="button" class="btn sec sm" id="nowFin">Ahora</button></div></div>
-          <div class="field"><label for="dur">Duración</label><input type="text" id="dur" readonly value="—"></div>
+          <div class="field"><span class="lbl" id="lIni">Hora de inicio <span class="req">*</span></span>
+            <div class="tsel" data-t="hIni" role="group" aria-labelledby="lIni"><select data-part="h" aria-label="Hora de inicio: hora"></select><b>:</b><select data-part="m" aria-label="Hora de inicio: minutos"></select><button type="button" class="btn sec sm" id="nowIni">Ahora</button></div>
+            <span class="muted" data-t12="hIni"></span><input type="hidden" id="hIni"></div>
+          <div class="field"><span class="lbl" id="lDur">Duración de la clase</span>
+            <div class="chips" id="durOpts" role="group" aria-labelledby="lDur"><button type="button" class="chip" data-min="40" aria-pressed="false">40 min</button><button type="button" class="chip" data-min="45" aria-pressed="false">45 min</button><button type="button" class="chip" data-min="80" aria-pressed="false">80 min</button><button type="button" class="chip" data-min="90" aria-pressed="false">90 min</button></div>
+            <span class="muted" id="dur">—</span></div>
+          <div class="field"><span class="lbl" id="lFin">Hora de finalización <span class="req">*</span></span>
+            <div class="tsel" data-t="hFin" role="group" aria-labelledby="lFin"><select data-part="h" aria-label="Hora de finalización: hora"></select><b>:</b><select data-part="m" aria-label="Hora de finalización: minutos"></select><button type="button" class="btn sec sm" id="nowFin">Ahora</button></div>
+            <span class="muted" data-t12="hFin"></span><input type="hidden" id="hFin"></div>
         </div>
       </div>
     </div>
@@ -524,8 +545,7 @@ body.ro .w-only{display:none!important}
           <div class="field"><label for="mejoras">Aspectos por mejorar <span class="req">*</span></label><textarea id="mejoras" placeholder="Oportunidades de mejora observadas"></textarea></div>
         </div>
         <div class="grid g2" style="margin-top:14px">
-          <div class="field"><label for="compromiso">Compromiso del docente</label><textarea id="compromiso" style="min-height:80px" placeholder="Acción concreta y verificable"></textarea></div>
-          <div class="field"><label for="seguimiento">Fecha de seguimiento</label><input type="date" id="seguimiento"><span class="muted">Próxima revisión del compromiso.</span></div>
+          <div class="field"><label for="seguimiento">Fecha de seguimiento</label><input type="date" id="seguimiento"><span class="muted">Próxima revisión de los aspectos por mejorar.</span></div>
         </div>
       </div>
       <div class="panel">
@@ -624,7 +644,7 @@ body.ro .w-only{display:none!important}
 
     <div class="panel">
       <h3>Escala y ponderación</h3>
-      <p class="hint">Puntaje del indicador = puntaje máximo × factor del nivel. Los 18 indicadores suman 100 puntos.</p>
+      <p class="hint">Puntaje del indicador = puntaje máximo × factor del nivel. Los <span class="nInd"></span> indicadores suman 100 puntos.</p>
       <div id="scaleInfo"></div>
     </div>
 
@@ -678,36 +698,35 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRe
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import * as CFG from "./firebase-config.js";
 const FIREBASE_CONFIG=CFG.FIREBASE_CONFIG, ADMIN_EMAILS=CFG.ADMIN_EMAILS;
+// Matriz versión 2: 13 indicadores, 100 puntos. Los códigos se numeran de forma consecutiva dentro de cada bloque.
+// Los puntajes siguen la proporción de la matriz anterior (18 indicadores), redondeados a enteros:
+// mayor peso a lo que evidencia aprendizaje (consolidación, evaluación, pensamiento crítico) y menor a lo procedimental.
+const MATRIZ_VERSION=2;
 const BLOCKS=[
  {k:"cg",n:"Criterios generales y planificación",step:1,items:[
-  ["CG1","Inicia la clase con puntualidad y registra la asistencia de los estudiantes.",3],
-  ["CG2","Presenta la planificación con adaptaciones curriculares para estudiantes con NEE.",4],
-  ["CG3","Espacio limpio, ordenado y funcional; comunica el objetivo de la clase (escrito y explicado).",3]]},
+  ["CG1","Inicia la clase con puntualidad y registra la asistencia de los estudiantes.",4],
+  ["CG2","Presenta la planificación con adaptaciones curriculares para estudiantes con NEE.",6],
+  ["CG3","Espacio limpio, ordenado y funcional; comunica el objetivo de la clase (escrito y explicado).",5]]},
  {k:"an",n:"Anticipación",step:1,items:[
-  ["A1","Realiza una micro dinámica de enganche al inicio de la clase.",3],
-  ["A2","Despierta el interés y activa conocimientos y destrezas previas mediante preguntas de indagación.",7]]},
+  ["A1","Realiza una micro dinámica de enganche al inicio de la clase.",5]]},
  {k:"co",n:"Construcción",step:1,items:[
-  ["C1","Domina el conocimiento disciplinar, la didáctica y la metodología de la asignatura.",6],
-  ["C2","Estimula el pensamiento crítico, creativo y digital (análisis, resolución de problemas, creación de contenido original).",7],
-  ["C3","Integra recursos tecnológicos y metodologías interactivas y colaborativas según la planificación.",7]]},
+  ["C1","Domina el conocimiento disciplinar, la didáctica y la metodología de la asignatura.",9],
+  ["C2","Estimula el pensamiento crítico, creativo y digital (análisis, resolución de problemas, creación de contenido original).",11]]},
  {k:"cs",n:"Consolidación",step:1,items:[
-  ["K1","Los estudiantes aplican las destrezas en forma práctica.",8],
-  ["K2","Realiza síntesis o ampliación con recursos multimedia (mapas conceptuales, infografías, presentaciones).",7]]},
+  ["K1","Los estudiantes aplican las destrezas en forma práctica.",12]]},
  {k:"ev",n:"Evaluación formativa",step:2,items:[
-  ["E1","Verifica el desarrollo de destrezas de la clase anterior y de la clase actual.",8],
-  ["E2","Aplica autoevaluación y/o coevaluación, apoyadas en plataformas digitales.",7]]},
+  ["E1","El docente evalúa las destrezas de los estudiantes de la clase anterior o de la actual.",12]]},
  {k:"dc",n:"Actuación del docente",step:2,items:[
-  ["D1","Usa vocabulario claro y respetuoso, y da consignas precisas.",5],
-  ["D2","Acompaña la construcción autónoma del aprendizaje y a los estudiantes con NEE.",5],
-  ["D3","Mantiene la disciplina del grupo.",5],
-  ["D4","Distribuye el tiempo de modo que se cumplen los objetivos y actividades planificadas.",5]]},
+  ["D1","Acompaña la construcción autónoma del aprendizaje y a los estudiantes con NEE.",7],
+  ["D2","Mantiene la disciplina del grupo.",7],
+  ["D3","Distribuye el tiempo de modo que se cumplen los objetivos y actividades planificadas.",7]]},
  {k:"es",n:"Actuación del estudiante",step:2,items:[
-  ["S1","Participan activamente y cumplen las consignas recibidas.",5],
-  ["S2","Evidencian en el aula la práctica de los valores institucionales.",5]]}
+  ["S1","Participan activamente y cumplen las consignas recibidas.",8],
+  ["S2","Evidencian en el aula la práctica de los valores institucionales.",7]]}
 ];
 BLOCKS.forEach(b=>b.max=b.items.reduce((a,x)=>a+x[2],0));
 const IND=[].concat(...BLOCKS.map(b=>b.items.map(([c,t,p])=>({c,t,p,b:b.k}))));
-const INDM=Object.fromEntries(IND.map(i=>[i.c,i]));
+if(IND.reduce((a,i)=>a+i.p,0)!==100) console.error("La matriz no suma 100 puntos: revisa BLOCKS.");
 const LVS=["CUMPLE","EN PROCESO","NO CUMPLE"], LVN={"CUMPLE":"Cumple","EN PROCESO":"En proceso","NO CUMPLE":"No cumple"};
 const FACT={"CUMPLE":1,"EN PROCESO":0.5,"NO CUMPLE":0};
 const SAT=90, CONF=70;
@@ -908,9 +927,7 @@ function initForm(){
   // Unifica nombres escritos con otra capitalización o sin tildes con el nombre ya registrado.
   [["#docente","#dlDoc"],["#observador","#dlObs"],["#materia","#dlMat"]].forEach(([s,dl])=>$(s).addEventListener("change",()=>{
     const k=norm($(s).value); if(!k) return; const o=Array.from($(dl).options).find(x=>norm(x.value)===k); if(o&&o.value!==$(s).value){ $(s).value=o.value; markDirty(); } }));
-  ["#hIni","#hFin"].forEach(s=>$(s).addEventListener("change",calcDur));
-  $("#nowIni").onclick=()=>{ $("#hIni").value=nowHM(); calcDur(); markDirty(); };
-  $("#nowFin").onclick=()=>{ $("#hFin").value=nowHM(); calcDur(); markDirty(); };
+  initTimes();
   $("#fecha").addEventListener("change",idPrev);
   $("#steps").addEventListener("click",e=>{ const b=e.target.closest("[data-step]"); if(!b) return; const t=+b.dataset.step;
     if(t<=STEP) return showStep(t); for(let i=STEP;i<t;i++){ if(!validStep(i,true)) return showStep(i); } showStep(t); });
@@ -925,12 +942,52 @@ function initForm(){
   $("#draftDrop").onclick=()=>{ clearDraft(); $("#draftBar").classList.add("hide"); toast("Borrador descartado"); };
   window.addEventListener("beforeunload",e=>{ if(formDirty&&!saving){ saveDraftNow(); e.preventDefault(); e.returnValue=""; } });
   document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden"&&formDirty) saveDraftNow(); });
+  $$(".nInd").forEach(x=>x.textContent=IND.length);
   TOKEN=newToken(); initPhotos(); paint(0); paint(1); idPrev(); paintLevels(); showStep(0,true);
 }
 function mins(a,b){ if(!a||!b) return null; const [h1,m1]=a.split(":").map(Number),[h2,m2]=b.split(":").map(Number); return (h2*60+m2)-(h1*60+m1); }
 function calcDur(){ const d=mins($("#hIni").value,$("#hFin").value), el=$("#dur");
-  el.classList.remove("bad");
-  if(d===null) el.value="—"; else if(d<0){ el.value="La hora de fin es anterior"; el.classList.add("bad"); } else el.value=d+" minuto"+(d===1?"":"s"); }
+  el.classList.toggle("fmsg",d!==null&&d<0);
+  el.textContent=d===null?"—":d<0?"La hora de finalización es anterior a la de inicio":"Duración: "+d+" minuto"+(d===1?"":"s");
+  $$("#durOpts [data-min]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.min===d))); }
+
+/* ---------- horario (24 h) ---------- */
+// Cada hora se elige con dos listas (hora y minutos de 5 en 5) y se guarda en un campo oculto "HH:MM".
+// Los botones de duración fijan DUR: al cambiar el inicio, el fin se recalcula; si el fin se ajusta a mano, DUR se libera.
+let DUR=0;
+const HOURS=Array.from({length:16},(_,i)=>i+6), MINS=Array.from({length:12},(_,i)=>i*5);
+const h12=v=>{ if(!v) return ""; const [h,m]=v.split(":").map(Number); return (h%12||12)+":"+pad(m)+(h<12?" a. m.":" p. m."); };
+const addMin=(v,n)=>{ const [h,m]=v.split(":").map(Number), t=Math.min(23*60+59,h*60+m+n); return pad(Math.floor(t/60))+":"+pad(t%60); };
+function ensureOpt(sel,val){ if(val&&!Array.from(sel.options).some(o=>o.value===val)){ const o=new Option(val,val); sel.add(o); Array.from(sel.options).slice(1).sort((a,b)=>a.value.localeCompare(b.value)).forEach(x=>sel.add(x)); } }
+function setTime(id,v){
+  $("#"+id).value=v||""; const g=$('.tsel[data-t="'+id+'"]'), [h,m]=(v||":").split(":");
+  const sh=g.querySelector('[data-part="h"]'), sm=g.querySelector('[data-part="m"]');
+  ensureOpt(sh,h); ensureOpt(sm,m); sh.value=h||""; sm.value=m||"";
+  $('[data-t12="'+id+'"]').textContent=v?v+" · "+h12(v):"";
+  if(v) g.classList.remove("bad");
+}
+function onTime(id){
+  if(id==="hIni"&&DUR&&$("#hIni").value) setTime("hFin",addMin($("#hIni").value,DUR));
+  if(id==="hFin"){ const d=mins($("#hIni").value,$("#hFin").value); DUR=[40,45,80,90].includes(d)?d:0; }
+  calcDur(); markDirty();
+}
+function syncTimes(){ setTime("hIni",$("#hIni").value); setTime("hFin",$("#hFin").value); const d=mins($("#hIni").value,$("#hFin").value); DUR=[40,45,80,90].includes(d)?d:0; calcDur(); }
+function initTimes(){
+  $$(".tsel").forEach(g=>{
+    g.querySelector('[data-part="h"]').innerHTML='<option value="">hh</option>'+HOURS.map(h=>'<option value="'+pad(h)+'">'+pad(h)+'</option>').join("");
+    g.querySelector('[data-part="m"]').innerHTML='<option value="">mm</option>'+MINS.map(m=>'<option value="'+pad(m)+'">'+pad(m)+'</option>').join("");
+    g.addEventListener("change",e=>{ if(!e.target.matches("select")) return;
+      const id=g.dataset.t, sh=g.querySelector('[data-part="h"]'), sm=g.querySelector('[data-part="m"]');
+      if(sh.value&&!sm.value) sm.value="00";
+      setTime(id,sh.value&&sm.value?sh.value+":"+sm.value:""); onTime(id); });
+  });
+  $("#nowIni").onclick=()=>{ setTime("hIni",nowHM()); onTime("hIni"); };
+  $("#nowFin").onclick=()=>{ setTime("hFin",nowHM()); onTime("hFin"); };
+  $("#durOpts").addEventListener("click",e=>{ const b=e.target.closest("[data-min]"); if(!b) return;
+    DUR=+b.dataset.min;
+    if(!$("#hIni").value){ $$("#durOpts [data-min]").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $("#dur").textContent="Elige la hora de inicio para calcular la hora de finalización."; return; }
+    setTime("hFin",addMin($("#hIni").value,DUR)); calcDur(); markDirty(); });
+}
 function nextId(f){ const p="VA-"+f+"-"; let m=0; VISITS.forEach(v=>{ if(v.id&&v.id.indexOf(p)===0){ const n=parseInt(v.id.slice(p.length),10); if(n>m) m=n; } }); return p+pad(m+1,3); }
 function idPrev(){ const f=$("#fecha").value;
   $("#idPreview").innerHTML = editingId ? 'Editando <b>'+esc(editingId)+'</b>'+(f&&editingId.indexOf("VA-"+f+"-")!==0?' · el ID se conserva aunque cambies la fecha':'') : (f?'Se registrará como <b>'+esc(nextId(f))+'</b> (número provisional)':''); }
@@ -946,13 +1003,14 @@ function showStep(i,quiet){
 }
 function validStep(i,mark){
   let ok=true, msg="Completa los campos marcados para continuar.";
-  const req=(sel)=>{ const el=$(sel), bad=!el.value.trim(); if(mark) el.classList.toggle("bad",bad); if(bad) ok=false; };
+  // En los campos de hora (ocultos) se marca el selector visible.
+  const req=(sel)=>{ const el=$(sel), bad=!el.value.trim(), vis=el.type==="hidden"?$('.tsel[data-t="'+el.id+'"]'):el; if(mark) vis.classList.toggle("bad",bad); if(bad) ok=false; };
   if(i===0){
     if(!selVal($("#secOpts"))){ ok=false; if(mark) $("#secOpts").classList.add("bad-group"); }
     ["#fecha","#observador","#docente","#curso","#materia","#hIni","#hFin"].forEach(req);
     if(ok){
       const d=mins($("#hIni").value,$("#hFin").value);
-      if(d!==null&&d<0){ ok=false; msg="La hora de finalización es anterior a la de inicio."; if(mark) $("#hFin").classList.add("bad"); }
+      if(d!==null&&d<0){ ok=false; msg="La hora de finalización es anterior a la de inicio."; if(mark) $('.tsel[data-t="hFin"]').classList.add("bad"); }
       else if($("#fecha").value>todayISO()){ ok=false; msg="La fecha de visita no puede ser posterior a hoy."; if(mark) $("#fecha").classList.add("bad"); }
     }
   }
@@ -974,8 +1032,8 @@ function collect(){
   const v={ seccion:selVal($("#secOpts")), fecha:$("#fecha").value, observador:$("#observador").value.trim(), docente:$("#docente").value.trim(),
     curso:$("#curso").value.trim(), paralelo:$("#paralelo").value.trim(), materia:$("#materia").value.trim(), tema:$("#tema").value.trim(),
     horaInicio:$("#hIni").value, horaFin:$("#hFin").value, niveles:Object.assign({},LEVELS), evidencias:ev,
-    fortalezas:$("#fortalezas").value.trim(), mejoras:$("#mejoras").value.trim(), compromiso:$("#compromiso").value.trim(), seguimiento:$("#seguimiento").value,
-    fotos:[0,1].filter(i=>photos[i]).map(i=>({desc:$('[data-desc="'+i+'"]').value.trim()})), token:TOKEN||undefined };
+    fortalezas:$("#fortalezas").value.trim(), mejoras:$("#mejoras").value.trim(), seguimiento:$("#seguimiento").value,
+    fotos:[0,1].filter(i=>photos[i]).map(i=>({desc:$('[data-desc="'+i+'"]').value.trim()})), token:TOKEN||undefined, version:MATRIZ_VERSION };
   const d=mins(v.horaInicio,v.horaFin); v.duracion=(d!==null&&d>=0)?d:null;
   const r=calc(v.niveles); v.puntajes=r.bloques; v.total=r.total; v.nivel=r.nivel;
   return v;
@@ -994,7 +1052,7 @@ function renderSummary(){
     row("Docente y asignatura",[v.docente,v.materia].filter(Boolean).join(", "))+
     row("Curso",[v.curso,v.paralelo].filter(Boolean).join(" "))+row("Tema",v.tema)+row("Observador/a",v.observador)+
     row("Indicadores no cumplidos o en proceso",low.join(", ")||"Ninguno: todos cumplen")+
-    row("Fortalezas",v.fortalezas)+row("Aspectos por mejorar",v.mejoras)+row("Compromiso",v.compromiso)+row("Seguimiento",v.seguimiento?fLarga(v.seguimiento):"")+
+    row("Fortalezas",v.fortalezas)+row("Aspectos por mejorar",v.mejoras)+row("Seguimiento",v.seguimiento?fLarga(v.seguimiento):"")+
     row("Fotografías",v.fotos.length?v.fotos.length+" de 2":"")+'</dl></div>';
 }
 
@@ -1061,14 +1119,14 @@ const newToken=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36
 function resetForm(){
   editingId=null; photos=[null,null]; LEVELS={}; TOKEN=newToken(); photosDirty=false; photosLoading=false; formDirty=false; clearDraft();
   $("#form").reset(); $("#fecha").value=todayISO();
-  setSel($("#secOpts"),[]); $("#dur").value="—"; $$(".bad").forEach(x=>x.classList.remove("bad")); $("#secOpts").classList.remove("bad-group");
+  setSel($("#secOpts"),[]); DUR=0; setTime("hIni",""); setTime("hFin",""); calcDur(); $$(".bad").forEach(x=>x.classList.remove("bad")); $("#secOpts").classList.remove("bad-group");
   $$("#steps li").forEach(li=>li.classList.remove("err")); paint(0); paint(1); paintLevels();
   $("#photoNote").classList.add("hide"); $("#draftBar").classList.add("hide");
   $("#formTitle").textContent="Nueva visita áulica"; $("#saveBtn").textContent="Guardar visita"; $("#cancelEdit").classList.add("hide");
   idPrev(); showStep(0,true);
 }
 function confirmDiscard(msg){ return !formDirty||confirm(msg||"Hay una visita en curso sin guardar. ¿Descartarla?"); }
-const FIELDS=[["observador","observador"],["docente","docente"],["curso","curso"],["paralelo","paralelo"],["materia","materia"],["tema","tema"],["hIni","horaInicio"],["hFin","horaFin"],["fortalezas","fortalezas"],["mejoras","mejoras"],["compromiso","compromiso"],["seguimiento","seguimiento"]];
+const FIELDS=[["observador","observador"],["docente","docente"],["curso","curso"],["paralelo","paralelo"],["materia","materia"],["tema","tema"],["hIni","horaInicio"],["hFin","horaFin"],["fortalezas","fortalezas"],["mejoras","mejoras"],["seguimiento","seguimiento"]];
 function setEditingUI(){ $("#formTitle").textContent="Editar visita"; $("#saveBtn").textContent="Guardar cambios"; $("#cancelEdit").textContent="Cancelar edición"; $("#cancelEdit").classList.remove("hide"); }
 // Descarga las fotos de la visita en edición. Mientras cargan, los espacios quedan bloqueados;
 // si la descarga falla, las fotos guardadas no se tocan al guardar.
@@ -1085,14 +1143,14 @@ function editVisit(v){
   setSel($("#secOpts"),v.seccion); $("#fecha").value=v.fecha||todayISO();
   FIELDS.forEach(([id,k])=>$("#"+id).value=v[k]||"");
   LEVELS=Object.assign({},v.niveles||{}); $$(".ev").forEach(x=>x.value=(v.evidencias||{})[x.dataset.e]||"");
-  calcDur(); paintLevels();
+  syncTimes(); paintLevels();
   if((v.fotos||[]).length) loadPhotos(v.id);
   setEditingUI(); idPrev(); closeModal(); go("nueva"); showStep(0);
 }
 
 /* ---------- borrador local ---------- */
 // El formulario en curso se guarda en este dispositivo (por cuenta) para no perderlo si se recarga o cierra la pestaña.
-const draftKey=()=>"rctx_draft_"+myMail();
+const draftKey=()=>"rctx_draft_v"+MATRIZ_VERSION+"_"+myMail();
 let draftT=null;
 function markDirty(){ formDirty=true; clearTimeout(draftT); draftT=setTimeout(saveDraftNow,600);
   const c=$("#cancelEdit"); c.textContent=editingId?"Cancelar edición":"Descartar visita"; c.classList.remove("hide"); }
@@ -1108,6 +1166,7 @@ function saveDraftNow(){
 function readDraft(){ try{ const d=JSON.parse(localStorage.getItem(draftKey())||"null"); return d&&d.t?d:null; }catch(e){ return null; } }
 function clearDraft(){ clearTimeout(draftT); try{ if(ME) localStorage.removeItem(draftKey()); }catch(e){} }
 function offerDraft(){
+  try{ localStorage.removeItem("rctx_draft_"+myMail()); }catch(e){} // borrador de la matriz anterior (18 indicadores): ya no es compatible
   const d=readDraft(); if(!d||!canWrite()||formDirty) return;
   const who=(d.f&&d.f.docente)||"docente sin nombre";
   $("#draftTxt").innerHTML='<b>Tienes una visita sin guardar</b> ('+(d.editingId?'edición de '+esc(d.editingId)+', ':'')+esc(who)+'), del '+esc(new Date(d.t).toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"}))+'.';
@@ -1119,7 +1178,7 @@ function useDraft(){
   setSel($("#secOpts"),d.sec||""); $("#fecha").value=d.fecha||todayISO();
   FIELDS.forEach(([id])=>$("#"+id).value=(d.f||{})[id]||"");
   LEVELS=Object.assign({},d.levels||{}); $$(".ev").forEach(x=>x.value=(d.ev||{})[x.dataset.e]||"");
-  calcDur(); paintLevels();
+  syncTimes(); paintLevels();
   if(d.photosDirty&&d.photos){ photosDirty=true; d.photos.forEach((p,i)=>{ if(p){ photos[i]={data:p.data}; $('[data-desc="'+i+'"]').value=p.desc||""; } paint(i); }); }
   else if(editingId) loadPhotos(editingId);
   if(editingId) setEditingUI();
@@ -1127,7 +1186,7 @@ function useDraft(){
 }
 
 /* ---------- registros ---------- */
-function blob(v){ return [v.docente,v.observador,v.materia,v.tema,v.curso,v.paralelo,v.id,v.fortalezas,v.mejoras,v.compromiso].join(" ").toLowerCase(); }
+function blob(v){ return [v.docente,v.observador,v.materia,v.tema,v.curso,v.paralelo,v.id,v.fortalezas,v.mejoras].join(" ").toLowerCase(); }
 function recFiltered(){
   const t=$("#fTxt").value.trim().toLowerCase(), s=$("#fSec").value, o=$("#fObs").value, n=$("#fNiv").value, d=periodFrom(fPer);
   return VISITS.filter(v=>(!s||v.seccion===s)&&(!o||norm(v.observador)===norm(o))&&(!n||calc(v.niveles).nivel===n)&&(!d||(v.fecha||"")>=d)&&(!t||blob(v).indexOf(t)>=0));
@@ -1168,7 +1227,7 @@ function openVisit(id){
     tr("Asignatura",esc(v.materia))+tr("Tema de clase",esc(v.tema))+'</table></div>'+
    '<div class="ficha"><div class="sh">Resultado</div><div style="padding:14px">'+resultHTML(v)+'</div></div>'+
    mx+
-   '<div class="ficha"><div class="sh">Retroalimentación y compromisos</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+tr("Compromiso del docente",esc(v.compromiso))+tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento):"")+'</table></div>'+
+   '<div class="ficha"><div class="sh">Retroalimentación y seguimiento</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento):"")+'</table></div>'+
    ph+'<div class="firmas"><div>Firma del docente observado</div><div>Firma del observador(a) / coordinador(a)</div></div></div>'+
   (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(new Date(v.creado).toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"})):''):'')+
     (v.actualizadoPor&&v.actualizado&&v.actualizado!==v.creado?' · Última modificación: '+esc(v.actualizadoPor)+' el '+esc(new Date(v.actualizado).toLocaleString("es-EC",{dateStyle:"medium",timeStyle:"short"})):'')+'</div>':'')+
@@ -1227,9 +1286,34 @@ function barsPct(p,note){
   if(!p.length) return '<p class="muted" style="margin:0">'+(note||"Sin datos en el periodo.")+'</p>';
   return '<div class="bars">'+p.map(([k,x])=>'<div class="bar"><span class="bl" title="'+esc(k)+'">'+esc(k)+'</span><span class="bt"><span class="bf '+(x>=.9?"good":x>=.7?"warn":"low")+'" style="width:'+Math.max(3,Math.round(x*100))+'%"></span></span><span class="bv">'+pct(x)+'</span></div>').join("")+'</div>';
 }
+// Progreso por visita: línea con la calificación de cada visita (orden cronológico) sobre franjas de nivel,
+// y tabla con la variación respecto a la visita anterior. Los puntos abren la ficha de la visita.
+function progressHTML(vs){
+  const L=vs.slice().sort((a,b)=>((a.fecha||"")+a.id).localeCompare((b.fecha||"")+b.id)).map(v=>({v,r:calc(v.niveles)})).filter(x=>x.r.nivel!=="INCOMPLETA");
+  if(!L.length) return "";
+  // El ancho del dibujo sigue al de la pantalla para que el texto conserve su tamaño en celular.
+  const W=Math.round(Math.max(300,Math.min(640,innerWidth-70))),H=230,ml=34,mr=18,mt=22,mb=34,iw=W-ml-mr,ih=H-mt-mb, y=s=>mt+ih*(1-s/100), n=L.length;
+  const x=i=>n===1?ml+iw/2:ml+iw*i/(n-1), step=Math.ceil(n/10);
+  const band=(a,b,c)=>'<rect class="'+c+'" x="'+ml+'" y="'+y(b)+'" width="'+iw+'" height="'+(y(a)-y(b))+'"/>';
+  const pts=L.map((p,i)=>[x(i),y(p.r.total)]);
+  const svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Calificación por visita: '+esc(L.map(p=>fCorta(p.v.fecha)+" "+f2(p.r.total)).join(", "))+'">'+
+    band(0,CONF,"band-i")+band(CONF,SAT,"band-c")+band(SAT,100,"band-s")+
+    [0,CONF,SAT,100].map(t=>'<line class="grid-l" x1="'+ml+'" x2="'+(W-mr)+'" y1="'+y(t)+'" y2="'+y(t)+'"/><text class="ax" x="'+(ml-6)+'" y="'+(y(t)+4)+'" text-anchor="end">'+t+'</text>').join("")+
+    (n>1?'<polyline class="ln" points="'+pts.map(p=>p.join(",")).join(" ")+'"/>':'')+
+    L.map((p,i)=>'<g data-open="'+esc(p.v.id)+'" style="cursor:pointer"><title>'+esc(p.v.id+" · "+fCorta(p.v.fecha)+" · "+f2(p.r.total)+" pts · "+NIVN[p.r.nivel])+'</title>'+
+      '<circle class="pt" cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="5.5"/><text class="pv" x="'+pts[i][0]+'" y="'+(pts[i][1]-10)+'" text-anchor="middle">'+f2(p.r.total)+'</text>'+
+      ((i%step===0||i===n-1)?'<text class="ax" x="'+pts[i][0]+'" y="'+(H-12)+'" text-anchor="middle">'+esc(fCorta(p.v.fecha).replace(/ \d{4}$/,""))+'</text>':'')+'</g>').join("")+'</svg>';
+  const dl=d=>d>0?'<span class="up">▲ +'+f2(d)+'</span>':d<0?'<span class="down">▼ '+f2(d)+'</span>':'<span class="muted">= 0.00</span>';
+  const tot=n>1?L[n-1].r.total-L[0].r.total:null;
+  return '<div class="ficha"><div class="sh">Progreso por visita</div><div class="prog">'+svg+
+    '<div class="legend"><span><i style="background:var(--teal-soft);border:1px solid var(--teal)"></i>Satisfactorio (90+)</span><span><i style="background:var(--yellow-soft);border:1px solid var(--orange)"></i>Conforme (70–89.99)</span><span><i style="background:var(--danger-soft);border:1px solid var(--danger)"></i>Insatisfactorio (&lt;70)</span></div>'+
+    (tot!=null?'<p class="muted" style="margin:10px 0 0">Variación desde la primera visita: '+dl(tot)+' puntos.</p>':'')+'</div>'+
+    '<div style="overflow-x:auto"><table class="mx"><thead><tr><th>#</th><th>Fecha</th><th>Visita</th><th class="c">Calificación</th><th>Nivel</th><th class="c">Variación</th></tr></thead><tbody>'+
+    L.map((p,i)=>'<tr><td class="c">'+(i+1)+'</td><td>'+fCorta(p.v.fecha)+'</td><td><button class="linkish" data-open="'+esc(p.v.id)+'">'+esc(p.v.id)+'</button></td><td class="c"><b>'+f2(p.r.total)+'</b></td><td>'+nivTag(p.r.nivel)+'</td><td class="c">'+(i?dl(p.r.total-L[i-1].r.total):'<span class="muted">—</span>')+'</td></tr>').join("")+
+    '</tbody></table></div></div>';
+}
 function openDocente(name){
   const vs=VISITS.filter(v=>norm(v.docente)===norm(name)), rs=vs.map(v=>calc(v.niveles)), comp=rs.filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
-  const coms=vs.map(v=>v.compromiso?fCorta(v.fecha)+": "+v.compromiso:"").filter(Boolean).slice(0,3);
   $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">HISTORIAL DE VISITAS ÁULICAS DEL DOCENTE<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
   '<div class="m-top"><h3 id="mTitle">'+esc(name)+'</h3>'+Array.from(new Set(vs.map(v=>v.seccion))).map(s=>'<span class="tag '+esc(s)+'">'+esc(SECN[s]||s)+'</span>').join("")+(rs[0]?nivTag(rs[0].nivel):'')+'</div>'+
   '<div class="m-body">'+
@@ -1237,9 +1321,9 @@ function openDocente(name){
     '<div class="kpi"><div class="n">'+vs.length+'</div><div class="k">Visitas recibidas</div></div>'+
     '<div class="kpi c"><div class="n">'+(comp.length?f2(avg(comp)):"—")+'</div><div class="k">Calificación promedio</div></div>'+
     '<div class="kpi t"><div class="n">'+(rs[0]?f2(rs[0].total):"—")+'</div><div class="k">Última calificación</div></div></div>'+
+   progressHTML(vs)+
    (vs.length?'<div class="ficha"><div class="sh">Logro promedio por bloque</div><div style="padding:14px">'+barsPct(blockAvg(vs))+'</div></div>'+
    '<div class="ficha"><div class="sh">Indicadores por fortalecer</div><div style="padding:14px">'+barsPct(weakInd(vs).slice(0,6),"Cumple todos los indicadores en sus visitas.")+'</div></div>':'')+
-   '<div class="ficha"><div class="sh">Compromisos recientes</div><table>'+(coms.length?coms.map(c=>'<tr><td>'+esc(c)+'</td></tr>').join(""):'<tr><td class="muted">Sin compromisos registrados.</td></tr>')+'</table></div>'+
    '<div class="ficha"><div class="sh">Visitas</div><table>'+(vs.length?vs.map((v,i)=>'<tr><th>'+fCorta(v.fecha)+'</th><td><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.id)+'</button> '+esc([v.materia,v.curso,v.paralelo].filter(Boolean).join(", "))+'<div class="tags" style="margin-top:5px"><span class="tag">'+f2(rs[i].total)+' pts</span>'+nivTag(rs[i].nivel)+'</div></td></tr>').join(""):'<tr><td class="muted">Este docente aún no ha recibido visitas.</td></tr>')+'</table></div>'+
   '</div><div class="m-foot"><button class="btn sec" id="mPrint">Imprimir historial</button></div>';
   openModal(); $("#mClose").onclick=closeModal; $("#mPrint").onclick=()=>window.print();
@@ -1299,7 +1383,7 @@ function renderDash(){
 function renderScale(){
   $("#scaleInfo").innerHTML='<div class="grid g2"><div class="tbl-wrap"><table class="tbl sm"><thead><tr><th>Bloque</th><th class="num">Puntos</th><th>Indicadores</th></tr></thead><tbody>'+
    BLOCKS.map(b=>'<tr><td>'+esc(b.n)+'</td><td class="num">'+b.max+'</td><td>'+b.items.map(i=>i[0]+' ('+i[2]+')').join(" · ")+'</td></tr>').join("")+
-   '<tr><td><b>Total</b></td><td class="num"><b>100</b></td><td>18 indicadores</td></tr></tbody></table></div>'+
+   '<tr><td><b>Total</b></td><td class="num"><b>'+IND.reduce((a,i)=>a+i.p,0)+'</b></td><td>'+IND.length+' indicadores</td></tr></tbody></table></div>'+
    '<div class="tbl-wrap"><table class="tbl sm"><thead><tr><th>Nivel del indicador</th><th class="num">Factor</th></tr></thead><tbody>'+LVS.map(l=>'<tr><td>'+lvTag(l)+'</td><td class="num">'+pct(FACT[l])+'</td></tr>').join("")+
    '</tbody></table><table class="tbl sm"><thead><tr><th>Desempeño</th><th>Rango</th></tr></thead><tbody><tr><td>'+nivTag("SATISFACTORIO")+'</td><td>90 o más</td></tr><tr><td>'+nivTag("CONFORME")+'</td><td>70 a 89.99</td></tr><tr><td>'+nivTag("INSATISFACTORIO")+'</td><td>Menos de 70</td></tr></tbody></table></div></div>';
 }
@@ -1341,9 +1425,9 @@ const cell=s=>{ let t=String(s==null?"":s); if(typeof s==="string"&&/^[=+\-@\t\r
 const num=n=>String(f2(n)).replace(".",",");
 function csv(list){
   const H=["ID","Fecha","Sección","Observador","Docente","Curso","Paralelo","Asignatura","Tema","Hora inicio","Hora fin","Duración (min)"]
-    .concat(BLOCKS.map(b=>b.n+" (/"+b.max+")"),["Calificación (/100)","Nivel"],IND.map(i=>i.c),["Fortalezas","Aspectos por mejorar","Compromiso","Fecha de seguimiento","Fotos"]);
+    .concat(BLOCKS.map(b=>b.n+" (/"+b.max+")"),["Calificación (/100)","Nivel"],IND.map(i=>i.c),["Fortalezas","Aspectos por mejorar","Fecha de seguimiento","Fotos"]);
   return "\uFEFF"+[H].concat(list.map(v=>{ const r=calc(v.niveles); return [v.id,v.fecha,v.seccion,v.observador,v.docente,v.curso,v.paralelo,v.materia,v.tema,v.horaInicio,v.horaFin,v.duracion]
-    .concat(BLOCKS.map(b=>num(r.bloques[b.k])),[num(r.total),NIVN[r.nivel]],IND.map(i=>LVN[(v.niveles||{})[i.c]]||""),[v.fortalezas,v.mejoras,v.compromiso,v.seguimiento,(v.fotos||[]).length]); })).map(r=>r.map(cell).join(";")).join("\r\n");
+    .concat(BLOCKS.map(b=>num(r.bloques[b.k])),[num(r.total),NIVN[r.nivel]],IND.map(i=>LVN[(v.niveles||{})[i.c]]||""),[v.fortalezas,v.mejoras,v.seguimiento,(v.fotos||[]).length]); })).map(r=>r.map(cell).join(";")).join("\r\n");
 }
 async function offer(name,data){
   try{ const b=new Blob([data],{type:name.endsWith(".json")?"application/json":"text/csv;charset=utf-8"}); const a=document.createElement("a");
@@ -1360,9 +1444,10 @@ $("#expJson").onclick=async()=>{
   catch(e){ toast(errMsg(e,"No se pudo preparar el respaldo")); }
   finally{ b.disabled=false; b.textContent=t; } };
 // Campos permitidos en una visita (deben coincidir con firestore.rules).
-const VKEYS=["id","token","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
-  "fortalezas","mejoras","compromiso","seguimiento","fotos","puntajes","total","nivel","creado","actualizado","creadoPor","actualizadoPor"];
-function validVisit(v){ return v&&typeof v==="object"&&ID_RE.test(v.id||"")&&SECS.includes(v.seccion)&&/^\d{4}-\d{2}-\d{2}$/.test(v.fecha||"")&&v.niveles&&typeof v.niveles==="object"; }
+const VKEYS=["id","token","version","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
+  "fortalezas","mejoras","seguimiento","fotos","puntajes","total","nivel","creado","actualizado","creadoPor","actualizadoPor"];
+// Solo se importan visitas de la matriz vigente: una visita de la matriz anterior (18 indicadores) tiene otros códigos.
+function validVisit(v){ return v&&typeof v==="object"&&v.version===MATRIZ_VERSION&&ID_RE.test(v.id||"")&&SECS.includes(v.seccion)&&/^\d{4}-\d{2}-\d{2}$/.test(v.fecha||"")&&v.niveles&&typeof v.niveles==="object"; }
 $("#impBtn").onclick=()=>$("#impFile").click();
 $("#impFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; if(!f||!isAdmin()) return;
   let d; try{ d=JSON.parse(await f.text()); }catch(err){ toast("El archivo no tiene el formato de respaldo de la matriz"); return; }

@@ -1,6 +1,6 @@
 # Matriz de visita áulica RCTX · Eight Academy
 
-Aplicación web del Departamento de Planificación para registrar visitas áulicas con la matriz optimizada de 18 indicadores (100 puntos). Funciona en computadora y celular; solo se necesita una cuenta de Google autorizada.
+Aplicación web del Departamento de Planificación para registrar visitas áulicas con la matriz RCTX (versión 2: 13 indicadores, 100 puntos). Funciona en computadora y celular; solo se necesita una cuenta de Google autorizada.
 
 Los datos se guardan en Firebase (Firestore). Las fotografías (máximo 2 por visita) se comprimen y se guardan en Firestore, así que **no hace falta el plan de pago ni Cloud Storage**.
 
@@ -67,6 +67,21 @@ No hay que dar acceso uno por uno. Para cambiar la súper administración edita 
 - **Reglas de Firestore:** solo aceptan campos conocidos, secciones y fechas válidas, IDs con el formato correcto y autoría de quien escribe.
 - **Respaldo JSON:** incluye visitas, listas, logo y fotografías. Importarlo valida cada registro y pide confirmación antes de reemplazar.
 - **CSV:** protegido contra fórmulas maliciosas al abrirlo en Excel.
+
+## Matriz (versión 2)
+
+| Bloque | Indicadores (puntos) | Total |
+|---|---|---|
+| Criterios generales y planificación | CG1 (4) · CG2 (6) · CG3 (5) | 15 |
+| Anticipación | A1 (5) | 5 |
+| Construcción | C1 (9) · C2 (11) | 20 |
+| Consolidación | K1 (12) | 12 |
+| Evaluación formativa | E1 (12) | 12 |
+| Actuación del docente | D1 (7) · D2 (7) · D3 (7) | 21 |
+| Actuación del estudiante | S1 (8) · S2 (7) | 15 |
+| **Total** | **13 indicadores** | **100** |
+
+Los puntajes siguen la proporción de la matriz anterior (18 indicadores) llevada a 100 y redondeada a enteros. Cada visita guarda `version: 2`; las reglas de Firestore solo aceptan los 13 códigos vigentes y la importación rechaza respaldos de la matriz anterior.
 
 ## Escala de calificación
 

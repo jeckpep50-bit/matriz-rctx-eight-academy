@@ -24,23 +24,25 @@ service cloud.firestore {
     // ID igual al del documento y autoría de quien escribe.
     function rctxVisitOk(id) {
       let d = request.resource.data;
-      return d.keys().hasOnly(['id','token','seccion','fecha','observador','docente','curso','paralelo','materia','tema',
-                               'horaInicio','horaFin','duracion','niveles','evidencias','fortalezas','mejoras','compromiso',
+      return d.keys().hasOnly(['id','token','version','seccion','fecha','observador','docente','curso','paralelo','materia','tema',
+                               'horaInicio','horaFin','duracion','niveles','evidencias','fortalezas','mejoras',
                                'seguimiento','fotos','puntajes','total','nivel','creado','actualizado','creadoPor','actualizadoPor'])
-        && d.keys().hasAll(['id','seccion','fecha','docente','observador','niveles','total','nivel','actualizadoPor'])
+        && d.keys().hasAll(['id','version','seccion','fecha','docente','observador','niveles','total','nivel','actualizadoPor'])
         && d.id == id
         && id.matches('^VA-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{3,}$')
         && d.seccion in ['KIDS','PRIMARIA','SECUNDARIA']
         && d.fecha is string && d.fecha.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
-        && d.niveles is map && d.niveles.size() <= 18
-        && (!('evidencias' in d) || (d.evidencias is map && d.evidencias.size() <= 18))
+        && d.version == 2
+        && d.niveles is map && d.niveles.size() <= 13
+        && d.niveles.keys().hasOnly(['CG1','CG2','CG3','A1','C1','C2','K1','E1','D1','D2','D3','S1','S2'])
+        && (!('evidencias' in d) || (d.evidencias is map && d.evidencias.keys().hasOnly(['CG1','CG2','CG3','A1','C1','C2','K1','E1','D1','D2','D3','S1','S2'])))
         && (!('fotos' in d) || (d.fotos is list && d.fotos.size() <= 2))
         && d.total is number && d.total >= 0 && d.total <= 100
         && d.nivel in ['SATISFACTORIO','CONFORME','INSATISFACTORIO','INCOMPLETA']
         && d.actualizadoPor == rctxEmail()
         && rctxStr(d, 'docente', 150) && rctxStr(d, 'observador', 150) && rctxStr(d, 'materia', 150)
         && rctxStr(d, 'curso', 60) && rctxStr(d, 'paralelo', 30) && rctxStr(d, 'tema', 300) && rctxStr(d, 'token', 64)
-        && rctxStr(d, 'fortalezas', 5000) && rctxStr(d, 'mejoras', 5000) && rctxStr(d, 'compromiso', 3000);
+        && rctxStr(d, 'fortalezas', 5000) && rctxStr(d, 'mejoras', 5000);
     }
 
     match /rctx_visitas/{id} {
