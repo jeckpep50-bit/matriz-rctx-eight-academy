@@ -11,7 +11,8 @@ service cloud.firestore {
     function rctxEmail() { return request.auth.token.email.lower(); }
     // Súper administración, en minúsculas. Debe coincidir con ADMIN_EMAILS de docs/firebase-config.js
     function rctxAdmin() { return rctxSignedIn() && rctxEmail() in [
-      'dsroblesl@eightacademy.edu.ec', 'lemaciasb@eightacademy.edu.ec', 'slbustamantel@eightacademy.edu.ec']; }
+      'dsroblesl@eightacademy.edu.ec', 'lemaciasb@eightacademy.edu.ec', 'slbustamantel@eightacademy.edu.ec',
+      'mibermeov@eightacademy.edu.ec']; }
     // Cualquier cuenta verificada del dominio institucional puede consultar.
     function rctxMember() { return rctxSignedIn() && rctxEmail().matches('^[^@]+@eightacademy[.]edu[.]ec$'); }
     // Solo la súper administración modifica datos.

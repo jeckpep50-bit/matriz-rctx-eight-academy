@@ -5,7 +5,7 @@ Aplicación web del Departamento de Planificación para registrar visitas áulic
 Los datos se guardan en Firebase (Firestore). Las fotografías (máximo 2 por visita) se comprimen y se guardan en Firestore, así que **no hace falta el plan de pago ni Cloud Storage**.
 
 - **Proyecto Firebase:** `matriz-rctx-eight-academy`
-- **Súper administración:** `dsroblesl`, `lemaciasb`, `slbustamantel` (@eightacademy.edu.ec)
+- **Súper administración:** `dsroblesl`, `lemaciasb`, `slbustamantel`, `mibermeov` (@eightacademy.edu.ec)
 - **Acceso:** solo cuentas `@eightacademy.edu.ec`
 - **Publicación:** Netlify (desde la carpeta `docs`, se actualiza con cada `git push`) y Firebase Hosting (`https://matriz-rctx-eight-academy.web.app`).
 
@@ -52,7 +52,7 @@ En Firebase Hosting el inicio de sesión usa el mismo dominio automáticamente. 
 
 | Cuenta | Puede |
 |---|---|
-| Súper administración (3 correos) | Todo: registrar, editar, eliminar, listas, logo y respaldos |
+| Súper administración (4 correos) | Todo: registrar, editar, eliminar, listas, logo y respaldos |
 | Cualquier otra cuenta `@eightacademy.edu.ec` | Solo consultar registros, docentes y tablero |
 | Otros dominios (gmail, etc.) | Nada: ven «Sin acceso» |
 

@@ -15,7 +15,8 @@ export const FIREBASE_CONFIG = {
 export const ADMIN_EMAILS = [
   "dsroblesl@eightacademy.edu.ec",
   "lemaciasb@eightacademy.edu.ec",
-  "slbustamantel@eightacademy.edu.ec"
+  "slbustamantel@eightacademy.edu.ec",
+  "mibermeov@eightacademy.edu.ec"
 ];
 
 // Solo pueden ingresar cuentas de este dominio. Quien no es súper administración solo consulta.
