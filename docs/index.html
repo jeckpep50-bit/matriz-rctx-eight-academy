@@ -960,7 +960,8 @@ async function boot(){
   // En Firebase Hosting (y en los dominios listados en AUTH_SAME_ORIGIN_HOSTS) el inicio de sesión
   // usa el mismo dominio de la página: evita el bloqueo de cookies de terceros de Safari/iOS.
   const cfg=Object.assign({},FIREBASE_CONFIG), h=location.hostname, same=(CFG.AUTH_SAME_ORIGIN_HOSTS||[]).map(x=>String(x).toLowerCase());
-  if(h===FIREBASE_CONFIG.projectId+".web.app"||h===FIREBASE_CONFIG.projectId+".firebaseapp.com"||same.includes(h)) cfg.authDomain=h;
+  // Solo se usa el mismo dominio si su /__/auth/handler está autorizado en Google Cloud (ver README).
+  if(same.includes(h)) cfg.authDomain=h;
   let app; try{ app=initializeApp(cfg); AUTH=getAuth(app); FB=getFirestore(app); }catch(e){ gate("error","La configuración de Firebase no es válida."); return; }
   try{ await getRedirectResult(AUTH); }catch(e){ if(e&&e.code==="auth/unauthorized-domain") gate("error","Este dominio no está autorizado en Firebase (Authentication › Configuración › Dominios autorizados)."); }
   onAuthStateChanged(AUTH, startSession);

@@ -24,5 +24,5 @@ export const ALLOWED_DOMAIN = "eightacademy.edu.ec";
 
 // Dominios propios (p. ej. el de Netlify) donde el inicio de sesión se hace en el mismo dominio
 // a través del proxy /__/auth de netlify.toml. Agrega un dominio aquí SOLO después de autorizar
-// https://ESE_DOMINIO/__/auth/handler en Google Cloud (ver README). En Firebase Hosting es automático.
+// https://ESE_DOMINIO/__/auth/handler en Google Cloud (ver README). Vale también para PROYECTO.web.app.
 export const AUTH_SAME_ORIGIN_HOSTS = [];
