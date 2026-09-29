@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Matriz de visita áulica RCTX | Eight Academy</title>
+<title>Planificación Plataformas de Visitas | Eight Academy</title>
 <meta name="description" content="Registro de visitas áulicas con la matriz RCTX del Departamento de Planificación de Eight Academy.">
-<meta name="theme-color" content="#B2F3FD">
+<meta name="theme-color" content="#F7931E">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,13 +58,13 @@ button,input,select,textarea{font:inherit; color:inherit}
 .hide{display:none!important}
 
 /* ---------- cabecera institucional ---------- */
-.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:40; background:linear-gradient(180deg,#B2F3FD 0%,#DEFAFF 100%);
-  border-bottom:3px solid var(--cyan); display:flex; align-items:center; gap:18px; padding:0 22px 0 8px; height:71px}
+.top{position:sticky; top:env(safe-area-inset-top,0px); z-index:40; background:linear-gradient(180deg,#F7931E 0%,#FBB45C 100%);
+  border-bottom:3px solid #D96F00; display:flex; align-items:center; gap:18px; padding:0 22px 0 8px; height:71px}
 .brand{display:flex; align-items:center; gap:16px; min-width:0; height:100%}
-.brand img{height:68px; width:auto; display:block}
-.wm-sep{width:1px; height:34px; background:rgba(47,60,111,.25)}
-.wm-sub{font-family:var(--tf); font-weight:700; font-size:17px; color:#2F3C6F; line-height:1.15}
-.wm-sub small{display:block; font-family:var(--bf); font-weight:400; font-size:12px; color:#434859}
+.brand img{height:68px; width:auto; display:block; filter:drop-shadow(0 1px 1.5px rgba(42,21,61,.45))}
+.wm-sep{width:1px; height:34px; background:rgba(42,21,61,.35)}
+.wm-sub{font-family:var(--tf); font-weight:700; font-size:17px; color:#2A153D; line-height:1.15}
+.wm-sub small{display:block; font-family:var(--bf); font-weight:400; font-size:12px; color:#2A153D}
 .top .state{background:rgba(255,255,255,.75); border-color:rgba(47,60,111,.18); color:#2F3C6F}
 .top .icon-btn{background:rgba(255,255,255,.75); border-color:rgba(47,60,111,.18); color:#2F3C6F}
 .top-r{margin-left:auto; display:flex; gap:8px; align-items:center}
@@ -297,8 +297,8 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13.5px}
 .mask{position:fixed; inset:0; background:rgba(17,19,42,.6); z-index:60; display:none; padding:22px; overflow:auto}
 .mask.open{display:block}
 .modal{max-width:860px; margin:0 auto; background:var(--surface); border-radius:14px; overflow:hidden; border:1px solid var(--line)}
-.m-run{font-size:11.5px; font-weight:700; color:#2F3C6F; letter-spacing:.04em; padding:0 18px 0 0; border-bottom:3px solid var(--cyan); display:flex; align-items:center; gap:14px; background:linear-gradient(180deg,#B2F3FD 0%,#DEFAFF 100%); height:55px}
-.m-logo{height:52px; width:auto}
+.m-run{font-size:11.5px; font-weight:700; color:#2A153D; letter-spacing:.04em; padding:0 18px 0 0; border-bottom:3px solid #D96F00; display:flex; align-items:center; gap:14px; background:linear-gradient(180deg,#F7931E 0%,#FBB45C 100%); height:55px}
+.m-logo{height:52px; width:auto; filter:drop-shadow(0 1px 1.5px rgba(42,21,61,.45))}
 .m-run button{margin-left:auto}
 .m-top{padding:18px 24px 6px; display:flex; gap:12px; align-items:center; flex-wrap:wrap}
 .m-top h3{font-family:var(--tf); font-size:26px; color:var(--title); margin:0; letter-spacing:.02em}
@@ -403,7 +403,7 @@ table.mx{width:100%; border-collapse:collapse; font-size:13px}
 }
 
 .gate{position:fixed; left:0; right:0; bottom:0; top:calc(71px + env(safe-area-inset-top,0px)); background:var(--bg); z-index:35; display:grid; place-items:center; padding:24px; overflow:auto}
-.gate .card{max-width:480px; width:100%; background:var(--surface); border:1px solid var(--line); border-top:5px solid var(--cyan); border-radius:14px; padding:30px 28px; box-shadow:var(--shadow); text-align:center}
+.gate .card{max-width:480px; width:100%; background:var(--surface); border:1px solid var(--line); border-top:5px solid #F7931E; border-radius:14px; padding:30px 28px; box-shadow:var(--shadow); text-align:center}
 .gate h2{font-family:var(--tf); color:var(--title); font-size:26px; margin:0 0 8px}
 .gate p{color:var(--ink-2); margin:0 0 18px}
 .gate code{background:var(--surface-3); padding:2px 6px; border-radius:5px; font-size:12.5px}
@@ -479,6 +479,20 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
 .pdfmode .mx td:nth-child(2),.pdfmode .mx td:nth-child(6),.pdfmode .ist td:nth-child(2){min-width:0!important}
 .pdfmode [style*="overflow-x:auto"]{overflow:visible!important}
 .pdfmode .mx thead th:nth-child(2){width:46%}
+/* marca de agua institucional del menú lateral */
+.rail-wm{margin:26px 4px 0; border:2px solid var(--line-2); border-radius:12px; padding:16px 12px; text-align:center; user-select:none;
+  color:var(--h2); opacity:.62; font-family:var(--tf); line-height:1.15; text-transform:uppercase; letter-spacing:.06em}
+.rail-wm span{display:block; font-size:12px; font-weight:700}
+.rail-wm b{display:block; font-size:21px; margin:6px 0 4px; letter-spacing:.03em}
+.rail-wm small{display:block; font-size:11px; font-weight:700; color:#D96F00}
+@media (max-width:900px){.rail-wm{display:none}}
+/* docentes de Secundaria */
+.searchbox{position:relative}
+.searchbox svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); width:18px; height:18px; stroke:var(--muted); fill:none; stroke-width:2; pointer-events:none}
+.searchbox input{padding-left:38px}
+.tbl.dsec tbody tr{cursor:default}
+.tbl.dsec td{vertical-align:middle}
+.sent{font-size:12px; color:var(--teal-ink); font-weight:700}
 </style>
 </head>
 <body>
@@ -486,7 +500,7 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
   <div class="brand">
     <img id="logoImg" alt="Eight Academy, Unidad Educativa" src="logo.png">
     <span class="wm-sep"></span>
-    <div class="wm-sub">Matriz de visita áulica RCTX<small>Departamento de Planificación</small></div>
+    <div class="wm-sub">Planificación Plataformas de Visitas<small>Departamento de Planificación</small></div>
   </div>
   <div class="top-r">
     <span class="state" id="storeState"><i></i><span id="storeText">Conectando</span></span>
@@ -506,13 +520,14 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
       <button data-view="registros"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Registros</button>
       <button data-view="docentes"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg>Docentes</button>
       <button data-view="tablero"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Tablero</button>
-      <button data-view="ajustes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Ajustes</button>
+      <button data-view="ajustes" class="s-only"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Ajustes</button>
     </div>
     <div class="rail-stats">
       <div><b id="stTotal">0</b>visitas registradas</div>
       <div><b id="stAvg">—</b>calificación promedio</div>
       <div><b id="stWeek">0</b>en los últimos 7 días</div>
     </div>
+    <div class="rail-wm" aria-hidden="true"><span>Departamento de Planificación</span><b>Eight Academy</b><small>Unidad Educativa</small></div>
   </nav>
 
   <main>
@@ -553,7 +568,7 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
         <div class="grid g3">
           <div class="field"><label for="fecha">Fecha de visita <span class="req">*</span></label><input type="date" id="fecha"></div>
           <div class="field"><label for="observador">Observador/a <span class="req">*</span></label><input type="text" id="observador" list="dlObs" placeholder="Quien realiza la visita"></div>
-          <div class="field"><label for="docente">Docente observado/a <span class="req">*</span></label><input type="text" id="docente" list="dlDoc" placeholder="Docente a cargo"></div>
+          <div class="field"><label for="docente">Docente observado/a <span class="req">*</span></label><input type="text" id="docente" list="dlDoc" placeholder="Docente a cargo"><span class="muted" id="docHint"></span></div>
           <div class="field"><label for="docCorreo">Correo del docente <span class="req">*</span></label><input type="text" id="docCorreo" inputmode="email" placeholder="nombre@eightacademy.edu.ec"><span class="muted">Con este correo el docente revisa su ficha y da su conformidad.</span></div>
           <div class="field"><label for="curso">Grado / curso <span class="req">*</span></label><input type="text" id="curso" placeholder="Ej.: 10.º EGB"></div>
           <div class="field"><label for="paralelo">Paralelo</label><input type="text" id="paralelo" placeholder="Ej.: D"></div>
@@ -665,7 +680,19 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
 
   <!-- ================= DOCENTES ================= -->
   <section id="view-docentes" class="hide">
-    <div class="view-h"><div><h2>Docentes</h2><p>Historial de calificaciones por docente y nivel de su visita más reciente.</p></div></div>
+    <div class="view-h"><div><h2>Docentes</h2><p id="docIntro">Historial de calificaciones por docente y nivel de su visita más reciente.</p></div>
+      <div class="end row"><div class="seg" id="docTabs"><button data-t="cal" aria-pressed="true">Calificaciones</button><button data-t="sec" aria-pressed="false">Docentes secundaria</button></div>
+        <button class="btn w-only hide" id="dsAdd" type="button">Añadir docente</button></div></div>
+    <div id="docSecPane" class="hide">
+      <div class="panel" style="padding:16px 18px">
+        <div class="row">
+          <div class="field searchbox" style="flex:1; min-width:220px"><label for="dsTxt">Buscar docente</label><div style="position:relative"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="dsTxt" placeholder="Nombres, apellidos o correo"></div></div>
+          <span class="muted" id="dsCount" style="align-self:flex-end; padding-bottom:10px"></span>
+        </div>
+      </div>
+      <div id="dsList"></div>
+    </div>
+    <div id="docCalPane">
     <div class="panel" style="padding:16px 18px">
       <div class="toolbar" style="grid-template-columns:2fr 1fr 1fr">
         <div class="field"><label for="dTxt">Buscar docente</label><input type="search" id="dTxt" placeholder="Nombre"></div>
@@ -674,6 +701,7 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
       </div>
     </div>
     <div id="docList"></div>
+    </div>
   </section>
 
   <!-- ================= TABLERO ================= -->
@@ -747,7 +775,7 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
     <div class="panel">
       <h3>Acceso del equipo</h3>
       <p class="hint" id="roleNote"></p>
-      <div class="callout"><b>Súper administración:</b> registra, edita y elimina visitas; gestiona listas, logo y respaldos.<div class="tags" id="adminList" style="margin:8px 0 10px"></div><b>Resto de cuentas @eightacademy.edu.ec:</b> solo consultan registros, docentes y tablero.<br><b>Otros dominios:</b> sin acceso.</div>
+      <div class="callout"><b>Súper administración:</b> todo lo de los evaluadores, además de eliminar visitas y gestionar Ajustes (pesos, trimestres, listas, logo y respaldos).<div class="tags" id="adminList" style="margin:8px 0 10px"></div><b>Evaluadores:</b> registran y editan visitas, marcan seguimientos, envían la evaluación por correo y gestionan los docentes de Secundaria.<div class="tags" id="evalList" style="margin:8px 0 10px"></div><b>Resto de cuentas @eightacademy.edu.ec:</b> solo consultan registros, docentes y tablero.<br><b>Otros dominios:</b> sin acceso.</div>
     </div>
 
     <div class="panel">
@@ -768,10 +796,10 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, runTransaction, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut, reauthenticateWithPopup } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, runTransaction, updateDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import * as CFG from "./firebase-config.js";
-const FIREBASE_CONFIG=CFG.FIREBASE_CONFIG, ADMIN_EMAILS=CFG.ADMIN_EMAILS;
+const FIREBASE_CONFIG=CFG.FIREBASE_CONFIG;
 // Matriz versión 2: 13 indicadores, 100 puntos. Los códigos se numeran de forma consecutiva dentro de cada bloque.
 // Los puntajes siguen la proporción de la matriz anterior (18 indicadores), redondeados a enteros:
 // mayor peso a lo que evidencia aprendizaje (consolidación, evaluación, pensamiento crítico) y menor a lo procedimental.
@@ -882,10 +910,11 @@ const DEFAULT_LOGO="logo.png";
 const COLV="rctx_visitas", COLF="rctx_fotos", COLC="rctx_config";
 const DOMAIN=String(CFG.ALLOWED_DOMAIN||"eightacademy.edu.ec").toLowerCase();
 const CONFIGURED=!!(FIREBASE_CONFIG&&FIREBASE_CONFIG.apiKey)&&!/REEMPLAZA/.test(JSON.stringify(FIREBASE_CONFIG));
-const ADMINS=(ADMIN_EMAILS||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x.indexOf("reemplaza")<0);
-const canWrite=()=>ROLE==="admin";
+const mailList=a=>(a||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x.indexOf("reemplaza")<0);
+const ADMINS=mailList(CFG.SUPER_ADMIN_EMAILS), EVALS=mailList(CFG.EVALUADOR_EMAILS);
+const canWrite=()=>ROLE==="admin"||ROLE==="eval";
 const isAdmin=()=>ROLE==="admin";
-const ROLN={admin:"Súper administración",lector:"Solo lectura"};
+const ROLN={admin:"Súper administración",eval:"Evaluador",lector:"Solo lectura"};
 function sortV(){ VISITS.sort((a,b)=>((b.fecha||"")+(b.id||"")).localeCompare((a.fecha||"")+(a.id||""))); }
 const clean=o=>JSON.parse(JSON.stringify(o));
 const myMail=()=>(ME&&ME.email||"").toLowerCase();
@@ -908,6 +937,7 @@ async function saveVisit(v,fotos){
     // La conformidad solo la escribe el docente; el seguimiento realizado se conserva mientras no cambie la fecha.
     if(prev&&prev.conformidad) data.conformidad=prev.conformidad;
     if(prev&&prev.seguimientoHecho&&prev.seguimiento===data.seguimiento) data.seguimientoHecho=prev.seguimientoHecho;
+    if(prev&&prev.correoEnviado) data.correoEnviado=prev.correoEnviado;
     if(fotos===null) data.fotos=prev&&prev.fotos||[];
     tx.set(doc(FB,COLV,id),data);
     if(fotos!==null){ if(fotos.length) tx.set(doc(FB,COLF,id),{fotos}); else tx.delete(doc(FB,COLF,id)); }
@@ -923,7 +953,7 @@ const GICON='<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1
 function gate(mode,extra){
   const g=$("#gate"), c=$("#gateCard"); g.classList.toggle("hide",!mode);
   if(mode==="config") c.innerHTML='<h2>Configuración pendiente</h2><p>Falta completar <code>firebase-config.js</code> con los datos del proyecto de Firebase y el correo del administrador. Revisa el archivo README.md del repositorio.</p>';
-  if(mode==="login") c.innerHTML='<h2>Matriz de visita áulica</h2><p>Departamento de Planificación · Colegio Eight Academy.<br>Ingresa con tu cuenta institucional <b>@'+esc(DOMAIN)+'</b>.</p><button class="btn gbtn" id="loginBtn">'+GICON+'Iniciar sesión con Google</button><p class="fmsg" id="loginMsg" style="margin:12px 0 0"></p>';
+  if(mode==="login") c.innerHTML='<h2>Planificación Plataformas de Visitas</h2><p>Departamento de Planificación · Eight Academy Unidad Educativa.<br>Ingresa con tu cuenta institucional <b>@'+esc(DOMAIN)+'</b>.</p><button class="btn gbtn" id="loginBtn">'+GICON+'Iniciar sesión con Google</button><p class="fmsg" id="loginMsg" style="margin:12px 0 0"></p>';
   if(mode==="denied") c.innerHTML='<h2>Sin acceso</h2><p>La cuenta <b>'+esc(extra||"")+'</b> no pertenece al dominio institucional. Ingresa con tu correo <b>@'+esc(DOMAIN)+'</b>.</p><button class="btn sec" id="gOut">Usar otra cuenta</button>';
   if(mode==="error") c.innerHTML='<h2>No se pudo conectar</h2><p>'+esc(extra||"Revisa la conexión a internet e intenta nuevamente.")+'</p><button class="btn" onclick="location.reload()">Reintentar</button>';
   const lb=$("#loginBtn"); if(lb) lb.onclick=login;
@@ -950,9 +980,13 @@ function applyRole(){
   ["#cSave","#logoBtn"].forEach(k=>$(k).disabled=!isAdmin());
   ["#cDoc","#cObs","#cMat"].forEach(k=>$(k).readOnly=!isAdmin());
   if(!wDirty) renderWEditor(); if(!pDirty) renderPerEditor(); $("#durCfg").disabled=!isAdmin();
+  $$(".s-only").forEach(x=>x.classList.toggle("hide",!isAdmin()));
   $("#adminList").innerHTML=ADMINS.map(a=>'<span class="tag en">'+esc(a)+'</span>').join("");
+  $("#evalList").innerHTML=EVALS.map(a=>'<span class="tag en">'+esc(a)+'</span>').join("");
   $("#roleNote").textContent="Tu cuenta ("+(ME&&ME.email||"")+") tiene el rol: "+ROLN[ROLE]+".";
   if(!canWrite()&&isView("nueva")) go("registros");
+  if(!isAdmin()&&isView("ajustes")) go("registros");
+  renderDocSec();
 }
 async function boot(){
   renderLogo();
@@ -968,19 +1002,20 @@ async function boot(){
 }
 function stopSubs(){ UNSUB.forEach(f=>{ try{ f(); }catch(e){} }); UNSUB=[]; }
 function startSession(u){
-  stopSubs(); VISITS=[]; ROLE=""; ME=u; renderAll();
+  stopSubs(); VISITS=[]; DSEC=[]; GTOK=null; ROLE=""; ME=u; renderAll();
   $("#outBtn").classList.toggle("hide",!u);
   if(!u){ resetForm(); gate("login"); state("warn","Sin sesión"); return; }
   const mail=myMail();
-  // Solo cuentas verificadas del dominio institucional. Súper administración: lista fija; el resto, solo lectura.
+  // Solo cuentas verificadas del dominio institucional. Súper administración y evaluadores: listas fijas; el resto, solo lectura.
   if(!u.emailVerified||!mail.endsWith("@"+DOMAIN)){ gate("denied",u.email); state("warn","Sin acceso"); return; }
-  ROLE=ADMINS.includes(mail)?"admin":"lector"; ready();
+  ROLE=ADMINS.includes(mail)?"admin":EVALS.includes(mail)?"eval":"lector"; ready();
 }
 function ready(){
   gate(""); applyRole();
   state("ok",ROLN[ROLE],"Los registros se guardan en Firebase y los comparte todo el equipo con acceso.");
   UNSUB.push(onSnapshot(collection(FB,COLV),s=>{ VISITS=s.docs.map(d=>Object.assign({id:d.id},d.data())); sortV(); renderAll(); state("ok",ROLN[ROLE]); },
     err=>state("warn",err&&err.code==="permission-denied"?"Sin permiso de lectura":"Sin conexión")));
+  UNSUB.push(onSnapshot(collection(FB,COLD),s=>{ DSEC=s.docs.map(d=>Object.assign({},d.data(),{_id:d.id})).sort((a,b)=>(a.apellidos+" "+a.nombres).localeCompare(b.apellidos+" "+b.nombres,"es")); renderDocSec(); renderLists(); },()=>{}));
   UNSUB.push(onSnapshot(doc(FB,COLC,"institucion"),s=>{ if(s.exists()){ const d=s.data()||{};
     CONFIG=parseConfig(d); renderConfig(); } },()=>{}));
   offerDraft();
@@ -1013,14 +1048,17 @@ function initForm(){
     const c=b.parentElement.dataset.i; LEVELS[c]=LEVELS[c]===b.dataset.l?"":b.dataset.l; if(!LEVELS[c]) delete LEVELS[c];
     b.closest(".ind").classList.remove("bad"); paintLevels(); markDirty(); });
   // Al cambiar de sección se aplican sus pesos (también al editar: la visita se recalifica con los pesos de la nueva sección).
-  wireSel($("#secOpts"),false,()=>{ if(PESOS){ PESOS=null; if(editingId) toast("Se aplican los pesos de la sección elegida"); } updateScore(); markDirty(); });
+  wireSel($("#secOpts"),false,()=>{ if(PESOS){ PESOS=null; if(editingId) toast("Se aplican los pesos de la sección elegida"); } updateScore(); renderLists(); markDirty(); });
   $("#fecha").value=todayISO();
   ["#fecha","#seguimiento"].forEach(s=>$(s).addEventListener("focus",()=>{ $("#fecha").max=todayISO(); }));
   // Unifica nombres escritos con otra capitalización o sin tildes con el nombre ya registrado.
   [["#docente","#dlDoc"],["#observador","#dlObs"],["#materia","#dlMat"]].forEach(([s,dl])=>$(s).addEventListener("change",()=>{
     const k=norm($(s).value); if(!k) return; const o=Array.from($(dl).options).find(x=>norm(x.value)===k); if(o&&o.value!==$(s).value){ $(s).value=o.value; markDirty(); } }));
   initTimes();
-  $("#docente").addEventListener("change",()=>{ const x=nomOf($("#docente").value); if(x&&x.c&&$("#docCorreo").value.trim().toLowerCase()!==x.c){ if(!$("#docCorreo").value.trim()||confirm("La nómina tiene otro correo para este docente ("+x.c+"). ¿Usarlo?")){ $("#docCorreo").value=x.c; $("#docCorreo").classList.remove("bad"); markDirty(); } } });
+  // En Secundaria el correo se toma de la base de docentes de Secundaria; en las demás secciones, de la nómina.
+  $("#docente").addEventListener("change",()=>{ const x=docMatch($("#docente").value); if(!x) return;
+    if(x.n&&x.n!==$("#docente").value){ $("#docente").value=x.n; markDirty(); }
+    if(x.c&&$("#docCorreo").value.trim().toLowerCase()!==x.c){ if(!$("#docCorreo").value.trim()||x.sec||confirm("La nómina tiene otro correo para este docente ("+x.c+"). ¿Usarlo?")){ $("#docCorreo").value=x.c; $("#docCorreo").classList.remove("bad"); markDirty(); } } });
   $("#fecha").addEventListener("change",idPrev);
   $("#steps").addEventListener("click",e=>{ const b=e.target.closest("[data-step]"); if(!b) return; const t=+b.dataset.step;
     if(t<=STEP) return showStep(t); for(let i=STEP;i<t;i++){ if(!validStep(i,true)) return showStep(i); } showStep(t); });
@@ -1295,7 +1333,7 @@ function visitTable(list){
     '<td data-l="Curso"><span class="tag '+esc(v.seccion)+'">'+esc(SECN[v.seccion]||v.seccion||"")+'</span><br>'+esc([v.curso,v.paralelo].filter(Boolean).join(" "))+'</td>'+
     '<td data-l="Observador">'+esc(v.observador||"—")+'</td>'+
     '<td data-l="Puntaje" class="num"><b class="scn">'+f2(r.total)+'</b></td>'+
-    '<td data-l="Nivel"><div class="tags">'+nivTag(r.nivel)+confTag(v)+'</div></td></tr>'; }).join("")+'</tbody></table></div>';
+    '<td data-l="Nivel"><div class="tags">'+nivTag(r.nivel)+confTag(v)+(v.correoEnviado?'<span class="tag en" title="Evaluación enviada por correo">✉ Enviada</span>':'')+'</div></td></tr>'; }).join("")+'</tbody></table></div>';
 }
 function renderRecords(){
   const mp=ME?VISITS.filter(v=>v.docenteCorreo&&v.docenteCorreo===myMail()&&!v.conformidad):[];
@@ -1346,7 +1384,7 @@ async function setSegHecho(id,hecho){
   try{ await withTimeout(updateDoc(doc(FB,COLV,id),{seguimientoHecho:hecho?{fecha:todayISO(),por:myMail()}:null,actualizado:new Date().toISOString(),actualizadoPor:myMail()}),20000);
     toast(hecho?"Seguimiento marcado como realizado":"Seguimiento marcado como pendiente"); }
   catch(e){ toast(errMsg(e,"No se pudo actualizar el seguimiento")); } }
-document.addEventListener("click",e=>{ const b=e.target.closest("[data-segdone]"); if(!b||!isAdmin()) return; e.stopPropagation(); b.disabled=true; setSegHecho(b.dataset.segdone,true); },true);
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-segdone]"); if(!b||!canWrite()) return; e.stopPropagation(); b.disabled=true; setSegHecho(b.dataset.segdone,true); },true);
 function openVisit(id){
   const v=VISITS.find(x=>x.id===id); if(!v) return; const r=calcV(v), w=vW(v);
   const ph=(v.fotos||[]).length?'<div class="ficha" id="fichaFotos"><div class="sh">Evidencia fotográfica</div><div class="shots"><p class="muted" style="margin:0"><span class="spin"></span> Cargando fotografías</p></div></div>':'';
@@ -1360,19 +1398,20 @@ function openVisit(id){
    '<div class="ficha"><div class="sh">Información general</div><table>'+
     tr("Fecha",fLarga(v.fecha))+tr("Horario",esc((v.horaInicio||"—")+" a "+(v.horaFin||"—"))+(v.duracion!=null?" ("+v.duracion+" minutos)":""))+
     tr("Observador/a",esc(v.observador))+tr("Docente observado/a",esc(v.docente)+(v.docenteCorreo?' <span class="muted">· '+esc(v.docenteCorreo)+'</span>':''))+tr("Curso y paralelo",esc([v.curso,v.paralelo].filter(Boolean).join(" ")))+
-    tr("Asignatura",esc(v.materia))+tr("Tema de clase",esc(v.tema))+'</table></div>'+
+    tr("Asignatura",esc(v.materia))+tr("Tema de clase",esc(v.tema))+'<tr class="no-pdf"><th>Envío por correo</th><td>'+mailState(v)+'</td></tr></table></div>'+
+   '<div id="mailFb" class="no-pdf"></div>'+
    '<div class="ficha"><div class="sh">Resultado</div><div style="padding:14px">'+resultHTML(v)+'</div></div>'+
    mx+
    '<div class="ficha"><div class="sh">Retroalimentación y seguimiento</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+
-    tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(isAdmin()?' <button type="button" class="btn sec sm no-pdf" id="mSeg" style="margin-left:6px">'+(v.seguimientoHecho?'Marcar como pendiente':'Marcar como realizado')+'</button>':''):"")+'</table></div>'+
+    tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(canWrite()?' <button type="button" class="btn sec sm no-pdf" id="mSeg" style="margin-left:6px">'+(v.seguimientoHecho?'Marcar como pendiente':'Marcar como realizado')+'</button>':''):"")+'</table></div>'+
    confHTML(v)+
    ph+'<div class="firmas"><div><span class="fl"></span>Firma del docente observado<b>'+esc(v.docente||"")+'</b></div><div><span class="fl"></span>Firma del observador(a) / coordinador(a)<b>'+esc(v.observador||"")+'</b></div></div></div>'+
   (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(fHora(new Date(v.creado))):''):'')+
     (v.actualizadoPor&&v.actualizado&&v.actualizado!==v.creado?' · Última modificación: '+esc(v.actualizadoPor)+' el '+esc(fHora(new Date(v.actualizado))):'')+'</div>':'')+
-  '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir</button><button class="btn sec" id="mPdf">PDF</button><button class="btn sec" id="mPdfF">PDF con firmas</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
+  '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir</button><button class="btn sec" id="mPdf">PDF</button><button class="btn sec" id="mPdfF">PDF con firmas</button><button class="btn" id="mMail">'+(v.correoEnviado?'Reenviar por correo':'Enviar por correo')+'</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
   openModal();
   if((v.fotos||[]).length) getFotos(v.id).then(list=>{ const b=$("#fichaFotos .shots"); if(b) b.innerHTML=list===null?'<p class="muted" style="margin:0">No se pudieron cargar las fotografías. Revisa la conexión y vuelve a abrir la ficha.</p>':list.length?list.map((f,i)=>'<figure><img src="'+esc(f.data)+'" alt="Foto '+(i+1)+'"><figcaption>Foto '+(i+1)+(f.desc?': '+esc(f.desc):'')+'</figcaption></figure>').join(""):'<p class="muted" style="margin:0">Sin fotografías.</p>'; });
-  if(!canWrite()) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove();
+  if(!canWrite()) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove(); if(!canWrite()||!v.docenteCorreo) $("#mMail").remove(); else{ if(v.correoEnviado) $("#mMail").classList.add("sec"); $("#mMail").onclick=()=>sendMail(v); }
   $("#mClose").onclick=closeModal; if($("#mEdit")) $("#mEdit").onclick=()=>editVisit(v); $("#mPrint").onclick=()=>window.print();
   $("#mPdf").onclick=()=>downloadPdf(v.id+".pdf",false); $("#mPdfF").onclick=()=>downloadPdf(v.id+"-firmas.pdf",true);
   $("#mDoc").onclick=()=>openDocente(v.docente);
@@ -1387,8 +1426,8 @@ function openVisit(id){
 const H2P_SRC="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
 const loadScript=src=>new Promise((ok,ko)=>{ const s=document.createElement("script"); s.src=src; s.onload=ok; s.onerror=ko; document.head.appendChild(s); });
 const SVG_PROPS=["fill","stroke","stroke-width","stroke-dasharray","opacity","display","font-size","font-weight","font-family"];
-async function downloadPdf(name,firmas){
-  const btns=$$("#modal .m-foot button"); btns.forEach(b=>b.disabled=true); toast("Generando PDF…");
+// out recibe el conversor ya preparado: w=>w.save() descarga el archivo; w=>w.outputPdf("blob") lo devuelve para adjuntarlo.
+async function pdfFrom(name,firmas,out){
   const root=document.documentElement, prev=root.getAttribute("data-theme"); let box=null;
   try{
     if(!window.html2pdf) await withTimeout(loadScript(H2P_SRC),20000);
@@ -1397,12 +1436,17 @@ async function downloadPdf(name,firmas){
     const so=m.querySelectorAll("svg, svg *"), sc=c.querySelectorAll("svg, svg *");
     so.forEach((el,i)=>{ const cs=getComputedStyle(el); sc[i].setAttribute("style",SVG_PROPS.map(p=>p+":"+cs.getPropertyValue(p)).join(";")); });
     box=document.createElement("div"); box.className="pdfbox"; box.appendChild(c); document.body.appendChild(box);
-    await window.html2pdf().set({margin:[8,8,10,8],filename:name,image:{type:"jpeg",quality:.95},
+    return await out(window.html2pdf().set({margin:[8,8,10,8],filename:name,image:{type:"jpeg",quality:.95},
       html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0},
-      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:["css","legacy"],avoid:["tr",".sc-card",".prog svg",".firmas","figure",".kpi",".bar"]}}).from(c).save();
-    toast("PDF descargado");
-  }catch(e){ toast("No se pudo generar el PDF. Revisa la conexión o usa «Imprimir» › Guardar como PDF."); }
-  finally{ if(box) box.remove(); if(prev) root.setAttribute("data-theme",prev); else root.removeAttribute("data-theme"); btns.forEach(b=>b.disabled=false); }
+      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:["css","legacy"],avoid:["tr",".sc-card",".prog svg",".firmas","figure",".kpi",".bar"]}}).from(c));
+  }
+  finally{ if(box) box.remove(); if(prev) root.setAttribute("data-theme",prev); else root.removeAttribute("data-theme"); }
+}
+async function downloadPdf(name,firmas){
+  const btns=$$("#modal .m-foot button"); btns.forEach(b=>b.disabled=true); toast("Generando PDF…");
+  try{ await pdfFrom(name,firmas,w=>w.save()); toast("PDF descargado"); }
+  catch(e){ toast("No se pudo generar el PDF. Revisa la conexión o usa «Imprimir» › Guardar como PDF."); }
+  finally{ btns.forEach(b=>b.disabled=false); }
 }
 
 let lastFocus=null;
@@ -1643,7 +1687,7 @@ function segHTML(){
   const venc=p.filter(v=>v.seguimiento<t), prox=p.filter(v=>v.seguimiento>=t);
   const li=v=>{ const d=d2i(v.seguimiento)-d2i(t);
     return '<li><span class="grow"><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.docente||"—")+'</button><span>Seguimiento: '+fCorta(v.seguimiento)+' · '+(d<0?'venció hace '+(-d)+' día'+(d===-1?'':'s'):d===0?'es hoy':'en '+d+' día'+(d===1?'':'s'))+' · '+esc(v.id)+'</span></span>'+
-      (d<0?'<span class="tag prio">Vencido</span>':'<span class="tag warn">Próximo</span>')+(isAdmin()?'<button class="btn sec sm" data-segdone="'+esc(v.id)+'">Marcar realizado</button>':'')+'</li>'; };
+      (d<0?'<span class="tag prio">Vencido</span>':'<span class="tag warn">Próximo</span>')+(canWrite()?'<button class="btn sec sm" data-segdone="'+esc(v.id)+'">Marcar realizado</button>':'')+'</li>'; };
   return '<div class="panel" style="border-left:4px solid '+(venc.length?'var(--danger)':'var(--orange)')+'"><h3>Seguimientos pendientes</h3><p class="hint">'+
     (venc.length?venc.length+' vencido'+(venc.length===1?'':'s'):'Ninguno vencido')+' · '+prox.length+' en los próximos '+SEG_DIAS+' días.</p><ul class="plist">'+venc.concat(prox).map(li).join("")+'</ul></div>';
 }
@@ -1735,7 +1779,9 @@ function opts(s){ return Array.from(s).sort((a,b)=>a.localeCompare(b,"es")).map(
 // Une variantes del mismo nombre (mayúsculas, tildes); gana la primera aparición (la nómina va primero).
 function uniq(a){ const m=new Map(); a.forEach(x=>{ const k=norm(x); if(k&&!m.has(k)) m.set(k,String(x).trim()); }); return Array.from(m.values()); }
 function renderLists(){
-  const D=uniq([...CONFIG.nomina.map(x=>x.n),...(CONFIG.docentes||[]),...VISITS.map(v=>v.docente)]), O=uniq([...(CONFIG.observadores||[]),...VISITS.map(v=>v.observador)]), M=uniq([...(CONFIG.materias||[]),...VISITS.map(v=>v.materia)]);
+  const secB=selVal($("#secOpts"))==="SECUNDARIA"&&DSEC.length;
+  $("#docHint").textContent=secB?"Base de Secundaria: al elegir el docente, su correo se completa solo.":"";
+  const D=secB?uniq(DSEC.map(dsName)):uniq([...CONFIG.nomina.map(x=>x.n),...(CONFIG.docentes||[]),...VISITS.map(v=>v.docente)]), O=uniq([...(CONFIG.observadores||[]),...VISITS.map(v=>v.observador)]), M=uniq([...(CONFIG.materias||[]),...VISITS.map(v=>v.materia)]);
   $("#dlDoc").innerHTML=opts(D); $("#dlObs").innerHTML=opts(O); $("#dlMat").innerHTML=opts(M);
   const k=$("#fObs").value; $("#fObs").innerHTML='<option value="">Todos</option>'+opts(O); $("#fObs").value=k;
   // No se sobrescriben las listas mientras la administración tiene cambios sin guardar.
@@ -1849,7 +1895,7 @@ $("#expJson").onclick=async()=>{
   catch(e){ toast(errMsg(e,"No se pudo preparar el respaldo")); }
   finally{ b.disabled=false; b.textContent=t; } };
 // Campos permitidos en una visita (deben coincidir con firestore.rules).
-const VKEYS=["id","token","version","docenteCorreo","pesos","conformidad","seguimientoHecho","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
+const VKEYS=["id","token","version","docenteCorreo","pesos","conformidad","seguimientoHecho","correoEnviado","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
   "fortalezas","mejoras","seguimiento","fotos","puntajes","total","nivel","creado","actualizado","creadoPor","actualizadoPor"];
 // Solo se importan visitas de la matriz vigente: una visita de la matriz anterior (18 indicadores) tiene otros códigos.
 function validVisit(v){ return v&&typeof v==="object"&&v.version===MATRIZ_VERSION&&ID_RE.test(v.id||"")&&SECS.includes(v.seccion)&&/^\d{4}-\d{2}-\d{2}$/.test(v.fecha||"")&&v.niveles&&typeof v.niveles==="object"; }
@@ -1876,6 +1922,148 @@ $("#impFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; 
   if(withCfg){ CONFIG=parseConfig(d.config); try{ await putConfig(); listsDirty=false; wDirty=false; pDirty=false; renderConfig(); }catch(err){ fail++; } }
   toast(n+" visitas importadas"+(nf?" · "+nf+" con fotografías":"")+(fail?" · "+fail+" con error":"")); };
 
+/* ---------- docentes de Secundaria ---------- */
+const COLD="rctx_docentes";
+let DSEC=[], DTAB="cal";
+const titleCase=s=>String(s||"").toLowerCase().replace(/(^|[\s'-])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase());
+const dsName=d=>titleCase(d.nombres+" "+d.apellidos);
+const upName=s=>String(s||"").replace(/\s+/g," ").trim().toUpperCase();
+function dsFind(name){ const k=norm(name); return k?DSEC.find(d=>norm(d.nombres+" "+d.apellidos)===k||norm(d.apellidos+" "+d.nombres)===k):null; }
+function docMatch(name){
+  if(selVal($("#secOpts"))==="SECUNDARIA"){ const d=dsFind(name); if(d) return {n:dsName(d),c:d.correo,sec:true}; }
+  const x=nomOf(name); return x?{n:x.n,c:x.c}:null; }
+function renderDocSec(){
+  $("#dsAdd").classList.toggle("hide",DTAB!=="sec"||!canWrite());
+  if(DTAB!=="sec") return;
+  const t=norm($("#dsTxt").value), l=DSEC.filter(d=>!t||norm(d.apellidos+" "+d.nombres+" "+d.nombres+" "+d.apellidos+" "+d.correo).indexOf(t)>=0), w=canWrite();
+  $("#dsCount").textContent=(t?l.length+" de ":"")+DSEC.length+" docente"+(DSEC.length===1?"":"s");
+  if(!DSEC.length){ $("#dsList").innerHTML='<div class="empty"><b>Aún no hay docentes de Secundaria</b>'+(w?'Usa «Añadir docente» para registrar uno o importar una lista.':'La lista la registran los evaluadores.')+'</div>'; return; }
+  if(!l.length){ $("#dsList").innerHTML='<div class="empty"><b>Ningún docente coincide</b>Revisa lo escrito en el buscador.</div>'; return; }
+  $("#dsList").innerHTML='<div class="tbl-wrap"><table class="tbl dsec"><thead><tr><th class="num">#</th><th>Apellidos</th><th>Nombres</th><th>Correo institucional</th>'+(w?'<th></th>':'')+'</tr></thead><tbody>'+
+    l.map((d,i)=>'<tr class="SECUNDARIA"><td data-l="#" class="num">'+(i+1)+'</td><td data-l="Apellidos"><b>'+esc(d.apellidos)+'</b></td><td data-l="Nombres">'+esc(d.nombres)+'</td>'+
+      '<td data-l="Correo">'+(d.correo?esc(d.correo):'<span class="tag warn">Sin correo institucional</span>')+'</td>'+
+      (w?'<td class="num"><button type="button" class="btn danger sm" data-dsdel="'+esc(d._id)+'">Eliminar docente</button></td>':'')+'</tr>').join("")+'</tbody></table></div>';
+}
+wireSeg($("#docTabs"),"t",t=>{ DTAB=t; $("#docSecPane").classList.toggle("hide",t!=="sec"); $("#docCalPane").classList.toggle("hide",t!=="cal");
+  $("#docIntro").textContent=t==="sec"?"Base de docentes de Secundaria: su correo institucional se usa en la visita y para enviar la evaluación.":"Historial de calificaciones por docente y nivel de su visita más reciente.";
+  renderDocSec(); if(t==="cal") renderDocentes(); });
+$("#dsTxt").addEventListener("input",renderDocSec);
+$("#dsList").addEventListener("click",async e=>{ const b=e.target.closest("[data-dsdel]"); if(!b||!canWrite()) return;
+  const d=DSEC.find(x=>x._id===b.dataset.dsdel); if(!d) return;
+  if(!confirm("¿Eliminar a "+d.apellidos+" "+d.nombres+" de la base de docentes de Secundaria?\nSus visitas ya registradas no se borran.")) return;
+  b.disabled=true; try{ await withTimeout(deleteDoc(doc(FB,COLD,d._id)),20000); toast("Docente eliminado de la base"); }catch(err){ b.disabled=false; toast(errMsg(err,"No se pudo eliminar al docente")); } });
+const dsDup=(x,list)=>(list||DSEC).some(d=>(x.correo&&d.correo===x.correo)||norm(d.apellidos+" "+d.nombres)===norm(x.apellidos+" "+x.nombres));
+const dsNew=x=>({nombres:x.nombres,apellidos:x.apellidos,correo:x.correo,seccion:"SECUNDARIA",creadoPor:myMail(),creado:new Date().toISOString()});
+// Lista pegada: «APELLIDOS; NOMBRES; correo» o «APELLIDOS NOMBRES correo» (las dos primeras palabras son los apellidos).
+function parseDs(t){ const ok=[], bad=[];
+  lines(t).forEach(l=>{ let ap="", no="", c="";
+    if(l.includes(";")){ const p=l.split(";").map(x=>x.replace(/\s+/g," ").trim()); ap=p[0]; no=p[1]||""; c=(p[2]||"").toLowerCase(); }
+    else{ const w=l.split(/\s+/).filter(x=>/[\p{L}@]/u.test(x)), i=w.findIndex(x=>x.includes("@")); if(i>=0) c=w.splice(i,1)[0].toLowerCase(); ap=w.slice(0,2).join(" "); no=w.slice(2).join(" "); }
+    if(!ap||!no||(c&&!MAIL_RE.test(c))) bad.push(l); else ok.push({apellidos:upName(ap),nombres:upName(no),correo:c}); });
+  return {ok,bad}; }
+function openDsAdd(){
+  if(!canWrite()) return;
+  $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">AÑADIR DOCENTE DE SECUNDARIA<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
+   '<div class="m-body" style="padding-top:18px"><h3 id="mTitle" class="scn" style="margin:0 0 12px">Nuevo docente</h3>'+
+    '<div class="grid g2"><div class="field"><label for="dsN">Nombres <span class="req">*</span></label><input type="text" id="dsN" maxlength="80" placeholder="Ej.: María José"></div>'+
+    '<div class="field"><label for="dsA">Apellidos <span class="req">*</span></label><input type="text" id="dsA" maxlength="80" placeholder="Ej.: Cárdenas Zapata"></div></div>'+
+    '<div class="field" style="margin-top:14px"><label for="dsC">Correo institucional <span class="req">*</span></label><input type="text" id="dsC" inputmode="email" placeholder="nombre@'+esc(DOMAIN)+'"></div>'+
+    '<p class="fmsg" id="dsMsg" style="margin:10px 0 0"></p>'+
+    '<details class="dt"><summary>Importar varios docentes a la vez</summary><p class="muted" style="margin:6px 0 8px">Pega una línea por docente: <code>APELLIDOS; NOMBRES; correo</code>. También se acepta <code>APELLIDOS NOMBRES correo</code>: se toman las dos primeras palabras como apellidos. Los que ya están en la base se omiten.</p>'+
+     '<textarea id="dsBulk" style="min-height:150px"></textarea><div class="row" style="margin-top:8px"><button type="button" class="btn sec" id="dsBulkGo">Revisar e importar</button><span class="muted" id="dsBulkMsg"></span></div></details></div>'+
+   '<div class="m-foot"><button class="btn" id="dsSave">Guardar docente</button><button class="btn sec" id="dsCancel">Cancelar</button></div>';
+  openModal(); $("#dsN").focus();
+  $("#mClose").onclick=closeModal; $("#dsCancel").onclick=closeModal;
+  $("#dsSave").onclick=async()=>{ const x={nombres:upName($("#dsN").value),apellidos:upName($("#dsA").value),correo:$("#dsC").value.trim().toLowerCase()}, m=$("#dsMsg");
+    $$("#dsN,#dsA,#dsC").forEach(el=>el.classList.remove("bad"));
+    const miss=[["#dsN",x.nombres],["#dsA",x.apellidos],["#dsC",x.correo]].filter(([,v])=>!v); miss.forEach(([k])=>$(k).classList.add("bad"));
+    if(miss.length){ m.textContent="Nombres, apellidos y correo institucional son obligatorios."; return; }
+    if(!MAIL_RE.test(x.correo)){ $("#dsC").classList.add("bad"); m.textContent="El correo debe ser una cuenta @"+DOMAIN+"."; return; }
+    if(dsDup(x)){ m.textContent="Ese docente o ese correo ya está en la base."; return; }
+    $("#dsSave").disabled=true;
+    try{ await withTimeout(setDoc(doc(collection(FB,COLD)),dsNew(x)),20000); closeModal(); toast("Docente añadido: "+x.apellidos+" "+x.nombres); }
+    catch(err){ $("#dsSave").disabled=false; m.textContent=errMsg(err,"No se pudo guardar el docente."); } };
+  $("#dsBulkGo").onclick=async()=>{ const r=parseDs($("#dsBulk").value), msg=$("#dsBulkMsg"), add=[];
+    r.ok.forEach(x=>{ if(!dsDup(x)&&!dsDup(x,add)) add.push(x); });
+    if(!add.length){ msg.textContent=r.bad.length?"Revisa el formato: "+r.bad.slice(0,2).join(" · "):"No hay docentes nuevos para agregar."; return; }
+    const sinC=add.filter(x=>!x.correo).length;
+    if(!confirm("Se agregarán "+add.length+" docentes"+(r.ok.length-add.length?" (se omiten "+(r.ok.length-add.length)+" que ya están)":"")+(sinC?". "+sinC+" sin correo institucional":"")+(r.bad.length?". Se ignoran "+r.bad.length+" líneas con formato o correo no válido":"")+". ¿Continuar?")) return;
+    $("#dsBulkGo").disabled=true; msg.innerHTML='<span class="spin"></span> Guardando';
+    try{ for(let i=0;i<add.length;i+=400){ const b=writeBatch(FB); add.slice(i,i+400).forEach(x=>b.set(doc(collection(FB,COLD)),dsNew(x))); await withTimeout(b.commit(),30000); }
+      closeModal(); toast(add.length+" docentes agregados a la base de Secundaria"); }
+    catch(err){ $("#dsBulkGo").disabled=false; msg.textContent=errMsg(err,"No se pudo importar la lista."); } };
+}
+$("#dsAdd").onclick=openDsAdd;
+
+/* ---------- envío de la evaluación por correo (Gmail del evaluador) ---------- */
+// Se envía desde la cuenta institucional de quien evalúa, con el PDF adjunto. El permiso de Google se pide
+// la primera vez (y cuando vence, cada hora); el token solo vive en la memoria de esta pestaña.
+const GMAIL_SCOPE="https://www.googleapis.com/auth/gmail.send", APP_URL="https://matriz-rctx-eight-academy.web.app";
+let GTOK=null;
+async function gmailToken(){
+  if(GTOK&&GTOK.exp>Date.now()) return GTOK.t;
+  const p=new GoogleAuthProvider(); p.addScope(GMAIL_SCOPE); p.setCustomParameters({login_hint:myMail(),hd:DOMAIN});
+  const r=await reauthenticateWithPopup(AUTH.currentUser,p), c=GoogleAuthProvider.credentialFromResult(r);
+  if(!c||!c.accessToken) throw {code:"no-token"};
+  GTOK={t:c.accessToken,exp:Date.now()+50*60e3}; return GTOK.t;
+}
+const u8b64=u=>{ let x=""; for(let i=0;i<u.length;i+=0x8000) x+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000)); return btoa(x); };
+const b64=s=>u8b64(new TextEncoder().encode(s));
+const wrap76=s=>s.replace(/.{1,76}/g,"$&\r\n");
+function mimeMsg(to,subject,html,fname,pdf64){ const bd="rctx"+newToken().replace(/-/g,"");
+  return ["To: "+to,"Subject: =?UTF-8?B?"+b64(subject)+"?=","MIME-Version: 1.0",'Content-Type: multipart/mixed; boundary="'+bd+'"',"",
+    "--"+bd,'Content-Type: text/html; charset="UTF-8"',"Content-Transfer-Encoding: base64","",wrap76(b64(html)),
+    "--"+bd,'Content-Type: application/pdf; name="'+fname+'"','Content-Disposition: attachment; filename="'+fname+'"',"Content-Transfer-Encoding: base64","",wrap76(pdf64),
+    "--"+bd+"--",""].join("\r\n"); }
+const mailSubject=v=>"Evaluación de visita áulica "+v.id+" · "+(v.docente||"");
+function mailHTML(v){ const r=calcV(v), row=(k,x)=>x?'<tr><td style="padding:6px 10px;color:#667085;font-size:13px;vertical-align:top;white-space:nowrap">'+esc(k)+'</td><td style="padding:6px 10px;font-size:14px;white-space:pre-wrap">'+esc(x)+'</td></tr>':'';
+  return '<div style="font-family:Arial,Helvetica,sans-serif;color:#252733;max-width:640px">'+
+   '<div style="background:#F7931E;color:#2A153D;padding:14px 18px;border-radius:10px 10px 0 0;font-weight:bold;font-size:16px">Planificación Plataformas de Visitas<br><span style="font-weight:normal;font-size:12px">Departamento de Planificación · Eight Academy Unidad Educativa</span></div>'+
+   '<div style="border:1px solid #D7DCE3;border-top:0;border-radius:0 0 10px 10px;padding:18px">'+
+   '<p style="margin:0 0 12px">Estimado/a '+esc(v.docente||"docente")+':</p>'+
+   '<p style="margin:0 0 14px">Le compartimos la evaluación de la visita áulica realizada el '+esc(fLarga(v.fecha))+'. La ficha completa va adjunta en PDF.</p>'+
+   '<table style="border-collapse:collapse;width:100%;margin-bottom:14px">'+row("Visita",v.id)+row("Observador/a",v.observador)+row("Asignatura",v.materia)+row("Curso",[v.curso,v.paralelo].filter(Boolean).join(" "))+
+    row("Calificación",f2(r.total)+" / 100 · "+NIVN[r.nivel])+row("Fortalezas",v.fortalezas)+row("Aspectos por mejorar",v.mejoras)+row("Seguimiento",v.seguimiento?fLarga(v.seguimiento):"")+'</table>'+
+   '<p style="margin:0 0 14px">Para revisar la ficha y registrar su conformidad, ingrese con su cuenta institucional a <a href="'+APP_URL+'" style="color:#2F3C6F;font-weight:bold">'+APP_URL.replace("https://","")+'</a> › Registros.</p>'+
+   '<p style="margin:0;color:#667085;font-size:13px">Enviado por '+esc(myMail())+' desde la plataforma de visitas del Departamento de Planificación.</p></div></div>'; }
+function mailState(v){ const m=v.correoEnviado; if(!m) return v.docenteCorreo?'<span class="muted">Aún no se ha enviado a '+esc(v.docenteCorreo)+'.</span>':'<span class="muted">Sin correo del docente.</span>';
+  const d=tsDate(m.fecha); return '<span class="sent">✉ Enviada a '+esc(m.a||"")+'</span> <span class="muted">· '+esc(m.por||"")+(d?' · '+esc(fHora(d)):'')+'</span>'; }
+// Si Google no permite el envío desde la plataforma: Gmail con el mensaje redactado y el PDF para adjuntar a mano.
+function mailFallback(v,why){ const fb=$("#mailFb"); if(!fb) return;
+  const txt="Estimado/a "+(v.docente||"docente")+":\n\nLe comparto la evaluación de la visita áulica "+v.id+" del "+fLarga(v.fecha)+" (calificación "+f2(calcV(v).total)+" / 100). La ficha completa va adjunta en PDF.\n\nPara revisarla y registrar su conformidad, ingrese con su cuenta institucional a "+APP_URL+" › Registros.\n\nDepartamento de Planificación · Eight Academy Unidad Educativa";
+  const url="https://mail.google.com/mail/?authuser="+encodeURIComponent(myMail())+"&view=cm&fs=1&to="+encodeURIComponent(v.docenteCorreo)+"&su="+encodeURIComponent(mailSubject(v))+"&body="+encodeURIComponent(txt);
+  fb.innerHTML='<div class="callout warn" style="margin-top:14px"><b>No se pudo enviar desde la plataforma.</b> '+esc(why)+'<br>Alternativa: descarga el PDF y abre Gmail con el mensaje listo para adjuntarlo y enviarlo.'+
+    '<div class="row" style="margin-top:10px"><button type="button" class="btn sec sm" id="fbPdf">1. Descargar PDF</button><a class="btn sm" id="fbMail" target="_blank" rel="noopener" href="'+esc(url)+'">2. Abrir Gmail</a></div></div>';
+  $("#fbPdf").onclick=()=>downloadPdf(v.id+".pdf",false); }
+async function sendMail(v){
+  if(!MAIL_RE.test(v.docenteCorreo||"")){ toast("La visita no tiene un correo institucional válido del docente."); return; }
+  const prevS=v.correoEnviado, dd=prevS&&tsDate(prevS.fecha);
+  if(!confirm(prevS?"Esta evaluación ya se envió a "+(prevS.a||v.docenteCorreo)+(dd?" el "+fHora(dd):"")+". ¿Enviarla de nuevo a "+v.docenteCorreo+"?":"Se enviará la evaluación "+v.id+", con el PDF adjunto, a "+v.docenteCorreo+" desde tu cuenta "+myMail()+". ¿Continuar?")) return;
+  const b=$("#mMail"), label=b.textContent; $("#mailFb").innerHTML="";
+  const busy=on=>{ $$("#modal .m-foot button").forEach(x=>x.disabled=on); if(on) b.innerHTML='<span class="spin"></span> Enviando'; else b.textContent=label; };
+  busy(true);
+  let tok;
+  try{ tok=await gmailToken(); }
+  catch(e){ busy(false); const c=e&&e.code||"";
+    if(c==="auth/popup-closed-by-user"||c==="auth/cancelled-popup-request"){ toast("Envío cancelado"); return; }
+    if(c==="auth/popup-blocked"){ toast("El navegador bloqueó la ventana de Google. Permite las ventanas emergentes para este sitio e intenta de nuevo."); return; }
+    if(c==="auth/user-mismatch"){ toast("En la ventana de Google elige tu cuenta "+myMail()+"."); return; }
+    mailFallback(v,"Google no concedió el permiso para enviar correos ("+(c||"sin código")+")."); return; }
+  try{
+    toast("Preparando el PDF…");
+    const pdf=await pdfFrom(v.id+".pdf",false,w=>w.outputPdf("blob"));
+    const raw=mimeMsg(v.docenteCorreo,mailSubject(v),mailHTML(v),v.id+".pdf",u8b64(new Uint8Array(await pdf.arrayBuffer())));
+    const res=await withTimeout(fetch("https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send?uploadType=media",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"message/rfc822"},body:raw}),60000);
+    if(!res.ok){ const j=await res.json().catch(()=>({})); if(res.status===401||res.status===403) GTOK=null; throw {code:"gmail",status:res.status,msg:j.error&&j.error.message||""}; }
+    try{ await withTimeout(updateDoc(doc(FB,COLV,v.id),{correoEnviado:{fecha:serverTimestamp(),por:myMail(),a:v.docenteCorreo}}),20000); }
+    catch(e){ toast("Correo enviado, pero no se pudo registrar el envío en la ficha."); busy(false); return; }
+    toast("Evaluación enviada a "+v.docenteCorreo); setTimeout(()=>openVisit(v.id),400);
+  }catch(e){ busy(false);
+    const why=e&&e.code==="gmail"?(e.status===403?"Google rechazó el envío: falta el permiso «Enviar correo en tu nombre» o la institución lo bloquea.":"Gmail respondió con el error "+e.status+(e.msg?" ("+e.msg+")":"")+"."):
+      e&&e.code==="timeout"||!navigator.onLine?"Sin conexión con Gmail.":"No se pudo generar o enviar el PDF.";
+    mailFallback(v,why); }
+}
+
 /* ---------- navegación ---------- */
 const isView=v=>!$("#view-"+v).classList.contains("hide");
 function go(v){
@@ -1884,7 +2072,7 @@ function go(v){
   if(v==="tablero") renderDash(); if(v==="docentes") renderDocentes(); if(v==="registros") renderRecords();
   window.scrollTo({top:0});
 }
-$("#nav").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b){ if(b.dataset.view==="nueva"&&!canWrite()) return; go(b.dataset.view); } });
+$("#nav").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b){ if(b.dataset.view==="nueva"&&!canWrite()) return; if(b.dataset.view==="ajustes"&&!isAdmin()) return; go(b.dataset.view); } });
 // Si hay una visita en curso, «Nueva visita» vuelve a ella en lugar de borrarla.
 $("#goNew").onclick=()=>{ if(!canWrite()) return; if(!formDirty) resetForm(); go("nueva"); if(formDirty) toast("Continúa con la visita en curso o cancélala"); };
 ["#fSec","#fObs","#fNiv"].forEach(s=>$(s).addEventListener("change",renderRecords)); $("#fTxt").addEventListener("input",renderRecords);

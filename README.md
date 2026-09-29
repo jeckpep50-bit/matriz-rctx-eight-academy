@@ -1,27 +1,27 @@
-# Matriz de visita áulica RCTX · Eight Academy
+# Planificación Plataformas de Visitas · Eight Academy
 
-Aplicación web del Departamento de Planificación para registrar visitas áulicas con la matriz RCTX (versión 2: 13 indicadores, 100 puntos). Funciona en computadora y celular; solo se necesita una cuenta de Google autorizada.
+Aplicación web del Departamento de Planificación (Eight Academy Unidad Educativa) para registrar visitas áulicas con la matriz RCTX (versión 2: 13 indicadores, 100 puntos). Funciona en computadora y celular; solo se necesita una cuenta de Google autorizada.
 
 Los datos se guardan en Firebase (Firestore). Las fotografías (máximo 2 por visita) se comprimen y se guardan en Firestore, así que **no hace falta el plan de pago ni Cloud Storage**.
 
 - **Proyecto Firebase:** `matriz-rctx-eight-academy`
-- **Súper administración:** `dsroblesl`, `lemaciasb`, `slbustamantel`, `mibermeov` (@eightacademy.edu.ec)
+- **Súper administración:** `dsroblesl` (@eightacademy.edu.ec)
+- **Evaluadores:** `slbustamantel`, `lemaciasb`, `mibermeov` (@eightacademy.edu.ec)
 - **Acceso:** solo cuentas `@eightacademy.edu.ec`
-- **Publicación:** Netlify (desde la carpeta `docs`, se actualiza con cada `git push`) y Firebase Hosting (`https://matriz-rctx-eight-academy.web.app`).
+- **Publicación:** Firebase Hosting (`https://matriz-rctx-eight-academy.web.app`), desde la carpeta `docs`. El sitio de Netlify se dio de baja el 29/09/2026.
 
 ## Estructura
 
 ```
 matriz-rctx-eight-academy/
-├── docs/                  ← la página (Netlify y Firebase Hosting la publican desde aquí)
+├── docs/                  ← la página (Firebase Hosting la publica desde aquí)
 │   ├── index.html
-│   ├── firebase-config.js ← configuración pública de Firebase y correo de administración
+│   ├── firebase-config.js ← configuración pública de Firebase y correos de súper administración y evaluadores
 │   ├── logo.png
 │   └── .nojekyll
 ├── firestore.rules        ← reglas de seguridad (con validación de datos)
 ├── firestore.indexes.json
 ├── firebase.json          ← Firebase Hosting + cabeceras de seguridad
-├── netlify.toml           ← Netlify + cabeceras de seguridad + proxy de inicio de sesión
 ├── .firebaserc
 └── README.md
 ```
@@ -29,34 +29,39 @@ matriz-rctx-eight-academy/
 ## Configuración única en la consola de Firebase
 
 1. **Authentication › Método de acceso › Google › Habilitar** (elige el correo de asistencia y guarda).
-2. **Authentication › Configuración › Dominios autorizados › Agregar dominio**: agrega el dominio de Netlify (p. ej. `matriz-rctx-eight.netlify.app`). `localhost` y los dominios `web.app`/`firebaseapp.com` ya vienen autorizados.
-3. Recomendado: en Google Cloud › APIs y servicios › Credenciales, restringe la *Browser key* a los sitios web de la matriz (referentes HTTP).
+2. `localhost` y los dominios `web.app`/`firebaseapp.com` ya vienen autorizados en **Authentication › Configuración › Dominios autorizados**.
+3. **Google Cloud › APIs y servicios › Biblioteca › Gmail API**: habilitada (necesaria para «Enviar por correo»).
+4. Recomendado: en Google Cloud › APIs y servicios › Credenciales, restringe la *Browser key* a los sitios web de la matriz (referentes HTTP).
 
 ## Publicar cambios
 
 ```
-git add -A && git commit -m "…" && git push      # Netlify publica automáticamente
-firebase deploy --only hosting,firestore           # Firebase Hosting + reglas
+git add -A && git commit -m "…" && git push      # guarda el código en GitHub
+firebase deploy --only hosting,firestore           # publica la página y las reglas
 ```
-
-## Inicio de sesión en Safari/iPhone desde Netlify (opcional)
-
-En Firebase Hosting el inicio de sesión usa el mismo dominio automáticamente. En Netlify, si alguien en iPhone no puede ingresar:
-
-1. Google Cloud › APIs y servicios › Credenciales › *Web client (auto created by Google Service)* › **URI de redireccionamiento autorizados**: agrega `https://TU-SITIO.netlify.app/__/auth/handler`.
-2. En `docs/firebase-config.js` agrega el dominio: `AUTH_SAME_ORIGIN_HOSTS = ["TU-SITIO.netlify.app"]` y publica.
-
-`netlify.toml` ya incluye el proxy `/__/auth/*` necesario.
 
 ## Acceso
 
 | Cuenta | Puede |
 |---|---|
-| Súper administración (4 correos) | Todo: registrar, editar, eliminar, listas, logo y respaldos |
-| Cualquier otra cuenta `@eightacademy.edu.ec` | Solo consultar registros, docentes y tablero |
+| Súper administración (`dsroblesl`) | Todo: lo de los evaluadores, eliminar visitas y Ajustes (pesos, trimestres, duraciones, listas, logo y respaldos) |
+| Evaluadores (`slbustamantel`, `lemaciasb`, `mibermeov`) | Registrar y editar visitas, marcar seguimientos, enviar la evaluación por correo, añadir y eliminar docentes de Secundaria |
+| Cualquier otra cuenta `@eightacademy.edu.ec` | Solo consultar registros, docentes y tablero, y dar su conformidad en sus propias visitas |
 | Otros dominios (gmail, etc.) | Nada: ven «Sin acceso» |
 
-No hay que dar acceso uno por uno. Para cambiar la súper administración edita **los dos archivos**: `ADMIN_EMAILS` en `docs/firebase-config.js` y `rctxAdmin()` en `firestore.rules`; luego publica (`firebase deploy --only firestore,hosting` y `git push`). El servidor aplica estas reglas aunque alguien modifique la página.
+Para cambiar los roles edita **los dos archivos**: `SUPER_ADMIN_EMAILS` y `EVALUADOR_EMAILS` en `docs/firebase-config.js`, y `rctxSuper()` y `rctxEval()` en `firestore.rules`; luego publica con `firebase deploy --only firestore,hosting`. El servidor aplica estas reglas aunque alguien modifique la página.
+
+## Docentes de Secundaria
+
+En **Docentes › Docentes secundaria** está la base de docentes de Secundaria (apellidos, nombres y correo institucional), con buscador. Los evaluadores y la súper administración pueden **Añadir docente** (los tres campos son obligatorios), **importar varios a la vez** pegando una línea por docente (`APELLIDOS; NOMBRES; correo`) y **Eliminar docente** (sus visitas no se borran). La base se guarda en Firestore (`rctx_docentes`), no en el repositorio.
+
+Al registrar una visita de **Secundaria**, el campo «Docente observado/a» sugiere los nombres de esta base y el **correo del docente se completa solo**. La pestaña «Calificaciones» sigue mostrando el historial de notas como antes.
+
+## Envío de la evaluación por correo
+
+En la ficha de cada visita, el botón **Enviar por correo** envía la evaluación al correo del docente **desde el Gmail institucional de quien evalúa**, con la ficha en PDF adjunta y un resumen (calificación, fortalezas, aspectos por mejorar y enlace para dar la conformidad). La ficha registra a quién, quién y cuándo se envió (el servidor fija la hora), y la lista de registros lo marca con «✉ Enviada».
+
+La primera vez (y luego como máximo cada hora) Google pide permiso para «enviar correo en tu nombre». Como el proyecto de Google Cloud no pertenece a la organización de eightacademy, Google muestra antes el aviso **«Google no verificó esta app»**: se continúa con *Configuración avanzada › Ir a matriz-rctx-eight-academy*. Si Google o la institución bloquean el permiso, la ficha ofrece la alternativa: descargar el PDF y abrir Gmail con el mensaje ya redactado.
 
 ## Funcionamiento y protección de datos
 

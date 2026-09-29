@@ -10,16 +10,21 @@ export const FIREBASE_CONFIG = {
   appId: "1:947779198370:web:5b4582a56455c3349566fb"
 };
 
-// Súper administración (registra, edita y elimina). En minúsculas.
-// Debe coincidir con rctxAdmin() de firestore.rules.
-export const ADMIN_EMAILS = [
-  "dsroblesl@eightacademy.edu.ec",
-  "lemaciasb@eightacademy.edu.ec",
+// Súper administración: todo, incluido eliminar visitas y Ajustes. En minúsculas.
+// Debe coincidir con rctxSuper() de firestore.rules.
+export const SUPER_ADMIN_EMAILS = [
+  "dsroblesl@eightacademy.edu.ec"
+];
+
+// Evaluadores: registran y editan visitas, envían la evaluación por correo y gestionan los docentes de Secundaria.
+// Debe coincidir con rctxEval() de firestore.rules.
+export const EVALUADOR_EMAILS = [
   "slbustamantel@eightacademy.edu.ec",
+  "lemaciasb@eightacademy.edu.ec",
   "mibermeov@eightacademy.edu.ec"
 ];
 
-// Solo pueden ingresar cuentas de este dominio. Quien no es súper administración solo consulta.
+// Solo pueden ingresar cuentas de este dominio. El resto de cuentas del dominio solo consulta.
 export const ALLOWED_DOMAIN = "eightacademy.edu.ec";
 
 // Dominios propios (p. ej. el de Netlify) donde el inicio de sesión se hace en el mismo dominio

@@ -9,14 +9,13 @@ service cloud.firestore {
     // ===== MATRIZ RCTX (inicio) =====
     function rctxSignedIn() { return request.auth != null && request.auth.token.email_verified == true; }
     function rctxEmail() { return request.auth.token.email.lower(); }
-    // Súper administración, en minúsculas. Debe coincidir con ADMIN_EMAILS de docs/firebase-config.js
-    function rctxAdmin() { return rctxSignedIn() && rctxEmail() in [
-      'dsroblesl@eightacademy.edu.ec', 'lemaciasb@eightacademy.edu.ec', 'slbustamantel@eightacademy.edu.ec',
-      'mibermeov@eightacademy.edu.ec']; }
+    // Súper administración, en minúsculas. Debe coincidir con SUPER_ADMIN_EMAILS de docs/firebase-config.js
+    function rctxSuper() { return rctxSignedIn() && rctxEmail() in ['dsroblesl@eightacademy.edu.ec']; }
+    // Evaluadores (debe coincidir con EVALUADOR_EMAILS). La súper administración también evalúa.
+    function rctxEval() { return rctxSuper() || (rctxSignedIn() && rctxEmail() in [
+      'slbustamantel@eightacademy.edu.ec', 'lemaciasb@eightacademy.edu.ec', 'mibermeov@eightacademy.edu.ec']); }
     // Cualquier cuenta verificada del dominio institucional puede consultar.
     function rctxMember() { return rctxSignedIn() && rctxEmail().matches('^[^@]+@eightacademy[.]edu[.]ec$'); }
-    // Solo la súper administración modifica datos.
-    function rctxEditor() { return rctxAdmin(); }
 
     // Códigos de la matriz versión 2.
     function rctxCodes() { return ['CG1','CG2','CG3','A1','C1','C2','K1','E1','D1','D2','D3','S1','S2']; }
@@ -29,7 +28,7 @@ service cloud.firestore {
       let d = request.resource.data;
       return d.keys().hasOnly(['id','token','version','seccion','fecha','observador','docente','docenteCorreo','curso','paralelo','materia','tema',
                                'horaInicio','horaFin','duracion','niveles','evidencias','pesos','fortalezas','mejoras',
-                               'seguimiento','seguimientoHecho','conformidad','fotos','puntajes','total','nivel',
+                               'seguimiento','seguimientoHecho','conformidad','correoEnviado','fotos','puntajes','total','nivel',
                                'creado','actualizado','creadoPor','actualizadoPor'])
         && d.keys().hasAll(['id','version','seccion','fecha','docente','docenteCorreo','observador','niveles','total','nivel','actualizadoPor'])
         && d.id == id
@@ -43,6 +42,7 @@ service cloud.firestore {
         && (!('pesos' in d) || (d.pesos is map && d.pesos.keys().hasOnly(rctxCodes()) && d.pesos.size() == 13))
         && (!('seguimientoHecho' in d) || d.seguimientoHecho == null || (d.seguimientoHecho is map && d.seguimientoHecho.keys().hasOnly(['fecha','por'])))
         && (!('fotos' in d) || (d.fotos is list && d.fotos.size() <= 2))
+        && (!('correoEnviado' in d) || (d.correoEnviado is map && d.correoEnviado.keys().hasOnly(['fecha','por','a'])))
         && d.total is number && d.total >= 0 && d.total <= 100
         && d.nivel in ['SATISFACTORIO','CONFORME','INSATISFACTORIO','INCOMPLETA']
         && d.actualizadoPor == rctxEmail()
@@ -64,31 +64,56 @@ service cloud.firestore {
         && c.por == rctxEmail()
         && c.fecha == request.time;
     }
+    // Registro del envío de la evaluación por correo: solo ese campo, con el correo de quien envía y la hora del servidor.
+    function rctxMailLog() {
+      let m = request.resource.data.correoEnviado;
+      return rctxEval()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['correoEnviado'])
+        && m is map && m.keys().hasOnly(['fecha','por','a'])
+        && m.por == rctxEmail() && m.fecha == request.time
+        && m.a == resource.data.get('docenteCorreo', '');
+    }
 
     match /rctx_visitas/{id} {
       allow read: if rctxMember();
       // Al crear, quien registra queda como autor. Una conformidad solo puede venir de un respaldo y queda marcada como restaurada.
-      allow create: if rctxEditor() && rctxVisitOk(id)
-        && (request.resource.data.get('creadoPor', '') == rctxEmail() || rctxAdmin())
-        && (!('conformidad' in request.resource.data) || request.resource.data.conformidad.get('restaurada', false) == true);
-      // Al editar no se puede cambiar el autor, la fecha de creación ni la conformidad del docente.
-      allow update: if (rctxEditor() && rctxVisitOk(id)
+      allow create: if rctxEval() && rctxVisitOk(id)
+        && (request.resource.data.get('creadoPor', '') == rctxEmail() || rctxSuper())
+        && (!('conformidad' in request.resource.data) || request.resource.data.conformidad.get('restaurada', false) == true)
+        && (!('correoEnviado' in request.resource.data) || rctxSuper());
+      // Al editar no se puede cambiar el autor, la fecha de creación, la conformidad del docente ni el registro de envío.
+      allow update: if (rctxEval() && rctxVisitOk(id)
           && (!('creadoPor' in resource.data) || request.resource.data.get('creadoPor', '') == resource.data.creadoPor)
           && (!('creado' in resource.data) || request.resource.data.get('creado', '') == resource.data.creado)
-          && request.resource.data.get('conformidad', null) == resource.data.get('conformidad', null))
-        || rctxConfByTeacher();
-      allow delete: if rctxAdmin();
+          && request.resource.data.get('conformidad', null) == resource.data.get('conformidad', null)
+          && (request.resource.data.get('correoEnviado', null) == resource.data.get('correoEnviado', null) || rctxSuper()))
+        || rctxConfByTeacher() || rctxMailLog();
+      allow delete: if rctxSuper();
     }
     match /rctx_fotos/{id} {
       allow read: if rctxMember();
-      allow create, update: if rctxEditor()
+      allow create, update: if rctxEval()
         && request.resource.data.keys().hasOnly(['fotos'])
         && request.resource.data.fotos is list && request.resource.data.fotos.size() <= 2;
-      allow delete: if rctxEditor();
+      allow delete: if rctxSuper();
     }
     match /rctx_config/{id} {
       allow read: if rctxMember();
-      allow write: if rctxAdmin();
+      allow write: if rctxSuper();
+    }
+    // Base de docentes de Secundaria (correo para la visita y el envío de la evaluación).
+    match /rctx_docentes/{id} {
+      allow read: if rctxMember();
+      allow create, update: if rctxEval()
+        && request.resource.data.keys().hasOnly(['nombres','apellidos','correo','seccion','creadoPor','creado'])
+        && request.resource.data.keys().hasAll(['nombres','apellidos','correo','seccion'])
+        && request.resource.data.nombres is string && request.resource.data.nombres.size() > 0 && request.resource.data.nombres.size() <= 80
+        && request.resource.data.apellidos is string && request.resource.data.apellidos.size() > 0 && request.resource.data.apellidos.size() <= 80
+        && request.resource.data.correo is string
+        && (request.resource.data.correo == '' || request.resource.data.correo.matches('^[^@]+@eightacademy[.]edu[.]ec$'))
+        && request.resource.data.seccion == 'SECUNDARIA'
+        && rctxStr(request.resource.data, 'creadoPor', 150) && rctxStr(request.resource.data, 'creado', 40);
+      allow delete: if rctxEval();
     }
     // ===== MATRIZ RCTX (fin) =====
   }
