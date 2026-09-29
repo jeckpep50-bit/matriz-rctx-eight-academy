@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F3F6FA; --surface:#FFFFFF; --surface-2:#FAFBFC; --surface-3:#EEF3FA;
+  --bg:#FFF6EC; --rail:#FFF9F3; --surface:#FFFFFF; --surface-2:#FAFBFC; --surface-3:#EEF3FA;
   --ink:#252733; --ink-2:#434859; --muted:#667085; --line:#D7DCE3; --line-2:#BCC4D0;
   --title:#2A153D; --h2:#2F3C6F; --primary:#2F3C6F; --on-primary:#FFFFFF; --purple:#2A153D;
   --cyan:#39DADB; --cyan-soft:#E8FBFB; --teal:#5DAF86; --teal-ink:#2B7550; --teal-soft:#E9F5EF;
@@ -28,7 +28,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#11132A; --surface:#191C36; --surface-2:#1E2240; --surface-3:#252A4D;
+    --bg:#11132A; --rail:#191C36; --surface:#191C36; --surface-2:#1E2240; --surface-3:#252A4D;
     --ink:#ECEEF6; --ink-2:#C4C8DA; --muted:#949BB5; --line:#2E3458; --line-2:#3E4574;
     --title:#DCCFF2; --h2:#AEB9EE; --primary:#9AA8EA; --on-primary:#11132A;
     --cyan-soft:#153639; --teal-ink:#94D6B4; --teal-soft:#1B3329;
@@ -38,7 +38,7 @@
   }
 }
 :root[data-theme="dark"]{
-  --bg:#11132A; --surface:#191C36; --surface-2:#1E2240; --surface-3:#252A4D;
+  --bg:#11132A; --rail:#191C36; --surface:#191C36; --surface-2:#1E2240; --surface-3:#252A4D;
   --ink:#ECEEF6; --ink-2:#C4C8DA; --muted:#949BB5; --line:#2E3458; --line-2:#3E4574;
   --title:#DCCFF2; --h2:#AEB9EE; --primary:#9AA8EA; --on-primary:#11132A;
   --cyan-soft:#153639; --teal-ink:#94D6B4; --teal-soft:#1B3329;
@@ -76,7 +76,7 @@ button,input,select,textarea{font:inherit; color:inherit}
 
 /* ---------- estructura ---------- */
 .shell{display:grid; grid-template-columns:232px minmax(0,1fr); align-items:start}
-.rail{position:sticky; top:74px; padding:18px 12px; min-height:calc(100vh - 74px); background:var(--surface); border-right:1px solid var(--line)}
+.rail{position:sticky; top:74px; padding:18px 12px; min-height:calc(100vh - 74px); background:var(--rail); border-right:1px solid var(--line)}
 .nav{display:flex; flex-direction:column; gap:3px}
 .nav button{display:flex; align-items:center; gap:11px; width:100%; border:0; background:none; text-align:left; cursor:pointer;
   padding:10px 12px; border-radius:9px; color:var(--ink-2); font-size:14.5px}
@@ -493,6 +493,14 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
 .tbl.dsec tbody tr{cursor:default}
 .tbl.dsec td{vertical-align:middle}
 .sent{font-size:12px; color:var(--teal-ink); font-weight:700}
+/* firma del docente */
+.sig{position:relative; height:180px; max-width:620px; border:2px dashed var(--line-2); border-radius:10px; background:#fff; touch-action:none}
+.sig canvas{display:block; width:100%; height:100%; touch-action:none; cursor:crosshair}
+.sig-l{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); color:#98A2B3; font-size:15px; pointer-events:none}
+.sigv{max-width:320px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:6px}
+.sigv img{display:block; width:100%; height:auto}
+.firmas div{position:relative}
+.firmas .fimg{position:absolute; left:0; right:0; bottom:100%; margin:0 auto 2px; max-height:58px; width:auto}
 </style>
 </head>
 <body>
@@ -681,7 +689,7 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
   <!-- ================= DOCENTES ================= -->
   <section id="view-docentes" class="hide">
     <div class="view-h"><div><h2>Docentes</h2><p id="docIntro">Historial de calificaciones por docente y nivel de su visita más reciente.</p></div>
-      <div class="end row"><div class="seg" id="docTabs"><button data-t="cal" aria-pressed="true">Calificaciones</button><button data-t="sec" aria-pressed="false">Docentes secundaria</button></div>
+      <div class="end row"><div class="seg" id="docTabs"><button data-t="cal" aria-pressed="true">Calificaciones</button><button data-t="KIDS" aria-pressed="false">Docentes Kids</button><button data-t="PRIMARIA" aria-pressed="false">Docentes Primaria</button><button data-t="SECUNDARIA" aria-pressed="false">Docentes Secundaria</button></div>
         <button class="btn w-only hide" id="dsAdd" type="button">Añadir docente</button></div></div>
     <div id="docSecPane" class="hide">
       <div class="panel" style="padding:16px 18px">
@@ -797,7 +805,7 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut, reauthenticateWithPopup } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, runTransaction, updateDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, runTransaction, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import * as CFG from "./firebase-config.js";
 const FIREBASE_CONFIG=CFG.FIREBASE_CONFIG;
 // Matriz versión 2: 13 indicadores, 100 puntos. Los códigos se numeran de forma consecutiva dentro de cada bloque.
@@ -907,7 +915,7 @@ function wireSeg(host, key, cb){
 
 /* ---------- almacenamiento (Firebase) ---------- */
 const DEFAULT_LOGO="logo.png";
-const COLV="rctx_visitas", COLF="rctx_fotos", COLC="rctx_config";
+const COLV="rctx_visitas", COLF="rctx_fotos", COLC="rctx_config", COLS="rctx_firmas";
 const DOMAIN=String(CFG.ALLOWED_DOMAIN||"eightacademy.edu.ec").toLowerCase();
 const CONFIGURED=!!(FIREBASE_CONFIG&&FIREBASE_CONFIG.apiKey)&&!/REEMPLAZA/.test(JSON.stringify(FIREBASE_CONFIG));
 const mailList=a=>(a||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x.indexOf("reemplaza")<0);
@@ -944,7 +952,7 @@ async function saveVisit(v,fotos){
     return data;
   }),25000);
 }
-async function delVisit(id){ await deleteDoc(doc(FB,COLV,id)); try{ await deleteDoc(doc(FB,COLF,id)); }catch(e){} }
+async function delVisit(id){ await deleteDoc(doc(FB,COLV,id)); try{ await deleteDoc(doc(FB,COLF,id)); }catch(e){} try{ await deleteDoc(doc(FB,COLS,id)); delete FIRMAS[id]; }catch(e){} }
 async function putConfig(){ await setDoc(doc(FB,COLC,"institucion"),clean(CONFIG)); }
 // Devuelve null si la descarga falla (distinto de "sin fotos"), para no confundir un error con una lista vacía.
 async function getFotos(id){ try{ const s=await getDoc(doc(FB,COLF,id)); return s.exists()?(s.data().fotos||[]):[]; }catch(e){ return null; } }
@@ -1002,7 +1010,7 @@ async function boot(){
 }
 function stopSubs(){ UNSUB.forEach(f=>{ try{ f(); }catch(e){} }); UNSUB=[]; }
 function startSession(u){
-  stopSubs(); VISITS=[]; DSEC=[]; GTOK=null; ROLE=""; ME=u; renderAll();
+  stopSubs(); VISITS=[]; DSEC=[]; FIRMAS={}; GTOK=null; ROLE=""; ME=u; renderAll();
   $("#outBtn").classList.toggle("hide",!u);
   if(!u){ resetForm(); gate("login"); state("warn","Sin sesión"); return; }
   const mail=myMail();
@@ -1365,7 +1373,7 @@ function confHTML(v){
       '<div class="row" style="margin-top:10px"><button type="button" class="btn" id="cfOk">Estoy conforme</button><button type="button" class="btn sec" id="cfObs">Enviar conformidad con observaciones</button><span class="fmsg" id="cfMsg"></span></div></div>'+
       '<p class="muted pdf-only" style="margin:0">Pendiente de conformidad de '+esc(v.docenteCorreo)+'.</p>';
   else body='<p class="muted" style="margin:0">Pendiente de conformidad de '+esc(v.docenteCorreo)+'.</p>';
-  return '<div class="ficha"><div class="sh">Conformidad del docente</div><div style="padding:12px 14px">'+body+'</div></div>';
+  return '<div class="ficha"><div class="sh">Conformidad y firma del docente</div><div style="padding:12px 14px">'+body+'<div id="firmaBox"></div></div></div>';
 }
 async function giveConf(v,estado){
   const t=($("#cfTxt").value||"").trim();
@@ -1405,15 +1413,15 @@ function openVisit(id){
    '<div class="ficha"><div class="sh">Retroalimentación y seguimiento</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+
     tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(canWrite()?' <button type="button" class="btn sec sm no-pdf" id="mSeg" style="margin-left:6px">'+(v.seguimientoHecho?'Marcar como pendiente':'Marcar como realizado')+'</button>':''):"")+'</table></div>'+
    confHTML(v)+
-   ph+'<div class="firmas"><div><span class="fl"></span>Firma del docente observado<b>'+esc(v.docente||"")+'</b></div><div><span class="fl"></span>Firma del observador(a) / coordinador(a)<b>'+esc(v.observador||"")+'</b></div></div></div>'+
+   ph+'<div class="firmas"><div><img class="fimg hide" id="fImgDoc" alt=""><span class="fl"></span>Firma del docente observado<b>'+esc(v.docente||"")+'</b></div><div><span class="fl"></span>Firma del observador(a) / coordinador(a)<b>'+esc(v.observador||"")+'</b></div></div></div>'+
   (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(fHora(new Date(v.creado))):''):'')+
     (v.actualizadoPor&&v.actualizado&&v.actualizado!==v.creado?' · Última modificación: '+esc(v.actualizadoPor)+' el '+esc(fHora(new Date(v.actualizado))):'')+'</div>':'')+
-  '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir</button><button class="btn sec" id="mPdf">PDF</button><button class="btn sec" id="mPdfF">PDF con firmas</button><button class="btn" id="mMail">'+(v.correoEnviado?'Reenviar por correo':'Enviar por correo')+'</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
+  '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir</button><button class="btn sec" id="mPdfF">PDF con firmas</button><button class="btn" id="mMail">'+(v.correoEnviado?'Reenviar por correo':'Enviar por correo')+'</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
   openModal();
   if((v.fotos||[]).length) getFotos(v.id).then(list=>{ const b=$("#fichaFotos .shots"); if(b) b.innerHTML=list===null?'<p class="muted" style="margin:0">No se pudieron cargar las fotografías. Revisa la conexión y vuelve a abrir la ficha.</p>':list.length?list.map((f,i)=>'<figure><img src="'+esc(f.data)+'" alt="Foto '+(i+1)+'"><figcaption>Foto '+(i+1)+(f.desc?': '+esc(f.desc):'')+'</figcaption></figure>').join(""):'<p class="muted" style="margin:0">Sin fotografías.</p>'; });
   if(!canWrite()) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove(); if(!canWrite()||!v.docenteCorreo) $("#mMail").remove(); else{ if(v.correoEnviado) $("#mMail").classList.add("sec"); $("#mMail").onclick=()=>sendMail(v); }
   $("#mClose").onclick=closeModal; if($("#mEdit")) $("#mEdit").onclick=()=>editVisit(v); $("#mPrint").onclick=()=>window.print();
-  $("#mPdf").onclick=()=>downloadPdf(v.id+".pdf",false); $("#mPdfF").onclick=()=>downloadPdf(v.id+"-firmas.pdf",true);
+  $("#mPdfF").onclick=()=>downloadPdf(v.id+"-firmas.pdf",true); loadFirma(v);
   $("#mDoc").onclick=()=>openDocente(v.docente);
   if($("#mSeg")) $("#mSeg").onclick=async()=>{ $("#mSeg").disabled=true; await setSegHecho(v.id,!v.seguimientoHecho); setTimeout(()=>openVisit(v.id),300); };
   if($("#cfOk")){ $("#cfOk").onclick=()=>giveConf(v,"CONFORME"); $("#cfObs").onclick=()=>giveConf(v,"OBSERVACIONES"); }
@@ -1779,9 +1787,9 @@ function opts(s){ return Array.from(s).sort((a,b)=>a.localeCompare(b,"es")).map(
 // Une variantes del mismo nombre (mayúsculas, tildes); gana la primera aparición (la nómina va primero).
 function uniq(a){ const m=new Map(); a.forEach(x=>{ const k=norm(x); if(k&&!m.has(k)) m.set(k,String(x).trim()); }); return Array.from(m.values()); }
 function renderLists(){
-  const secB=selVal($("#secOpts"))==="SECUNDARIA"&&DSEC.length;
-  $("#docHint").textContent=secB?"Base de Secundaria: al elegir el docente, su correo se completa solo.":"";
-  const D=secB?uniq(DSEC.map(dsName)):uniq([...CONFIG.nomina.map(x=>x.n),...(CONFIG.docentes||[]),...VISITS.map(v=>v.docente)]), O=uniq([...(CONFIG.observadores||[]),...VISITS.map(v=>v.observador)]), M=uniq([...(CONFIG.materias||[]),...VISITS.map(v=>v.materia)]);
+  const sec=selVal($("#secOpts")), R=sec?dsOf(sec):[];
+  $("#docHint").textContent=R.length?"Docentes de "+SECN[sec]+": al elegir el docente, su correo se completa solo.":"";
+  const D=R.length?uniq(R.map(dsName)):uniq([...CONFIG.nomina.map(x=>x.n),...(CONFIG.docentes||[]),...VISITS.map(v=>v.docente)]), O=uniq([...(CONFIG.observadores||[]),...VISITS.map(v=>v.observador)]), M=uniq([...(CONFIG.materias||[]),...VISITS.map(v=>v.materia)]);
   $("#dlDoc").innerHTML=opts(D); $("#dlObs").innerHTML=opts(O); $("#dlMat").innerHTML=opts(M);
   const k=$("#fObs").value; $("#fObs").innerHTML='<option value="">Todos</option>'+opts(O); $("#fObs").value=k;
   // No se sobrescriben las listas mientras la administración tiene cambios sin guardar.
@@ -1922,78 +1930,109 @@ $("#impFile").onchange=async e=>{ const f=e.target.files[0]; e.target.value=""; 
   if(withCfg){ CONFIG=parseConfig(d.config); try{ await putConfig(); listsDirty=false; wDirty=false; pDirty=false; renderConfig(); }catch(err){ fail++; } }
   toast(n+" visitas importadas"+(nf?" · "+nf+" con fotografías":"")+(fail?" · "+fail+" con error":"")); };
 
-/* ---------- docentes de Secundaria ---------- */
+/* ---------- base de docentes por sede (Kids, Primaria, Secundaria) ---------- */
 const COLD="rctx_docentes";
 let DSEC=[], DTAB="cal";
 const titleCase=s=>String(s||"").toLowerCase().replace(/(^|[\s'-])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase());
 const dsName=d=>titleCase(d.nombres+" "+d.apellidos);
 const upName=s=>String(s||"").replace(/\s+/g," ").trim().toUpperCase();
-function dsFind(name){ const k=norm(name); return k?DSEC.find(d=>norm(d.nombres+" "+d.apellidos)===k||norm(d.apellidos+" "+d.nombres)===k):null; }
+const dsOf=sec=>DSEC.filter(d=>d.seccion===sec);
+function dsFind(name,sec){ const k=norm(name); return k?dsOf(sec).find(d=>norm(d.nombres+" "+d.apellidos)===k||norm(d.apellidos+" "+d.nombres)===k):null; }
+// El correo se toma de la base de la sede elegida en la visita; si no está, de la nómina de Ajustes.
 function docMatch(name){
-  if(selVal($("#secOpts"))==="SECUNDARIA"){ const d=dsFind(name); if(d) return {n:dsName(d),c:d.correo,sec:true}; }
+  const d=dsFind(name,selVal($("#secOpts"))); if(d) return {n:dsName(d),c:d.correo,sec:true};
   const x=nomOf(name); return x?{n:x.n,c:x.c}:null; }
 function renderDocSec(){
-  $("#dsAdd").classList.toggle("hide",DTAB!=="sec"||!canWrite());
-  if(DTAB!=="sec") return;
-  const t=norm($("#dsTxt").value), l=DSEC.filter(d=>!t||norm(d.apellidos+" "+d.nombres+" "+d.nombres+" "+d.apellidos+" "+d.correo).indexOf(t)>=0), w=canWrite();
-  $("#dsCount").textContent=(t?l.length+" de ":"")+DSEC.length+" docente"+(DSEC.length===1?"":"s");
-  if(!DSEC.length){ $("#dsList").innerHTML='<div class="empty"><b>Aún no hay docentes de Secundaria</b>'+(w?'Usa «Añadir docente» para registrar uno o importar una lista.':'La lista la registran los evaluadores.')+'</div>'; return; }
+  const sede=SECS.includes(DTAB)?DTAB:"";
+  $("#dsAdd").classList.toggle("hide",!sede||!canWrite());
+  if(!sede) return;
+  const all=dsOf(sede), t=norm($("#dsTxt").value), l=all.filter(d=>!t||norm(d.apellidos+" "+d.nombres+" "+d.nombres+" "+d.apellidos+" "+d.correo).indexOf(t)>=0), w=canWrite();
+  $("#dsCount").textContent=(t?l.length+" de ":"")+all.length+" docente"+(all.length===1?"":"s");
+  if(!all.length){ $("#dsList").innerHTML='<div class="empty"><b>Aún no hay docentes de '+esc(SECN[sede])+'</b>'+(w?'Usa «Añadir docente» y asígnalos a la sede '+esc(SECN[sede])+'.':'La lista la registran los evaluadores.')+'</div>'; return; }
   if(!l.length){ $("#dsList").innerHTML='<div class="empty"><b>Ningún docente coincide</b>Revisa lo escrito en el buscador.</div>'; return; }
   $("#dsList").innerHTML='<div class="tbl-wrap"><table class="tbl dsec"><thead><tr><th class="num">#</th><th>Apellidos</th><th>Nombres</th><th>Correo institucional</th>'+(w?'<th></th>':'')+'</tr></thead><tbody>'+
-    l.map((d,i)=>'<tr class="SECUNDARIA"><td data-l="#" class="num">'+(i+1)+'</td><td data-l="Apellidos"><b>'+esc(d.apellidos)+'</b></td><td data-l="Nombres">'+esc(d.nombres)+'</td>'+
+    l.map((d,i)=>'<tr class="'+esc(sede)+'"><td data-l="#" class="num">'+(i+1)+'</td><td data-l="Apellidos"><b>'+esc(d.apellidos)+'</b></td><td data-l="Nombres">'+esc(d.nombres)+'</td>'+
       '<td data-l="Correo">'+(d.correo?esc(d.correo):'<span class="tag warn">Sin correo institucional</span>')+'</td>'+
       (w?'<td class="num"><button type="button" class="btn danger sm" data-dsdel="'+esc(d._id)+'">Eliminar docente</button></td>':'')+'</tr>').join("")+'</tbody></table></div>';
 }
-wireSeg($("#docTabs"),"t",t=>{ DTAB=t; $("#docSecPane").classList.toggle("hide",t!=="sec"); $("#docCalPane").classList.toggle("hide",t!=="cal");
-  $("#docIntro").textContent=t==="sec"?"Base de docentes de Secundaria: su correo institucional se usa en la visita y para enviar la evaluación.":"Historial de calificaciones por docente y nivel de su visita más reciente.";
-  renderDocSec(); if(t==="cal") renderDocentes(); });
+wireSeg($("#docTabs"),"t",t=>{ DTAB=t; const sede=SECS.includes(t);
+  $("#docSecPane").classList.toggle("hide",!sede); $("#docCalPane").classList.toggle("hide",sede);
+  $("#docIntro").textContent=sede?"Docentes de la sede "+SECN[t]+": su correo institucional se usa en la visita y para enviar la evaluación.":"Historial de calificaciones por docente y nivel de su visita más reciente.";
+  if(sede){ $("#dsTxt").value=""; renderDocSec(); } else renderDocentes(); $("#dsAdd").classList.toggle("hide",!sede||!canWrite()); });
 $("#dsTxt").addEventListener("input",renderDocSec);
 $("#dsList").addEventListener("click",async e=>{ const b=e.target.closest("[data-dsdel]"); if(!b||!canWrite()) return;
   const d=DSEC.find(x=>x._id===b.dataset.dsdel); if(!d) return;
-  if(!confirm("¿Eliminar a "+d.apellidos+" "+d.nombres+" de la base de docentes de Secundaria?\nSus visitas ya registradas no se borran.")) return;
-  b.disabled=true; try{ await withTimeout(deleteDoc(doc(FB,COLD,d._id)),20000); toast("Docente eliminado de la base"); }catch(err){ b.disabled=false; toast(errMsg(err,"No se pudo eliminar al docente")); } });
-const dsDup=(x,list)=>(list||DSEC).some(d=>(x.correo&&d.correo===x.correo)||norm(d.apellidos+" "+d.nombres)===norm(x.apellidos+" "+x.nombres));
-const dsNew=x=>({nombres:x.nombres,apellidos:x.apellidos,correo:x.correo,seccion:"SECUNDARIA",creadoPor:myMail(),creado:new Date().toISOString()});
-// Lista pegada: «APELLIDOS; NOMBRES; correo» o «APELLIDOS NOMBRES correo» (las dos primeras palabras son los apellidos).
-function parseDs(t){ const ok=[], bad=[];
-  lines(t).forEach(l=>{ let ap="", no="", c="";
-    if(l.includes(";")){ const p=l.split(";").map(x=>x.replace(/\s+/g," ").trim()); ap=p[0]; no=p[1]||""; c=(p[2]||"").toLowerCase(); }
-    else{ const w=l.split(/\s+/).filter(x=>/[\p{L}@]/u.test(x)), i=w.findIndex(x=>x.includes("@")); if(i>=0) c=w.splice(i,1)[0].toLowerCase(); ap=w.slice(0,2).join(" "); no=w.slice(2).join(" "); }
-    if(!ap||!no||(c&&!MAIL_RE.test(c))) bad.push(l); else ok.push({apellidos:upName(ap),nombres:upName(no),correo:c}); });
-  return {ok,bad}; }
+  if(!confirm("¿Eliminar a "+d.apellidos+" "+d.nombres+" de los docentes de "+(SECN[d.seccion]||"")+"?\nSus visitas ya registradas no se borran.")) return;
+  b.disabled=true; try{ await withTimeout(deleteDoc(doc(FB,COLD,d._id)),20000); toast("Docente eliminado"); }catch(err){ b.disabled=false; toast(errMsg(err,"No se pudo eliminar al docente")); } });
+// Un mismo docente puede estar en varias sedes, pero no dos veces en la misma.
+const dsDup=x=>dsOf(x.seccion).some(d=>(x.correo&&d.correo===x.correo)||norm(d.apellidos+" "+d.nombres)===norm(x.apellidos+" "+x.nombres));
 function openDsAdd(){
   if(!canWrite()) return;
-  $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">AÑADIR DOCENTE DE SECUNDARIA<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
+  const cur=SECS.includes(DTAB)?DTAB:"";
+  $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">AÑADIR DOCENTE<button class="icon-btn" id="mClose" aria-label="Cerrar">✕</button></div>'+
    '<div class="m-body" style="padding-top:18px"><h3 id="mTitle" class="scn" style="margin:0 0 12px">Nuevo docente</h3>'+
     '<div class="grid g2"><div class="field"><label for="dsN">Nombres <span class="req">*</span></label><input type="text" id="dsN" maxlength="80" placeholder="Ej.: María José"></div>'+
     '<div class="field"><label for="dsA">Apellidos <span class="req">*</span></label><input type="text" id="dsA" maxlength="80" placeholder="Ej.: Cárdenas Zapata"></div></div>'+
-    '<div class="field" style="margin-top:14px"><label for="dsC">Correo institucional <span class="req">*</span></label><input type="text" id="dsC" inputmode="email" placeholder="nombre@'+esc(DOMAIN)+'"></div>'+
-    '<p class="fmsg" id="dsMsg" style="margin:10px 0 0"></p>'+
-    '<details class="dt"><summary>Importar varios docentes a la vez</summary><p class="muted" style="margin:6px 0 8px">Pega una línea por docente: <code>APELLIDOS; NOMBRES; correo</code>. También se acepta <code>APELLIDOS NOMBRES correo</code>: se toman las dos primeras palabras como apellidos. Los que ya están en la base se omiten.</p>'+
-     '<textarea id="dsBulk" style="min-height:150px"></textarea><div class="row" style="margin-top:8px"><button type="button" class="btn sec" id="dsBulkGo">Revisar e importar</button><span class="muted" id="dsBulkMsg"></span></div></details></div>'+
+    '<div class="grid g2" style="margin-top:14px"><div class="field"><label for="dsC">Correo institucional <span class="req">*</span></label><input type="text" id="dsC" inputmode="email" placeholder="nombre@'+esc(DOMAIN)+'"></div>'+
+    '<div class="field"><label for="dsS">Asignar sede <span class="req">*</span></label><select id="dsS"><option value="">Elige la sede</option>'+SECS.map(k=>'<option value="'+k+'"'+(k===cur?' selected':'')+'>'+SECN[k]+'</option>').join("")+'</select></div></div>'+
+    '<p class="fmsg" id="dsMsg" style="margin:10px 0 0"></p></div>'+
    '<div class="m-foot"><button class="btn" id="dsSave">Guardar docente</button><button class="btn sec" id="dsCancel">Cancelar</button></div>';
   openModal(); $("#dsN").focus();
   $("#mClose").onclick=closeModal; $("#dsCancel").onclick=closeModal;
-  $("#dsSave").onclick=async()=>{ const x={nombres:upName($("#dsN").value),apellidos:upName($("#dsA").value),correo:$("#dsC").value.trim().toLowerCase()}, m=$("#dsMsg");
-    $$("#dsN,#dsA,#dsC").forEach(el=>el.classList.remove("bad"));
-    const miss=[["#dsN",x.nombres],["#dsA",x.apellidos],["#dsC",x.correo]].filter(([,v])=>!v); miss.forEach(([k])=>$(k).classList.add("bad"));
-    if(miss.length){ m.textContent="Nombres, apellidos y correo institucional son obligatorios."; return; }
+  $("#dsSave").onclick=async()=>{ const x={nombres:upName($("#dsN").value),apellidos:upName($("#dsA").value),correo:$("#dsC").value.trim().toLowerCase(),seccion:$("#dsS").value}, m=$("#dsMsg");
+    $$("#dsN,#dsA,#dsC,#dsS").forEach(el=>el.classList.remove("bad"));
+    const miss=[["#dsN",x.nombres],["#dsA",x.apellidos],["#dsC",x.correo],["#dsS",x.seccion]].filter(([,v])=>!v); miss.forEach(([k])=>$(k).classList.add("bad"));
+    if(miss.length){ m.textContent="Nombres, apellidos, correo institucional y sede son obligatorios."; return; }
     if(!MAIL_RE.test(x.correo)){ $("#dsC").classList.add("bad"); m.textContent="El correo debe ser una cuenta @"+DOMAIN+"."; return; }
-    if(dsDup(x)){ m.textContent="Ese docente o ese correo ya está en la base."; return; }
+    if(dsDup(x)){ m.textContent="Ese docente o ese correo ya está en la sede "+SECN[x.seccion]+"."; return; }
     $("#dsSave").disabled=true;
-    try{ await withTimeout(setDoc(doc(collection(FB,COLD)),dsNew(x)),20000); closeModal(); toast("Docente añadido: "+x.apellidos+" "+x.nombres); }
+    try{ await withTimeout(setDoc(doc(collection(FB,COLD)),Object.assign(x,{creadoPor:myMail(),creado:new Date().toISOString()})),20000);
+      closeModal(); toast("Docente añadido a "+SECN[x.seccion]+": "+x.apellidos+" "+x.nombres);
+      if(DTAB!==x.seccion){ const b=$('#docTabs [data-t="'+x.seccion+'"]'); if(b) b.click(); } }
     catch(err){ $("#dsSave").disabled=false; m.textContent=errMsg(err,"No se pudo guardar el docente."); } };
-  $("#dsBulkGo").onclick=async()=>{ const r=parseDs($("#dsBulk").value), msg=$("#dsBulkMsg"), add=[];
-    r.ok.forEach(x=>{ if(!dsDup(x)&&!dsDup(x,add)) add.push(x); });
-    if(!add.length){ msg.textContent=r.bad.length?"Revisa el formato: "+r.bad.slice(0,2).join(" · "):"No hay docentes nuevos para agregar."; return; }
-    const sinC=add.filter(x=>!x.correo).length;
-    if(!confirm("Se agregarán "+add.length+" docentes"+(r.ok.length-add.length?" (se omiten "+(r.ok.length-add.length)+" que ya están)":"")+(sinC?". "+sinC+" sin correo institucional":"")+(r.bad.length?". Se ignoran "+r.bad.length+" líneas con formato o correo no válido":"")+". ¿Continuar?")) return;
-    $("#dsBulkGo").disabled=true; msg.innerHTML='<span class="spin"></span> Guardando';
-    try{ for(let i=0;i<add.length;i+=400){ const b=writeBatch(FB); add.slice(i,i+400).forEach(x=>b.set(doc(collection(FB,COLD)),dsNew(x))); await withTimeout(b.commit(),30000); }
-      closeModal(); toast(add.length+" docentes agregados a la base de Secundaria"); }
-    catch(err){ $("#dsBulkGo").disabled=false; msg.textContent=errMsg(err,"No se pudo importar la lista."); } };
 }
 $("#dsAdd").onclick=openDsAdd;
+
+/* ---------- firma del docente (dedo o lápiz digital) ---------- */
+// Se guarda aparte (rctx_firmas/{id de la visita}) para no cargar las firmas con la lista de visitas.
+// Una sola vez, con la hora del servidor; solo la súper administración puede borrarla.
+let FIRMAS={};
+async function getFirma(id){ if(id in FIRMAS) return FIRMAS[id];
+  try{ const s=await withTimeout(getDoc(doc(FB,COLS,id)),15000); FIRMAS[id]=s.exists()?s.data():null; return FIRMAS[id]; }catch(e){ return undefined; } }
+function sigPad(host,onSave){
+  host.innerHTML='<div class="no-pdf"><p class="lbl" style="margin:14px 0 6px">Firma del docente <span class="muted" style="font-weight:400">· con el dedo o un lápiz digital</span></p>'+
+    '<div class="sig"><canvas id="sigCv" aria-label="Espacio para la firma del docente"></canvas><span class="sig-l">Firme aquí</span></div>'+
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn sec sm" id="sigClr">Borrar</button><button type="button" class="btn sm" id="sigOk" disabled>Guardar firma</button><span class="fmsg" id="sigMsg"></span></div>'+
+    '<p class="muted" style="margin:6px 0 0">La firma queda registrada con la fecha y hora del servidor y no se puede cambiar después.</p></div>';
+  const cv=$("#sigCv"), ctx=cv.getContext("2d"), hint=host.querySelector(".sig-l"); let drawing=false, last=null, dirty=false;
+  const r0=cv.getBoundingClientRect(), k=window.devicePixelRatio||1; cv.width=Math.round(r0.width*k); cv.height=Math.round(r0.height*k);
+  ctx.scale(k,k); ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=ctx.fillStyle="#1B1F3B";
+  const pt=e=>{ const r=cv.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==="pen"&&e.pressure?e.pressure:.5}; };
+  const mark=()=>{ if(dirty) return; dirty=true; $("#sigOk").disabled=false; hint.classList.add("hide"); };
+  cv.addEventListener("pointerdown",e=>{ e.preventDefault(); cv.setPointerCapture(e.pointerId); drawing=true; last=pt(e); ctx.beginPath(); ctx.arc(last.x,last.y,1.4,0,Math.PI*2); ctx.fill(); mark(); });
+  cv.addEventListener("pointermove",e=>{ if(!drawing) return; e.preventDefault();
+    const co=e.getCoalescedEvents?e.getCoalescedEvents():[]; (co.length?co:[e]).forEach(ev=>{ const p=pt(ev); ctx.lineWidth=1.3+p.p*2.6; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; }); });
+  const end=()=>{ drawing=false; }; cv.addEventListener("pointerup",end); cv.addEventListener("pointercancel",end);
+  $("#sigClr").onclick=()=>{ ctx.clearRect(0,0,cv.width,cv.height); dirty=false; $("#sigOk").disabled=true; hint.classList.remove("hide"); };
+  $("#sigOk").onclick=()=>{ if(!dirty) return; const o=document.createElement("canvas"); o.width=600; o.height=Math.round(600*cv.height/cv.width);
+    o.getContext("2d").drawImage(cv,0,0,o.width,o.height); onSave(o.toDataURL("image/png")); };
+}
+async function saveFirma(v,img){
+  if(!confirm("¿Guardar la firma de "+(v.docente||"el docente")+"? No se podrá cambiar después.")) return;
+  $("#sigOk").disabled=true; $("#sigMsg").textContent="";
+  try{ await withTimeout(setDoc(doc(FB,COLS,v.id),{img,fecha:serverTimestamp(),por:myMail()}),20000); delete FIRMAS[v.id]; toast("Firma guardada"); openVisit(v.id); }
+  catch(e){ $("#sigMsg").textContent=errMsg(e,"No se pudo guardar la firma."); $("#sigOk").disabled=false; } }
+function loadFirma(v){
+  const box=$("#firmaBox"); if(!box) return;
+  box.innerHTML='<p class="muted no-pdf" style="margin:12px 0 0"><span class="spin"></span> Cargando firma</p>';
+  getFirma(v.id).then(f=>{ const b=$("#firmaBox"); if(!b||($("#mTitle")||{}).textContent!==v.id) return;
+    if(f===undefined){ b.innerHTML='<p class="muted no-pdf" style="margin:12px 0 0">No se pudo cargar la firma. Vuelve a abrir la ficha.</p>'; return; }
+    if(f&&/^data:image\/png;base64,/.test(f.img||"")){ const d=tsDate(f.fecha);
+      b.innerHTML='<p class="lbl" style="margin:14px 0 6px">Firma del docente</p><div class="sigv"><img src="'+esc(f.img)+'" alt="Firma de '+esc(v.docente||"el docente")+'"></div>'+
+        '<p class="muted" style="margin:4px 0 0">'+(d?'Firmada el '+esc(fHora(d)):'')+(f.por?' · registrada por '+esc(f.por):'')+'</p>';
+      const li=$("#fImgDoc"); if(li){ li.src=f.img; li.classList.remove("hide"); } return; }
+    if(canWrite()||(v.docenteCorreo&&myMail()===v.docenteCorreo)) sigPad(b,img=>saveFirma(v,img)); else b.innerHTML=""; });
+}
 
 /* ---------- envío de la evaluación por correo (Gmail del evaluador) ---------- */
 // Se envía desde la cuenta institucional de quien evalúa, con el PDF adjunto. El permiso de Google se pide
@@ -2038,7 +2077,7 @@ function mailFallback(v,why){ const fb=$("#mailFb"); if(!fb) return;
 async function sendMail(v){
   if(!MAIL_RE.test(v.docenteCorreo||"")){ toast("La visita no tiene un correo institucional válido del docente."); return; }
   const prevS=v.correoEnviado, dd=prevS&&tsDate(prevS.fecha);
-  if(!confirm(prevS?"Esta evaluación ya se envió a "+(prevS.a||v.docenteCorreo)+(dd?" el "+fHora(dd):"")+". ¿Enviarla de nuevo a "+v.docenteCorreo+"?":"Se enviará la evaluación "+v.id+", con el PDF adjunto, a "+v.docenteCorreo+" desde tu cuenta "+myMail()+". ¿Continuar?")) return;
+  if(!confirm(prevS?"Esta evaluación ya se envió a "+(prevS.a||v.docenteCorreo)+(dd?" el "+fHora(dd):"")+". ¿Enviarla de nuevo a "+v.docenteCorreo+"?":"Se enviará la evaluación "+v.id+", con el PDF adjunto, a "+v.docenteCorreo+" desde tu cuenta "+myMail()+".\n\nSi Google muestra «Google no verificó esta app», pulsa «Configuración avanzada» y luego «Ir a matriz-rctx-eight-academy» para dar el permiso.\n\n¿Continuar?")) return;
   const b=$("#mMail"), label=b.textContent; $("#mailFb").innerHTML="";
   const busy=on=>{ $$("#modal .m-foot button").forEach(x=>x.disabled=on); if(on) b.innerHTML='<span class="spin"></span> Enviando'; else b.textContent=label; };
   busy(true);
@@ -2051,7 +2090,7 @@ async function sendMail(v){
     mailFallback(v,"Google no concedió el permiso para enviar correos ("+(c||"sin código")+")."); return; }
   try{
     toast("Preparando el PDF…");
-    const pdf=await pdfFrom(v.id+".pdf",false,w=>w.outputPdf("blob"));
+    const pdf=await pdfFrom(v.id+".pdf",true,w=>w.outputPdf("blob"));
     const raw=mimeMsg(v.docenteCorreo,mailSubject(v),mailHTML(v),v.id+".pdf",u8b64(new Uint8Array(await pdf.arrayBuffer())));
     const res=await withTimeout(fetch("https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send?uploadType=media",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"message/rfc822"},body:raw}),60000);
     if(!res.ok){ const j=await res.json().catch(()=>({})); if(res.status===401||res.status===403) GTOK=null; throw {code:"gmail",status:res.status,msg:j.error&&j.error.message||""}; }

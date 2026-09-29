@@ -51,11 +51,15 @@ firebase deploy --only hosting,firestore           # publica la página y las re
 
 Para cambiar los roles edita **los dos archivos**: `SUPER_ADMIN_EMAILS` y `EVALUADOR_EMAILS` en `docs/firebase-config.js`, y `rctxSuper()` y `rctxEval()` en `firestore.rules`; luego publica con `firebase deploy --only firestore,hosting`. El servidor aplica estas reglas aunque alguien modifique la página.
 
-## Docentes de Secundaria
+## Docentes por sede
 
-En **Docentes › Docentes secundaria** está la base de docentes de Secundaria (apellidos, nombres y correo institucional), con buscador. Los evaluadores y la súper administración pueden **Añadir docente** (los tres campos son obligatorios), **importar varios a la vez** pegando una línea por docente (`APELLIDOS; NOMBRES; correo`) y **Eliminar docente** (sus visitas no se borran). La base se guarda en Firestore (`rctx_docentes`), no en el repositorio.
+En **Docentes** hay una pestaña por sede: **Docentes Kids**, **Docentes Primaria** y **Docentes Secundaria**, cada una con buscador. Los evaluadores y la súper administración pueden **Añadir docente** (Nombres, Apellidos, Correo institucional y **Asignar sede**, todos obligatorios) y **Eliminar docente** (sus visitas no se borran). Un mismo docente puede estar en varias sedes. La base se guarda en Firestore (`rctx_docentes`), no en el repositorio.
 
-Al registrar una visita de **Secundaria**, el campo «Docente observado/a» sugiere los nombres de esta base y el **correo del docente se completa solo**. La pestaña «Calificaciones» sigue mostrando el historial de notas como antes.
+Al registrar una visita, el campo «Docente observado/a» sugiere los docentes de la sede elegida y el **correo del docente se completa solo**. La pestaña «Calificaciones» sigue mostrando el historial de notas.
+
+## Firma del docente
+
+En la ficha, el apartado **Conformidad y firma del docente** tiene un espacio para que el docente firme **con el dedo o con un lápiz digital** (en tableta, celular o pantalla táctil). La firma se guarda una sola vez, con la hora del servidor y quien la registró (un evaluador o el propio docente); solo la súper administración puede borrarla. Se guarda aparte, en `rctx_firmas`, y aparece en el **PDF con firmas** sobre la línea «Firma del docente observado». La ficha ya solo ofrece «PDF con firmas», y ese es el PDF que se adjunta al enviar por correo.
 
 ## Envío de la evaluación por correo
 
