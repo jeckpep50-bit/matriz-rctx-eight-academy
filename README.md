@@ -51,6 +51,14 @@ firebase deploy --only hosting,firestore           # publica la página y las re
 
 Para cambiar los roles edita **los dos archivos**: `SUPER_ADMIN_EMAILS` y `EVALUADOR_EMAILS` en `docs/firebase-config.js`, y `rctxSuper()` y `rctxEval()` en `firestore.rules`; luego publica con `firebase deploy --only firestore,hosting`. El servidor aplica estas reglas aunque alguien modifique la página.
 
+## Seguimientos (aviso y campanita)
+
+Al registrar una visita, la **Fecha de seguimiento** programa una nueva visita al mismo docente. El seguimiento pertenece a la cuenta que registró la visita.
+
+- **Aviso del día:** ese día, al ingresar, a esa cuenta le aparece un recordatorio con los datos de la visita anterior (docente, sede, curso, asignatura, calificación, nivel, observador y aspectos por mejorar) y dos opciones: **Realizar visita áulica en este momento** (abre «Nueva visita» con los datos del docente ya llenos y vinculada a la anterior) y **Recordar visita áulica en 30 minutos** (el recordatorio en espera se guarda en ese dispositivo). Cerrar el aviso equivale a recordarlo en 30 minutos.
+- **Campanita** (franja naranja): lista los seguimientos pendientes en Vencidos, Hoy y Programados, con contador. Cada evaluador ve los suyos; la súper administración ve los de todos. Los vencidos solo quedan en la campanita y en el Tablero.
+- **Cierre comprobado:** un seguimiento solo queda «Realizado» al **guardar la visita de seguimiento vinculada**; la ficha anterior enlaza la nueva visita. Ya no existe la marca manual. Solo la súper administración puede **cancelar** un seguimiento, con motivo. Las reglas del servidor solo aceptan el cierre si la visita nueva existe y declara a la anterior como su origen.
+
 ## Docentes por sede
 
 En **Docentes** hay una pestaña por sede: **Docentes Kids**, **Docentes Primaria** y **Docentes Secundaria**, cada una con buscador. Los evaluadores y la súper administración pueden **Añadir docente** (Nombres, Apellidos, Correo institucional y **Asignar sede**, todos obligatorios) y **Eliminar docente** (sus visitas no se borran). Un mismo docente puede estar en varias sedes. La base se guarda en Firestore (`rctx_docentes`), no en el repositorio.
@@ -90,7 +98,7 @@ Cada visita registra el correo institucional del docente. Al ingresar con esa cu
 
 ## Tablero
 
-Filtros por día, 7/30 días, trimestre, año lectivo o todo; y por sección. Incluye seguimientos vencidos y próximos (7 días, con «Marcar realizado»), evolución mensual del promedio por sección, estadística por indicador (% Cumple / En proceso / No cumple y logro), conformidad de los docentes y cobertura de la nómina.
+Filtros por día, 7/30 días, trimestre, año lectivo o todo; y por sección. Incluye seguimientos vencidos y próximos (7 días, con «Realizar seguimiento»), evolución mensual del promedio por sección, estadística por indicador (% Cumple / En proceso / No cumple y logro), conformidad de los docentes y cobertura de la nómina.
 
 ## Fichas y PDF
 

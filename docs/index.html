@@ -493,6 +493,26 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
 .tbl.dsec tbody tr{cursor:default}
 .tbl.dsec td{vertical-align:middle}
 .sent{font-size:12px; color:var(--teal-ink); font-weight:700}
+/* campanita de seguimientos */
+.bellw{position:relative}
+.icon-btn{position:relative}
+.bdg{position:absolute; top:-6px; right:-6px; min-width:19px; height:19px; padding:0 5px; border-radius:999px; background:var(--danger); color:#fff; font-size:11px; font-weight:700; line-height:19px; text-align:center; border:2px solid #FBB45C}
+.bellpop{position:absolute; right:0; top:calc(100% + 10px); width:min(420px,calc(100vw - 24px)); max-height:min(70vh,560px); overflow:auto; background:var(--surface); color:var(--ink);
+  border:1px solid var(--line); border-radius:12px; box-shadow:0 18px 40px -14px rgba(17,19,42,.45); z-index:55}
+.bellpop h4{margin:0; padding:14px 16px 10px; font-family:var(--tf); font-size:17px; color:var(--title); border-bottom:1px solid var(--line)}
+.bellpop h5{margin:0; padding:10px 16px 4px; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.bellpop ul{list-style:none; margin:0; padding:0 0 6px}
+.bellpop li{padding:10px 16px; border-top:1px solid var(--line); display:grid; gap:6px}
+.bellpop li:first-child{border-top:0}
+.bellpop li b{font-size:14px}
+.bellpop li .muted{font-size:12px}
+.bellpop .empty-b{padding:22px 16px; color:var(--muted); font-size:13.5px; text-align:center}
+.segcard{border:1px solid var(--line); border-left:5px solid var(--orange); border-radius:10px; padding:14px 16px; margin-top:12px; background:var(--surface-2)}
+.segcard h4{margin:0 0 4px; font-family:var(--tf); font-size:18px; color:var(--title)}
+.segcard dl{display:grid; grid-template-columns:150px 1fr; gap:4px 12px; margin:10px 0 12px; font-size:13.5px}
+.segcard dt{color:var(--muted); font-weight:700; font-size:12.5px}
+.segcard dd{margin:0; white-space:pre-wrap}
+@media (max-width:560px){.segcard dl{grid-template-columns:1fr} .segcard dd{margin-bottom:6px}}
 /* firma del docente */
 .sig{position:relative; height:180px; max-width:620px; border:2px dashed var(--line-2); border-radius:10px; background:#fff; touch-action:none}
 .sig canvas{display:block; width:100%; height:100%; touch-action:none; cursor:crosshair}
@@ -512,6 +532,10 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
   </div>
   <div class="top-r">
     <span class="state" id="storeState"><i></i><span id="storeText">Conectando</span></span>
+    <div class="bellw hide" id="bellW">
+      <button class="icon-btn" id="bellBtn" aria-label="Seguimientos programados" aria-expanded="false" aria-controls="bellPop" title="Seguimientos programados"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="bdg hide" id="bellN"></span></button>
+      <div class="bellpop hide" id="bellPop" role="dialog" aria-label="Seguimientos programados"></div>
+    </div>
     <button class="icon-btn hide" id="outBtn" aria-label="Cerrar sesión" title="Cerrar sesión"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg></button>
     <button class="icon-btn" id="themeBtn" aria-label="Cambiar entre modo claro y oscuro" title="Modo claro u oscuro">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg>
@@ -547,6 +571,7 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
         <p>Matriz de <span class="nInd"></span> indicadores sobre 100 puntos. Puedes avanzar y regresar sin perder lo registrado: se guarda un borrador en este dispositivo mientras escribes.</p>
       </div>
     </div>
+    <div class="callout draft hide" id="segDeBar"><span class="grow" id="segDeTxt"></span><button type="button" class="btn sec sm" id="segDeOpen">Ver visita anterior</button><button type="button" class="btn sec sm" id="segDeDrop">Quitar vínculo</button></div>
     <div class="callout warn draft hide" id="draftBar"><span class="grow" id="draftTxt"></span><button type="button" class="btn sm" id="draftUse">Recuperar borrador</button><button type="button" class="btn sec sm" id="draftDrop">Descartar</button></div>
 
     <ol class="steps" id="steps">
@@ -848,7 +873,7 @@ let VISITS=[], CONFIG={docentes:[],observadores:[],materias:[],logo:"",nomina:[]
 let photos=[null,null], editingId=null, STEP=0, LEVELS={};
 // photosDirty: el usuario cambió fotos o descripciones; photosLoading: aún se descargan las fotos de la visita en edición.
 // Mientras photosDirty sea falso al editar, no se toca el documento de fotos (evita borrarlas).
-let TOKEN="", photosDirty=false, photosLoading=false, formDirty=false, listsDirty=false, saving=false;
+let SEGDE="", TOKEN="", photosDirty=false, photosLoading=false, formDirty=false, listsDirty=false, saving=false;
 let fPer="", tPer="30", tSec="";
 
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
@@ -933,22 +958,27 @@ const ID_RE=/^VA-\d{4}-\d{2}-\d{2}-\d{3,}$/;
 // fotos: lista a guardar, o null para no tocar las fotos existentes.
 async function saveVisit(v,fotos){
   return withTimeout(runTransaction(FB, async tx=>{
-    let id=v.id, prev=null;
+    let id=v.id, prev=null, origen=null;
     if(id){ const s=await tx.get(doc(FB,COLV,id)); if(!s.exists()) throw {code:"gone"}; prev=s.data(); }
     else{
+      // Visita de seguimiento: se lee la visita anterior para cerrarla en la misma transacción.
+      if(v.seguimientoDe){ const s=await tx.get(doc(FB,COLV,v.seguimientoDe)); origen=s.exists()?s.data():null; if(!origen) delete v.seguimientoDe; }
       const p="VA-"+v.fecha+"-"; let n=parseInt(nextId(v.fecha).slice(p.length),10);
       for(let k=0;;k++){ if(k>40) throw {code:"aborted"}; id=p+pad(n,3); const s=await tx.get(doc(FB,COLV,id)); if(!s.exists()) break; n++; }
     }
     const now=new Date().toISOString();
     const data=Object.assign(clean(v),{ id, creado:prev&&prev.creado||now, creadoPor:prev&&prev.creadoPor||myMail(), actualizado:now, actualizadoPor:myMail() });
     if(prev&&!prev.creadoPor) delete data.creadoPor;
-    // La conformidad solo la escribe el docente; el seguimiento realizado se conserva mientras no cambie la fecha.
+    // La conformidad solo la escribe el docente; el cierre del seguimiento solo lo escribe la visita vinculada
+    // (o la súper administración al cancelarlo), así que al editar se conservan tal como están.
     if(prev&&prev.conformidad) data.conformidad=prev.conformidad;
-    if(prev&&prev.seguimientoHecho&&prev.seguimiento===data.seguimiento) data.seguimientoHecho=prev.seguimientoHecho;
+    ["seguimientoHecho","seguimientoCancelado","seguimientoDe"].forEach(k=>{ if(prev&&prev[k]) data[k]=prev[k]; else if(prev) delete data[k]; });
     if(prev&&prev.correoEnviado) data.correoEnviado=prev.correoEnviado;
     if(fotos===null) data.fotos=prev&&prev.fotos||[];
     tx.set(doc(FB,COLV,id),data);
     if(fotos!==null){ if(fotos.length) tx.set(doc(FB,COLF,id),{fotos}); else tx.delete(doc(FB,COLF,id)); }
+    if(origen&&!origen.seguimientoHecho&&!origen.seguimientoCancelado)
+      tx.update(doc(FB,COLV,data.seguimientoDe),{seguimientoHecho:{fecha:todayISO(),por:myMail(),visita:id}});
     return data;
   }),25000);
 }
@@ -988,7 +1018,7 @@ function applyRole(){
   ["#cSave","#logoBtn"].forEach(k=>$(k).disabled=!isAdmin());
   ["#cDoc","#cObs","#cMat"].forEach(k=>$(k).readOnly=!isAdmin());
   if(!wDirty) renderWEditor(); if(!pDirty) renderPerEditor(); $("#durCfg").disabled=!isAdmin();
-  $$(".s-only").forEach(x=>x.classList.toggle("hide",!isAdmin()));
+  $$(".s-only").forEach(x=>x.classList.toggle("hide",!isAdmin())); renderBell();
   $("#adminList").innerHTML=ADMINS.map(a=>'<span class="tag en">'+esc(a)+'</span>').join("");
   $("#evalList").innerHTML=EVALS.map(a=>'<span class="tag en">'+esc(a)+'</span>').join("");
   $("#roleNote").textContent="Tu cuenta ("+(ME&&ME.email||"")+") tiene el rol: "+ROLN[ROLE]+".";
@@ -1010,7 +1040,7 @@ async function boot(){
 }
 function stopSubs(){ UNSUB.forEach(f=>{ try{ f(); }catch(e){} }); UNSUB=[]; }
 function startSession(u){
-  stopSubs(); VISITS=[]; DSEC=[]; FIRMAS={}; GTOK=null; ROLE=""; ME=u; renderAll();
+  stopSubs(); VISITS=[]; VLOADED=false; DSEC=[]; FIRMAS={}; GTOK=null; ROLE=""; ME=u; renderAll();
   $("#outBtn").classList.toggle("hide",!u);
   if(!u){ resetForm(); gate("login"); state("warn","Sin sesión"); return; }
   const mail=myMail();
@@ -1021,7 +1051,7 @@ function startSession(u){
 function ready(){
   gate(""); applyRole();
   state("ok",ROLN[ROLE],"Los registros se guardan en Firebase y los comparte todo el equipo con acceso.");
-  UNSUB.push(onSnapshot(collection(FB,COLV),s=>{ VISITS=s.docs.map(d=>Object.assign({id:d.id},d.data())); sortV(); renderAll(); state("ok",ROLN[ROLE]); },
+  UNSUB.push(onSnapshot(collection(FB,COLV),s=>{ VISITS=s.docs.map(d=>Object.assign({id:d.id},d.data())); sortV(); VLOADED=true; renderAll(); paintSegDe(); state("ok",ROLN[ROLE]); checkSegAlert(); },
     err=>state("warn",err&&err.code==="permission-denied"?"Sin permiso de lectura":"Sin conexión")));
   UNSUB.push(onSnapshot(collection(FB,COLD),s=>{ DSEC=s.docs.map(d=>Object.assign({},d.data(),{_id:d.id})).sort((a,b)=>(a.apellidos+" "+a.nombres).localeCompare(b.apellidos+" "+b.nombres,"es")); renderDocSec(); renderLists(); },()=>{}));
   UNSUB.push(onSnapshot(doc(FB,COLC,"institucion"),s=>{ if(s.exists()){ const d=s.data()||{};
@@ -1173,7 +1203,7 @@ function collect(){
     curso:$("#curso").value.trim(), paralelo:$("#paralelo").value.trim(), materia:$("#materia").value.trim(), tema:$("#tema").value.trim(),
     horaInicio:$("#hIni").value, horaFin:$("#hFin").value, niveles:Object.assign({},LEVELS), evidencias:ev,
     fortalezas:$("#fortalezas").value.trim(), mejoras:$("#mejoras").value.trim(), seguimiento:$("#seguimiento").value,
-    fotos:[0,1].filter(i=>photos[i]).map(i=>({desc:$('[data-desc="'+i+'"]').value.trim()})), token:TOKEN||undefined, version:MATRIZ_VERSION };
+    fotos:[0,1].filter(i=>photos[i]).map(i=>({desc:$('[data-desc="'+i+'"]').value.trim()})), token:TOKEN||undefined, seguimientoDe:SEGDE||undefined, version:MATRIZ_VERSION };
   const d=mins(v.horaInicio,v.horaFin); v.duracion=(d!==null&&d>=0)?d:null;
   v.pesos=Object.assign({},formW());
   const r=calcV(v); v.puntajes=r.bloques; v.total=r.total; v.nivel=r.nivel;
@@ -1258,13 +1288,13 @@ async function onSave(e){
 }
 const newToken=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
 function resetForm(){
-  editingId=null; photos=[null,null]; LEVELS={}; PESOS=null; TOKEN=newToken(); photosDirty=false; photosLoading=false; formDirty=false; clearDraft();
+  editingId=null; SEGDE=""; photos=[null,null]; LEVELS={}; PESOS=null; TOKEN=newToken(); photosDirty=false; photosLoading=false; formDirty=false; clearDraft();
   $("#form").reset(); $("#fecha").value=todayISO();
   setSel($("#secOpts"),[]); DUR=0; setTime("hIni",""); setTime("hFin",""); calcDur(); $$(".bad").forEach(x=>x.classList.remove("bad")); $("#secOpts").classList.remove("bad-group");
   $$("#steps li").forEach(li=>li.classList.remove("err")); paint(0); paint(1); paintLevels();
   $("#photoNote").classList.add("hide"); $("#draftBar").classList.add("hide");
   $("#formTitle").textContent="Nueva visita áulica"; $("#saveBtn").textContent="Guardar visita"; $("#cancelEdit").classList.add("hide");
-  idPrev(); showStep(0,true);
+  idPrev(); paintSegDe(); showStep(0,true);
 }
 function confirmDiscard(msg){ return !formDirty||confirm(msg||"Hay una visita en curso sin guardar. ¿Descartarla?"); }
 const FIELDS=[["observador","observador"],["docente","docente"],["docCorreo","docenteCorreo"],["curso","curso"],["paralelo","paralelo"],["materia","materia"],["tema","tema"],["hIni","horaInicio"],["hFin","horaFin"],["fortalezas","fortalezas"],["mejoras","mejoras"],["seguimiento","seguimiento"]];
@@ -1280,7 +1310,7 @@ function loadPhotos(id){
 }
 function editVisit(v){
   if(!confirmDiscard("Hay una visita en curso sin guardar. ¿Descartarla para editar "+v.id+"?")) return;
-  resetForm(); editingId=v.id; TOKEN=v.token||""; PESOS=Object.assign({},vW(v));
+  resetForm(); editingId=v.id; SEGDE=v.seguimientoDe||""; paintSegDe(); TOKEN=v.token||""; PESOS=Object.assign({},vW(v));
   setSel($("#secOpts"),v.seccion); $("#fecha").value=v.fecha||todayISO();
   FIELDS.forEach(([id,k])=>$("#"+id).value=v[k]||"");
   LEVELS=Object.assign({},v.niveles||{}); $$(".ev").forEach(x=>x.value=(v.evidencias||{})[x.dataset.e]||"");
@@ -1297,7 +1327,7 @@ function markDirty(){ formDirty=true; clearTimeout(draftT); draftT=setTimeout(sa
   const c=$("#cancelEdit"); c.textContent=editingId?"Cancelar edición":"Descartar visita"; c.classList.remove("hide"); }
 function saveDraftNow(){
   clearTimeout(draftT); if(!formDirty||!ME) return;
-  const d={ t:Date.now(), editingId, step:STEP, token:TOKEN, pesos:PESOS, sec:selVal($("#secOpts")), fecha:$("#fecha").value,
+  const d={ t:Date.now(), editingId, segDe:SEGDE, step:STEP, token:TOKEN, pesos:PESOS, sec:selVal($("#secOpts")), fecha:$("#fecha").value,
     f:Object.fromEntries(FIELDS.map(([id])=>[id,$("#"+id).value])), levels:LEVELS,
     ev:Object.fromEntries($$(".ev").map(x=>[x.dataset.e,x.value]).filter(x=>x[1])), photosDirty,
     photos:photosDirty?[0,1].map(i=>photos[i]?{data:photos[i].data,desc:$('[data-desc="'+i+'"]').value}:null):null };
@@ -1315,7 +1345,7 @@ function offerDraft(){
 }
 function useDraft(){
   const d=readDraft(); if(!d) return;
-  resetForm(); editingId=d.editingId||null; TOKEN=d.token||TOKEN; PESOS=validW(d.pesos)?d.pesos:null;
+  resetForm(); editingId=d.editingId||null; SEGDE=d.segDe||""; paintSegDe(); TOKEN=d.token||TOKEN; PESOS=validW(d.pesos)?d.pesos:null;
   setSel($("#secOpts"),d.sec||""); $("#fecha").value=d.fecha||todayISO();
   FIELDS.forEach(([id])=>$("#"+id).value=(d.f||{})[id]||"");
   LEVELS=Object.assign({},d.levels||{}); $$(".ev").forEach(x=>x.value=(d.ev||{})[x.dataset.e]||"");
@@ -1385,14 +1415,17 @@ async function giveConf(v,estado){
 }
 // Seguimiento: estado y marca de «realizado» (solo administración).
 function segState(v){ if(!v.seguimiento) return "";
-  if(v.seguimientoHecho) return '<span class="tag good">Realizado</span> <span class="muted">'+esc(fCorta(v.seguimientoHecho.fecha))+' · '+esc(v.seguimientoHecho.por||"")+'</span>';
+  const h=v.seguimientoHecho, c=v.seguimientoCancelado;
+  if(h) return '<span class="tag good">Realizado</span> <span class="muted">'+esc(fCorta(h.fecha))+' · '+esc(h.por||"")+'</span>'+(h.visita?' <button type="button" class="linkish" data-open="'+esc(h.visita)+'">Ver '+esc(h.visita)+'</button>':'');
+  if(c) return '<span class="tag">Cancelado</span> <span class="muted">'+esc(fCorta(c.fecha))+' · '+esc(c.por||"")+(c.motivo?' · '+esc(c.motivo):'')+'</span>';
   const d=d2i(v.seguimiento)-d2i(todayISO());
   return d<0?'<span class="tag prio">Vencido hace '+(-d)+' día'+(d===-1?'':'s')+'</span>':d<=SEG_DIAS?'<span class="tag warn">'+(d===0?'Es hoy':'En '+d+' día'+(d===1?'':'s'))+'</span>':'<span class="tag">Pendiente</span>'; }
-async function setSegHecho(id,hecho){
-  try{ await withTimeout(updateDoc(doc(FB,COLV,id),{seguimientoHecho:hecho?{fecha:todayISO(),por:myMail()}:null,actualizado:new Date().toISOString(),actualizadoPor:myMail()}),20000);
-    toast(hecho?"Seguimiento marcado como realizado":"Seguimiento marcado como pendiente"); }
-  catch(e){ toast(errMsg(e,"No se pudo actualizar el seguimiento")); } }
-document.addEventListener("click",e=>{ const b=e.target.closest("[data-segdone]"); if(!b||!canWrite()) return; e.stopPropagation(); b.disabled=true; setSegHecho(b.dataset.segdone,true); },true);
+// Solo la súper administración cancela un seguimiento (p. ej., el docente ya no trabaja), con el motivo registrado.
+async function cancelSeg(v){
+  const m=(prompt("Motivo para cancelar el seguimiento de "+(v.docente||"")+" ("+fLarga(v.seguimiento)+"):")||"").trim(); if(!m) return;
+  try{ await withTimeout(updateDoc(doc(FB,COLV,v.id),{seguimientoCancelado:{fecha:todayISO(),por:myMail(),motivo:m.slice(0,300)},actualizado:new Date().toISOString(),actualizadoPor:myMail()}),20000);
+    toast("Seguimiento cancelado"); setTimeout(()=>openVisit(v.id),300); }
+  catch(e){ toast(errMsg(e,"No se pudo cancelar el seguimiento")); } }
 function openVisit(id){
   const v=VISITS.find(x=>x.id===id); if(!v) return; const r=calcV(v), w=vW(v);
   const ph=(v.fotos||[]).length?'<div class="ficha" id="fichaFotos"><div class="sh">Evidencia fotográfica</div><div class="shots"><p class="muted" style="margin:0"><span class="spin"></span> Cargando fotografías</p></div></div>':'';
@@ -1406,12 +1439,12 @@ function openVisit(id){
    '<div class="ficha"><div class="sh">Información general</div><table>'+
     tr("Fecha",fLarga(v.fecha))+tr("Horario",esc((v.horaInicio||"—")+" a "+(v.horaFin||"—"))+(v.duracion!=null?" ("+v.duracion+" minutos)":""))+
     tr("Observador/a",esc(v.observador))+tr("Docente observado/a",esc(v.docente)+(v.docenteCorreo?' <span class="muted">· '+esc(v.docenteCorreo)+'</span>':''))+tr("Curso y paralelo",esc([v.curso,v.paralelo].filter(Boolean).join(" ")))+
-    tr("Asignatura",esc(v.materia))+tr("Tema de clase",esc(v.tema))+'<tr class="no-pdf"><th>Envío por correo</th><td>'+mailState(v)+'</td></tr></table></div>'+
+    tr("Asignatura",esc(v.materia))+tr("Tema de clase",esc(v.tema))+(v.seguimientoDe?tr("Visita de seguimiento de",'<button type="button" class="linkish" data-open="'+esc(v.seguimientoDe)+'">'+esc(v.seguimientoDe)+'</button>'):"")+'<tr class="no-pdf"><th>Envío por correo</th><td>'+mailState(v)+'</td></tr></table></div>'+
    '<div id="mailFb" class="no-pdf"></div>'+
    '<div class="ficha"><div class="sh">Resultado</div><div style="padding:14px">'+resultHTML(v)+'</div></div>'+
    mx+
    '<div class="ficha"><div class="sh">Retroalimentación y seguimiento</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+
-    tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(canWrite()?' <button type="button" class="btn sec sm no-pdf" id="mSeg" style="margin-left:6px">'+(v.seguimientoHecho?'Marcar como pendiente':'Marcar como realizado')+'</button>':''):"")+'</table></div>'+
+    tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(segPend(v)&&canWrite()?' <button type="button" class="btn sm no-pdf" data-segstart="'+esc(v.id)+'" style="margin-left:6px">Realizar seguimiento</button>':'')+(segPend(v)&&isAdmin()?' <button type="button" class="btn sec sm no-pdf" id="mSegX" style="margin-left:6px">Cancelar seguimiento</button>':''):"")+'</table></div>'+
    confHTML(v)+
    ph+'<div class="firmas"><div><img class="fimg hide" id="fImgDoc" alt=""><span class="fl"></span>Firma del docente observado<b>'+esc(v.docente||"")+'</b></div><div><span class="fl"></span>Firma del observador(a) / coordinador(a)<b>'+esc(v.observador||"")+'</b></div></div></div>'+
   (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(fHora(new Date(v.creado))):''):'')+
@@ -1423,7 +1456,7 @@ function openVisit(id){
   $("#mClose").onclick=closeModal; if($("#mEdit")) $("#mEdit").onclick=()=>editVisit(v); $("#mPrint").onclick=()=>window.print();
   $("#mPdfF").onclick=()=>downloadPdf(v.id+"-firmas.pdf",true); loadFirma(v);
   $("#mDoc").onclick=()=>openDocente(v.docente);
-  if($("#mSeg")) $("#mSeg").onclick=async()=>{ $("#mSeg").disabled=true; await setSegHecho(v.id,!v.seguimientoHecho); setTimeout(()=>openVisit(v.id),300); };
+  if($("#mSegX")) $("#mSegX").onclick=()=>cancelSeg(v);
   if($("#cfOk")){ $("#cfOk").onclick=()=>giveConf(v,"CONFORME"); $("#cfObs").onclick=()=>giveConf(v,"OBSERVACIONES"); }
   if($("#mDel")) $("#mDel").onclick=async()=>{ if(!confirm("¿Eliminar definitivamente el registro "+v.id+"?")) return;
     try{ await delVisit(v.id); closeModal(); toast("Registro "+v.id+" eliminado"); }catch(e){ toast("No se pudo eliminar el registro"); } };
@@ -1459,7 +1492,7 @@ async function downloadPdf(name,firmas){
 
 let lastFocus=null;
 function openModal(){ if(!$("#mask").classList.contains("open")) lastFocus=document.activeElement; $("#mask").classList.add("open"); $("#mask").scrollTop=0; $("#modal").focus({preventScroll:true}); }
-function closeModal(){ if(!$("#mask").classList.contains("open")) return; $("#mask").classList.remove("open"); if(lastFocus&&document.contains(lastFocus)) lastFocus.focus({preventScroll:true}); lastFocus=null; }
+function closeModal(){ if(!$("#mask").classList.contains("open")) return; snoozeOpenCards(); $("#mask").classList.remove("open"); if(lastFocus&&document.contains(lastFocus)) lastFocus.focus({preventScroll:true}); lastFocus=null; }
 // Mantiene el foco del teclado dentro de la ficha abierta.
 $("#modal").addEventListener("keydown",e=>{ if(e.key!=="Tab") return;
   const f=Array.from($("#modal").querySelectorAll("button,[href],input,select,textarea,[tabindex]:not([tabindex='-1'])")).filter(x=>!x.disabled&&x.offsetParent!==null); if(!f.length) return;
@@ -1690,12 +1723,12 @@ function indStatsHTML(l){
 const SEG_DIAS=7;
 function segHTML(){
   const t=todayISO(), lim=i2d(d2i(t)+SEG_DIAS);
-  const p=VISITS.filter(v=>v.seguimiento&&!v.seguimientoHecho&&(!tSec||v.seccion===tSec)&&v.seguimiento<=lim).sort((a,b)=>a.seguimiento.localeCompare(b.seguimiento));
+  const p=VISITS.filter(v=>segPend(v)&&(!tSec||v.seccion===tSec)&&v.seguimiento<=lim).sort((a,b)=>a.seguimiento.localeCompare(b.seguimiento));
   if(!p.length) return '';
   const venc=p.filter(v=>v.seguimiento<t), prox=p.filter(v=>v.seguimiento>=t);
   const li=v=>{ const d=d2i(v.seguimiento)-d2i(t);
     return '<li><span class="grow"><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.docente||"—")+'</button><span>Seguimiento: '+fCorta(v.seguimiento)+' · '+(d<0?'venció hace '+(-d)+' día'+(d===-1?'':'s'):d===0?'es hoy':'en '+d+' día'+(d===1?'':'s'))+' · '+esc(v.id)+'</span></span>'+
-      (d<0?'<span class="tag prio">Vencido</span>':'<span class="tag warn">Próximo</span>')+(canWrite()?'<button class="btn sec sm" data-segdone="'+esc(v.id)+'">Marcar realizado</button>':'')+'</li>'; };
+      (d<0?'<span class="tag prio">Vencido</span>':'<span class="tag warn">Próximo</span>')+(canWrite()?'<button class="btn sec sm" data-segstart="'+esc(v.id)+'">Realizar seguimiento</button>':'')+'</li>'; };
   return '<div class="panel" style="border-left:4px solid '+(venc.length?'var(--danger)':'var(--orange)')+'"><h3>Seguimientos pendientes</h3><p class="hint">'+
     (venc.length?venc.length+' vencido'+(venc.length===1?'':'s'):'Ninguno vencido')+' · '+prox.length+' en los próximos '+SEG_DIAS+' días.</p><ul class="plist">'+venc.concat(prox).map(li).join("")+'</ul></div>';
 }
@@ -1903,7 +1936,7 @@ $("#expJson").onclick=async()=>{
   catch(e){ toast(errMsg(e,"No se pudo preparar el respaldo")); }
   finally{ b.disabled=false; b.textContent=t; } };
 // Campos permitidos en una visita (deben coincidir con firestore.rules).
-const VKEYS=["id","token","version","docenteCorreo","pesos","conformidad","seguimientoHecho","correoEnviado","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
+const VKEYS=["id","token","version","docenteCorreo","pesos","conformidad","seguimientoHecho","seguimientoCancelado","seguimientoDe","correoEnviado","seccion","fecha","observador","docente","curso","paralelo","materia","tema","horaInicio","horaFin","duracion","niveles","evidencias",
   "fortalezas","mejoras","seguimiento","fotos","puntajes","total","nivel","creado","actualizado","creadoPor","actualizadoPor"];
 // Solo se importan visitas de la matriz vigente: una visita de la matriz anterior (18 indicadores) tiene otros códigos.
 function validVisit(v){ return v&&typeof v==="object"&&v.version===MATRIZ_VERSION&&ID_RE.test(v.id||"")&&SECS.includes(v.seccion)&&/^\d{4}-\d{2}-\d{2}$/.test(v.fecha||"")&&v.niveles&&typeof v.niveles==="object"; }
@@ -1992,6 +2025,84 @@ function openDsAdd(){
     catch(err){ $("#dsSave").disabled=false; m.textContent=errMsg(err,"No se pudo guardar el docente."); } };
 }
 $("#dsAdd").onclick=openDsAdd;
+
+/* ---------- seguimientos: aviso del día y campanita ---------- */
+// Un seguimiento está pendiente hasta que se guarda una visita vinculada (seguimientoDe) o la súper administración lo cancela.
+// Es de quien registró la visita anterior: a esa cuenta le sale el aviso el día fijado; la súper administración ve todos en la campanita.
+const segPend=v=>!!(v&&v.seguimiento&&!v.seguimientoHecho&&!v.seguimientoCancelado);
+const segMine=v=>String(v.creadoPor||"").toLowerCase()===myMail();
+const segList=()=>VISITS.filter(v=>segPend(v)&&(isAdmin()||segMine(v))).sort((a,b)=>a.seguimiento.localeCompare(b.seguimiento)||a.id.localeCompare(b.id));
+function segWhen(f){ const d=d2i(f)-d2i(todayISO()); return d<0?{c:"prio",t:"Vencido hace "+(-d)+" día"+(d===-1?"":"s")}:d===0?{c:"warn",t:"Hoy"}:{c:"",t:d===1?"Mañana":"En "+d+" días"}; }
+function renderBell(){
+  $("#bellW").classList.toggle("hide",!canWrite()); if(!canWrite()) return;
+  const l=segList(), urg=l.filter(v=>v.seguimiento<=todayISO()).length, n=$("#bellN");
+  n.textContent=l.length>99?"99+":String(l.length); n.classList.toggle("hide",!l.length);
+  $("#bellBtn").setAttribute("aria-label","Seguimientos programados: "+l.length+(urg?", "+urg+" para hoy o vencidos":""));
+  if(!$("#bellPop").classList.contains("hide")) paintBellPop(); }
+function paintBellPop(){
+  const l=segList(), t=todayISO(), grp=[["Vencidos",l.filter(v=>v.seguimiento<t)],["Hoy",l.filter(v=>v.seguimiento===t)],["Programados",l.filter(v=>v.seguimiento>t)]];
+  $("#bellPop").innerHTML='<h4>Seguimientos programados</h4>'+(!l.length?'<p class="empty-b">No hay visitas de seguimiento pendientes.</p>':
+    grp.filter(g=>g[1].length).map(([k,a])=>'<h5>'+k+' ('+a.length+')</h5><ul>'+a.map(v=>{ const w=segWhen(v.seguimiento);
+      return '<li><div class="row" style="gap:8px;flex-wrap:nowrap"><b class="grow">'+esc(v.docente||"—")+'</b><span class="tag '+w.c+'">'+esc(w.t)+'</span></div>'+
+        '<span class="muted">'+esc(fLarga(v.seguimiento))+' · '+esc(SECN[v.seccion]||"")+(v.materia?' · '+esc(v.materia):'')+' · visita anterior '+esc(v.id)+(isAdmin()&&!segMine(v)?' · '+esc(v.creadoPor||""):'')+'</span>'+
+        '<div class="row" style="gap:6px"><button type="button" class="btn sm" data-segstart="'+esc(v.id)+'">Realizar visita</button><button type="button" class="btn sec sm" data-open="'+esc(v.id)+'">Ver visita anterior</button></div></li>'; }).join("")+'</ul>').join("")); }
+function bellToggle(open){ const p=$("#bellPop"), o=open===undefined?p.classList.contains("hide"):open; if(!o&&p.classList.contains("hide")) return;
+  p.classList.toggle("hide",!o); $("#bellBtn").setAttribute("aria-expanded",String(o)); if(o) paintBellPop(); }
+$("#bellBtn").onclick=e=>{ e.stopPropagation(); bellToggle(); };
+document.addEventListener("click",e=>{ if(!e.target.closest("#bellW")||e.target.closest("[data-open],[data-segstart]")) bellToggle(false); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") bellToggle(false); });
+
+// Inicia la visita de seguimiento con los datos del docente de la visita anterior.
+const segStarted=new Set();
+function startSeg(id){
+  const v=VISITS.find(x=>x.id===id); if(!v||!canWrite()) return;
+  if(!segPend(v)){ toast("Este seguimiento ya no está pendiente."); return; }
+  if(!confirmDiscard("Hay una visita en curso sin guardar. ¿Descartarla para iniciar el seguimiento de "+(v.docente||"este docente")+"?")) return;
+  segStarted.add(v.id); bellToggle(false); closeModal();
+  resetForm(); SEGDE=v.id; setSel($("#secOpts"),v.seccion);
+  [["observador","observador"],["docente","docente"],["docCorreo","docenteCorreo"],["curso","curso"],["paralelo","paralelo"],["materia","materia"]].forEach(([i,k])=>$("#"+i).value=v[k]||"");
+  renderLists(); updateScore(); paintSegDe(); markDirty(); idPrev(); go("nueva"); showStep(0);
+  toast("Seguimiento de "+(v.docente||"")+": completa el horario y la matriz"); }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-segstart]"); if(b){ e.stopPropagation(); startSeg(b.dataset.segstart); } },true);
+function paintSegDe(){ const b=$("#segDeBar"), v=SEGDE&&VISITS.find(x=>x.id===SEGDE);
+  b.classList.toggle("hide",!SEGDE); if(!SEGDE) return;
+  $("#segDeTxt").innerHTML='<b>Visita de seguimiento</b> de '+esc(SEGDE)+(v?' ('+esc(v.docente||"")+', '+esc(fLarga(v.fecha))+')':'')+(editingId?'.':'. Al guardarla, ese seguimiento queda como realizado.');
+  $("#segDeDrop").classList.toggle("hide",!!editingId); }
+$("#segDeOpen").onclick=()=>{ if(SEGDE) openVisit(SEGDE); };
+$("#segDeDrop").onclick=()=>{ if(!confirm("¿Quitar el vínculo? Se guardará como una visita normal y el seguimiento seguirá pendiente.")) return; SEGDE=""; paintSegDe(); markDirty(); };
+
+// Aviso emergente: solo el día programado, a quien lo programó. «Recordar en 30 minutos» se guarda en este dispositivo.
+const snzKey=()=>"rctx_segsnz_"+myMail();
+let SNZ={}, VLOADED=false;
+function snoozes(){ try{ return JSON.parse(localStorage.getItem(snzKey())||"{}")||{}; }catch(e){ return SNZ; } }
+function snooze(ids){ const now=Date.now(), s=Object.fromEntries(Object.entries(snoozes()).filter(([,t])=>t>now)); ids.forEach(i=>s[i]=now+30*60e3); SNZ=s;
+  try{ localStorage.setItem(snzKey(),JSON.stringify(s)); }catch(e){} }
+function segDue(){ const t=todayISO(), s=snoozes(), now=Date.now();
+  return VISITS.filter(v=>segPend(v)&&segMine(v)&&v.seguimiento===t&&!segStarted.has(v.id)&&!(s[v.id]>now)); }
+function checkSegAlert(){
+  if(!ME||!canWrite()||!VLOADED||$("#mask").classList.contains("open")) return;
+  const l=segDue(); if(!l.length) return;
+  $("#modal").innerHTML='<div class="m-run"><img class="m-logo" alt="Eight Academy" src="'+esc($("#logoImg").src)+'">RECORDATORIO DE VISITA DE SEGUIMIENTO<button class="icon-btn" id="mClose" aria-label="Cerrar y recordar en 30 minutos" title="Recordar en 30 minutos">✕</button></div>'+
+   '<div class="m-body" style="padding-top:16px"><h3 id="mTitle" class="scn" style="margin:0;font-size:22px">Hoy tienes '+(l.length===1?'una visita áulica de seguimiento programada':l.length+' visitas áulicas de seguimiento programadas')+'</h3>'+
+   '<p class="muted" style="margin:4px 0 0">'+esc(fLarga(todayISO()))+'. La programaste al registrar la visita anterior.</p>'+
+   l.map(v=>{ const r=calcV(v); return '<div class="segcard" data-segcard="'+esc(v.id)+'"><h4>'+esc(v.docente||"—")+'</h4><div class="tags"><span class="tag '+esc(v.seccion)+'">'+esc(SECN[v.seccion]||"")+'</span>'+nivTag(r.nivel)+'</div>'+
+     '<dl><dt>Curso y asignatura</dt><dd>'+esc([[v.curso,v.paralelo].filter(Boolean).join(" "),v.materia].filter(Boolean).join(" · ")||"—")+'</dd>'+
+     '<dt>Visita anterior</dt><dd>'+esc(v.id)+' · '+esc(fLarga(v.fecha))+(v.horaInicio?' · '+esc(v.horaInicio)+'–'+esc(v.horaFin||""):'')+'</dd>'+
+     '<dt>Calificación</dt><dd><b>'+f2(r.total)+'</b> / 100 · '+esc(NIVN[r.nivel])+'</dd>'+
+     '<dt>Observador/a</dt><dd>'+esc(v.observador||"—")+'</dd>'+
+     '<dt>Aspectos por mejorar</dt><dd>'+esc(v.mejoras||"—")+'</dd></dl>'+
+     '<div class="row"><button type="button" class="btn" data-segstart="'+esc(v.id)+'">Realizar visita áulica en este momento</button>'+
+     '<button type="button" class="btn sec" data-segsnz="'+esc(v.id)+'">Recordar visita áulica en 30 minutos</button>'+
+     '<button type="button" class="linkish" data-open="'+esc(v.id)+'" style="margin-left:auto">Ver ficha anterior</button></div></div>'; }).join("")+'</div>';
+  openModal();
+  $("#mClose").onclick=()=>{ closeModal(); toast("Te lo recordaremos en 30 minutos"); };
+}
+// Cerrar el aviso por cualquier vía (✕, Esc o clic fuera) equivale a «Recordar en 30 minutos».
+function snoozeOpenCards(){ const c=$$("#modal [data-segcard]").map(x=>x.dataset.segcard).filter(i=>!segStarted.has(i)); if(c.length) snooze(c); }
+$("#modal").addEventListener("click",e=>{ const b=e.target.closest("[data-segsnz]"); if(!b) return;
+  snooze([b.dataset.segsnz]); b.closest("[data-segcard]").remove(); toast("Te lo recordaremos en 30 minutos");
+  if(!$$("#modal [data-segcard]").length) closeModal(); });
+setInterval(checkSegAlert,60000);
 
 /* ---------- firma del docente (dedo o lápiz digital) ---------- */
 // Se guarda aparte (rctx_firmas/{id de la visita}) para no cargar las firmas con la lista de visitas.
@@ -2129,6 +2240,7 @@ function renderAll(){
   const w=isoMinus(6), c=VISITS.map(v=>calcV(v)).filter(r=>r.nivel!=="INCOMPLETA").map(r=>r.total);
   $("#stTotal").textContent=VISITS.length; $("#stAvg").textContent=c.length?f2(avg(c)):"—"; $("#stWeek").textContent=VISITS.filter(v=>(v.fecha||"")>=w).length;
   if(!editingId) idPrev();
+  renderBell();
 }
 initForm(); renderScale(); renderConfig(); boot();
 </script>
