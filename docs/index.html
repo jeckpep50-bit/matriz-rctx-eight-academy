@@ -1427,6 +1427,7 @@ async function cancelSeg(v){
     toast("Seguimiento cancelado"); setTimeout(()=>openVisit(v.id),300); }
   catch(e){ toast(errMsg(e,"No se pudo cancelar el seguimiento")); } }
 function openVisit(id){
+  if(PEND.id&&(PEND.doc||PEND.obs)) SAVING=savePending();
   const v=VISITS.find(x=>x.id===id); if(!v) return; const r=calcV(v), w=vW(v);
   const ph=(v.fotos||[]).length?'<div class="ficha" id="fichaFotos"><div class="sh">Evidencia fotográfica</div><div class="shots"><p class="muted" style="margin:0"><span class="spin"></span> Cargando fotografías</p></div></div>':'';
   const mx='<div class="ficha"><div class="sh">Matriz de valoración</div><div style="overflow-x:auto"><table class="mx"><thead><tr><th>Cód.</th><th>Indicador</th><th class="c">Máx.</th><th class="c">Nivel</th><th class="c">Puntaje</th><th>Evidencia</th></tr></thead><tbody>'+
@@ -1454,7 +1455,7 @@ function openVisit(id){
   if((v.fotos||[]).length) getFotos(v.id).then(list=>{ const b=$("#fichaFotos .shots"); if(b) b.innerHTML=list===null?'<p class="muted" style="margin:0">No se pudieron cargar las fotografías. Revisa la conexión y vuelve a abrir la ficha.</p>':list.length?list.map((f,i)=>'<figure><img src="'+esc(f.data)+'" alt="Foto '+(i+1)+'"><figcaption>Foto '+(i+1)+(f.desc?': '+esc(f.desc):'')+'</figcaption></figure>').join(""):'<p class="muted" style="margin:0">Sin fotografías.</p>'; });
   if(!canWrite()) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove(); if(!canWrite()||!v.docenteCorreo) $("#mMail").remove(); else{ if(v.correoEnviado) $("#mMail").classList.add("sec"); $("#mMail").onclick=()=>sendMail(v); }
   $("#mClose").onclick=closeModal; if($("#mEdit")) $("#mEdit").onclick=()=>editVisit(v); $("#mPrint").onclick=()=>window.print();
-  $("#mPdfF").onclick=async()=>{ await firmasListas(v.id); downloadPdf(v.id+"-firmas.pdf",true); }; loadFirma(v);
+  $("#mPdfF").onclick=async()=>{ await savePending(); await firmasListas(v.id); downloadPdf(v.id+"-firmas.pdf",true); }; loadFirma(v);
   $("#mDoc").onclick=()=>openDocente(v.docente);
   if($("#mSegX")) $("#mSegX").onclick=()=>cancelSeg(v);
   if($("#cfOk")){ $("#cfOk").onclick=()=>giveConf(v,"CONFORME"); $("#cfObs").onclick=()=>giveConf(v,"OBSERVACIONES"); }
@@ -1492,7 +1493,7 @@ async function downloadPdf(name,firmas){
 
 let lastFocus=null;
 function openModal(){ if(!$("#mask").classList.contains("open")) lastFocus=document.activeElement; $("#mask").classList.add("open"); $("#mask").scrollTop=0; $("#modal").focus({preventScroll:true}); }
-function closeModal(){ if(!$("#mask").classList.contains("open")) return; snoozeOpenCards(); $("#mask").classList.remove("open"); if(lastFocus&&document.contains(lastFocus)) lastFocus.focus({preventScroll:true}); lastFocus=null; }
+function closeModal(){ if(!$("#mask").classList.contains("open")) return; snoozeOpenCards(); if(PEND.id&&(PEND.doc||PEND.obs)) SAVING=savePending(); $("#mask").classList.remove("open"); if(lastFocus&&document.contains(lastFocus)) lastFocus.focus({preventScroll:true}); lastFocus=null; }
 // Mantiene el foco del teclado dentro de la ficha abierta.
 $("#modal").addEventListener("keydown",e=>{ if(e.key!=="Tab") return;
   const f=Array.from($("#modal").querySelectorAll("button,[href],input,select,textarea,[tabindex]:not([tabindex='-1'])")).filter(x=>!x.disabled&&x.offsetParent!==null); if(!f.length) return;
@@ -2115,33 +2116,49 @@ let FIRMAS={}, FIRMA_P={};
 async function getFirma(k,id){ const key=k+":"+id; if(key in FIRMAS) return FIRMAS[key];
   try{ const s=await withTimeout(getDoc(doc(FB,FIRMA_K[k].col,id)),15000); FIRMAS[key]=s.exists()?s.data():null; return FIRMAS[key]; }catch(e){ return undefined; } }
 const firmaOk=f=>!!(f&&/^data:image\/png;base64,/.test(f.img||""));
-function sigPad(host,titulo,onSave){
+// Espacio para firmar: no hay botón «Guardar». Lo dibujado es la firma (se puede borrar mientras no se guarde)
+// y se guarda sola al enviar por correo, descargar el PDF con firmas, cerrar la ficha o abrir otra.
+// PEND guarda las firmas dibujadas y aún no guardadas de la ficha abierta.
+let PEND={id:"",doc:null,obs:null}, SAVING=null;
+window.addEventListener("beforeunload",e=>{ if(PEND.id&&(PEND.doc||PEND.obs)){ e.preventDefault(); e.returnValue=""; } });
+function sigPad(host,titulo,onChange){
   host.innerHTML='<div class="no-pdf"><p class="lbl" style="margin:14px 0 6px">'+esc(titulo)+' <span class="muted" style="font-weight:400">· con el dedo o un lápiz digital</span></p>'+
     '<div class="sig"><canvas aria-label="Espacio para la '+esc(titulo.toLowerCase())+'"></canvas><span class="sig-l">Firme aquí</span></div>'+
-    '<div class="row" style="margin-top:8px"><button type="button" class="btn sec sm" data-sg="clr">Borrar</button><button type="button" class="btn sm" data-sg="ok" disabled>Guardar firma</button><span class="fmsg" data-sg="msg"></span></div>'+
-    '<p class="muted" style="margin:6px 0 0">Queda registrada con la fecha y hora del servidor y no se puede cambiar después.</p></div>';
-  const q=x=>host.querySelector(x), cv=q("canvas"), ctx=cv.getContext("2d"), hint=q(".sig-l"), ok=q('[data-sg="ok"]'); let drawing=false, last=null, dirty=false;
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn sec sm" data-sg="clr">Borrar</button><span class="muted" data-sg="st"></span></div>'+
+    '<p class="muted" style="margin:6px 0 0">La firma se guarda sola al enviar por correo, descargar el PDF con firmas o cerrar la ficha. Después ya no se puede cambiar.</p></div>';
+  const q=x=>host.querySelector(x), cv=q("canvas"), ctx=cv.getContext("2d"), hint=q(".sig-l"), st=q('[data-sg="st"]'); let drawing=false, last=null, dirty=false;
   // El tamaño se toma de la pantalla; si la ficha aún no estaba visible al dibujarse, se toma al empezar a firmar.
   const fit=()=>{ const r=cv.getBoundingClientRect(), k=window.devicePixelRatio||1; if(!r.width) return;
     cv.width=Math.round(r.width*k); cv.height=Math.round(r.height*k); ctx.setTransform(k,0,0,k,0,0);
     ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=ctx.fillStyle="#1B1F3B"; };
   fit();
   const pt=e=>{ const r=cv.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==="pen"&&e.pressure?e.pressure:.5}; };
-  const mark=()=>{ if(dirty) return; dirty=true; ok.disabled=false; hint.classList.add("hide"); };
-  cv.addEventListener("pointerdown",e=>{ e.preventDefault(); if(!dirty&&cv.width!==Math.round(cv.getBoundingClientRect().width*(window.devicePixelRatio||1))) fit(); cv.setPointerCapture(e.pointerId); drawing=true; last=pt(e); ctx.beginPath(); ctx.arc(last.x,last.y,1.4,0,Math.PI*2); ctx.fill(); mark(); });
+  const snap=()=>{ const o=document.createElement("canvas"); o.width=600; o.height=Math.round(600*cv.height/cv.width);
+    o.getContext("2d").drawImage(cv,0,0,o.width,o.height); return o.toDataURL("image/png"); };
+  cv.addEventListener("pointerdown",e=>{ e.preventDefault(); if(!dirty&&cv.width!==Math.round(cv.getBoundingClientRect().width*(window.devicePixelRatio||1))) fit();
+    cv.setPointerCapture(e.pointerId); drawing=true; dirty=true; hint.classList.add("hide"); last=pt(e); ctx.beginPath(); ctx.arc(last.x,last.y,1.4,0,Math.PI*2); ctx.fill(); });
   cv.addEventListener("pointermove",e=>{ if(!drawing) return; e.preventDefault();
     const co=e.getCoalescedEvents?e.getCoalescedEvents():[]; (co.length?co:[e]).forEach(ev=>{ const p=pt(ev); ctx.lineWidth=1.3+p.p*2.6; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; }); });
-  const end=()=>{ drawing=false; }; cv.addEventListener("pointerup",end); cv.addEventListener("pointercancel",end);
-  q('[data-sg="clr"]').onclick=()=>{ ctx.clearRect(0,0,cv.width,cv.height); dirty=false; ok.disabled=true; hint.classList.remove("hide"); };
-  ok.onclick=()=>{ if(!dirty) return; const o=document.createElement("canvas"); o.width=600; o.height=Math.round(600*cv.height/cv.width);
-    o.getContext("2d").drawImage(cv,0,0,o.width,o.height); onSave(o.toDataURL("image/png"),ok,q('[data-sg="msg"]')); };
+  const end=()=>{ if(!drawing) return; drawing=false; if(cv.width){ onChange(snap()); st.textContent="Firma lista."; } };
+  cv.addEventListener("pointerup",end); cv.addEventListener("pointercancel",end);
+  q('[data-sg="clr"]').onclick=()=>{ ctx.clearRect(0,0,cv.width,cv.height); dirty=false; hint.classList.remove("hide"); st.textContent=""; onChange(null); };
 }
-async function saveFirma(k,v,img,ok,msg){
-  const K=FIRMA_K[k];
-  if(!confirm("¿Guardar la "+K.titulo.toLowerCase()+" ("+K.quien(v)+")? No se podrá cambiar después.")) return;
-  ok.disabled=true; msg.textContent="";
-  try{ await withTimeout(setDoc(doc(FB,K.col,v.id),{img,fecha:serverTimestamp(),por:myMail()}),20000); delete FIRMAS[k+":"+v.id]; toast("Firma guardada"); openVisit(v.id); }
-  catch(e){ msg.textContent=errMsg(e,"No se pudo guardar la firma."); ok.disabled=false; } }
+// La firma dibujada también se pone sobre su línea del PDF, para que salga aunque aún no se haya guardado.
+function setPend(k,v,img){
+  if(PEND.id!==v.id) PEND={id:v.id,doc:null,obs:null};
+  PEND[k]=img; const li=$("#"+FIRMA_K[k].li); if(!li) return;
+  if(img){ li.src=img; li.classList.remove("hide"); } else{ li.removeAttribute("src"); li.classList.add("hide"); } }
+// Guarda las firmas pendientes de la ficha abierta. Devuelve false si alguna no se pudo guardar.
+async function savePending(){
+  const id=PEND.id, ks=["doc","obs"].filter(k=>PEND[k]); if(!id||!ks.length) return true;
+  const imgs=Object.fromEntries(ks.map(k=>[k,PEND[k]])); PEND={id:"",doc:null,obs:null};
+  let ok=true;
+  for(const k of ks){
+    try{ await withTimeout(setDoc(doc(FB,FIRMA_K[k].col,id),{img:imgs[k],fecha:serverTimestamp(),por:myMail()}),20000);
+      FIRMAS[k+":"+id]={img:imgs[k],fecha:new Date().toISOString(),por:myMail()}; }
+    catch(e){ ok=false; delete FIRMAS[k+":"+id]; toast(errMsg(e,"No se pudo guardar la "+FIRMA_K[k].titulo.toLowerCase()+". Vuelve a firmar.")); } }
+  if(ok) toast(ks.length===2?"Firmas guardadas":FIRMA_K[ks[0]].titulo+" guardada");
+  return ok; }
 function paintFirma(k,v,f){
   const K=FIRMA_K[k], b=$("#"+K.box); if(!b||($("#mTitle")||{}).textContent!==v.id) return;
   if(f===undefined){ b.innerHTML='<p class="muted no-pdf" style="margin:12px 0 0">No se pudo cargar la '+esc(K.titulo.toLowerCase())+'. Vuelve a abrir la ficha.</p>'; return; }
@@ -2149,10 +2166,11 @@ function paintFirma(k,v,f){
     b.innerHTML='<p class="lbl" style="margin:14px 0 6px">'+esc(K.titulo)+'</p><div class="sigv"><img src="'+esc(f.img)+'" alt="'+esc(K.titulo)+': '+esc(K.quien(v))+'"></div>'+
       '<p class="muted" style="margin:4px 0 0">'+esc(K.quien(v))+(d?' · firmada el '+esc(fHora(d)):'')+(f.por?' · registrada por '+esc(f.por):'')+'</p>';
     const li=$("#"+K.li); if(li){ li.src=f.img; li.classList.remove("hide"); } return; }
-  if(K.puede(v)) sigPad(b,K.titulo,(img,ok,msg)=>saveFirma(k,v,img,ok,msg)); else b.innerHTML=""; }
+  if(K.puede(v)) sigPad(b,K.titulo,img=>setPend(k,v,img)); else b.innerHTML=""; }
 function loadFirma(v){
   ["doc","obs"].forEach(k=>{ const b=$("#"+FIRMA_K[k].box); if(b) b.innerHTML='<p class="muted no-pdf" style="margin:12px 0 0"><span class="spin"></span> Cargando firma</p>'; });
-  FIRMA_P[v.id]=Promise.all(["doc","obs"].map(k=>getFirma(k,v.id).then(f=>{ paintFirma(k,v,f); return f; })));
+  // Si se estaban guardando firmas de esta ficha, se espera a que terminen para no mostrar el espacio vacío.
+  FIRMA_P[v.id]=(SAVING||Promise.resolve()).catch(()=>{}).then(()=>Promise.all(["doc","obs"].map(k=>getFirma(k,v.id).then(f=>{ paintFirma(k,v,f); return f; }))));
   return FIRMA_P[v.id]; }
 // Antes de generar el PDF con firmas (descarga o correo) se espera a que las firmas estén cargadas y dibujadas.
 async function firmasListas(id){
@@ -2205,7 +2223,7 @@ async function sendMail(v){
   if(!MAIL_RE.test(v.docenteCorreo||"")){ toast("La visita no tiene un correo institucional válido del docente."); return; }
   const prevS=v.correoEnviado, dd=prevS&&tsDate(prevS.fecha);
   // Aviso si al PDF le falta alguna firma (las firmas se cargaron al abrir la ficha).
-  const falta=["doc","obs"].filter(k=>{ const f=FIRMAS[k+":"+v.id]; return f!==undefined&&!firmaOk(f); }).map(k=>FIRMA_K[k].titulo.toLowerCase());
+  const falta=["doc","obs"].filter(k=>{ const f=FIRMAS[k+":"+v.id]; return f!==undefined&&!firmaOk(f)&&!(PEND.id===v.id&&PEND[k]); }).map(k=>FIRMA_K[k].titulo.toLowerCase());
   if(falta.length&&!confirm("Esta ficha aún no tiene la "+falta.join(" ni la ")+". El PDF se enviará con la línea de firma en blanco.\n\n¿Enviar de todos modos?")) return;
   if(!confirm(prevS?"Esta evaluación ya se envió a "+(prevS.a||v.docenteCorreo)+(dd?" el "+fHora(dd):"")+". ¿Enviarla de nuevo a "+v.docenteCorreo+"?":"Se enviará la evaluación "+v.id+", con el PDF adjunto, a "+v.docenteCorreo+" desde tu cuenta "+myMail()+".\n\nSi Google muestra «Google no verificó esta app», pulsa «Configuración avanzada» y luego «Ir a matriz-rctx-eight-academy» para dar el permiso.\n\n¿Continuar?")) return;
   const b=$("#mMail"), label=b.textContent; $("#mailFb").innerHTML="";
@@ -2220,6 +2238,7 @@ async function sendMail(v){
     mailFallback(v,"Google no concedió el permiso para enviar correos ("+(c||"sin código")+")."); return; }
   try{
     toast("Preparando el PDF…");
+    if(!(await savePending())){ busy(false); return; }
     await firmasListas(v.id);
     const pdf=await pdfFrom(v.id+".pdf",true,w=>w.outputPdf("blob"));
     const raw=mimeMsg(v.docenteCorreo,mailSubject(v),mailHTML(v),v.id+".pdf",u8b64(new Uint8Array(await pdf.arrayBuffer())));
