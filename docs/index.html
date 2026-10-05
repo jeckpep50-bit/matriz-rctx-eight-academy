@@ -940,7 +940,7 @@ function wireSeg(host, key, cb){
 
 /* ---------- almacenamiento (Firebase) ---------- */
 const DEFAULT_LOGO="logo.png";
-const COLV="rctx_visitas", COLF="rctx_fotos", COLC="rctx_config", COLS="rctx_firmas";
+const COLV="rctx_visitas", COLF="rctx_fotos", COLC="rctx_config", COLS="rctx_firmas", COLSO="rctx_firmas_obs";
 const DOMAIN=String(CFG.ALLOWED_DOMAIN||"eightacademy.edu.ec").toLowerCase();
 const CONFIGURED=!!(FIREBASE_CONFIG&&FIREBASE_CONFIG.apiKey)&&!/REEMPLAZA/.test(JSON.stringify(FIREBASE_CONFIG));
 const mailList=a=>(a||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x.indexOf("reemplaza")<0);
@@ -982,7 +982,7 @@ async function saveVisit(v,fotos){
     return data;
   }),25000);
 }
-async function delVisit(id){ await deleteDoc(doc(FB,COLV,id)); try{ await deleteDoc(doc(FB,COLF,id)); }catch(e){} try{ await deleteDoc(doc(FB,COLS,id)); delete FIRMAS[id]; }catch(e){} }
+async function delVisit(id){ await deleteDoc(doc(FB,COLV,id)); try{ await deleteDoc(doc(FB,COLF,id)); }catch(e){} for(const k of ["doc","obs"]){ try{ await deleteDoc(doc(FB,FIRMA_K[k].col,id)); delete FIRMAS[k+":"+id]; }catch(e){} } }
 async function putConfig(){ await setDoc(doc(FB,COLC,"institucion"),clean(CONFIG)); }
 // Devuelve null si la descarga falla (distinto de "sin fotos"), para no confundir un error con una lista vacía.
 async function getFotos(id){ try{ const s=await getDoc(doc(FB,COLF,id)); return s.exists()?(s.data().fotos||[]):[]; }catch(e){ return null; } }
@@ -1040,7 +1040,7 @@ async function boot(){
 }
 function stopSubs(){ UNSUB.forEach(f=>{ try{ f(); }catch(e){} }); UNSUB=[]; }
 function startSession(u){
-  stopSubs(); VISITS=[]; VLOADED=false; DSEC=[]; FIRMAS={}; GTOK=null; ROLE=""; ME=u; renderAll();
+  stopSubs(); VISITS=[]; VLOADED=false; DSEC=[]; FIRMAS={}; FIRMA_P={}; GTOK=null; ROLE=""; ME=u; renderAll();
   $("#outBtn").classList.toggle("hide",!u);
   if(!u){ resetForm(); gate("login"); state("warn","Sin sesión"); return; }
   const mail=myMail();
@@ -1403,7 +1403,7 @@ function confHTML(v){
       '<div class="row" style="margin-top:10px"><button type="button" class="btn" id="cfOk">Estoy conforme</button><button type="button" class="btn sec" id="cfObs">Enviar conformidad con observaciones</button><span class="fmsg" id="cfMsg"></span></div></div>'+
       '<p class="muted pdf-only" style="margin:0">Pendiente de conformidad de '+esc(v.docenteCorreo)+'.</p>';
   else body='<p class="muted" style="margin:0">Pendiente de conformidad de '+esc(v.docenteCorreo)+'.</p>';
-  return '<div class="ficha"><div class="sh">Conformidad y firma del docente</div><div style="padding:12px 14px">'+body+'<div id="firmaBox"></div></div></div>';
+  return '<div class="ficha"><div class="sh">Conformidad y firmas</div><div style="padding:12px 14px">'+body+'<div class="sigs"><div id="firmaBox"></div><div id="firmaObsBox"></div></div></div></div>';
 }
 async function giveConf(v,estado){
   const t=($("#cfTxt").value||"").trim();
@@ -1446,7 +1446,7 @@ function openVisit(id){
    '<div class="ficha"><div class="sh">Retroalimentación y seguimiento</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+
     tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(segPend(v)&&canWrite()?' <button type="button" class="btn sm no-pdf" data-segstart="'+esc(v.id)+'" style="margin-left:6px">Realizar seguimiento</button>':'')+(segPend(v)&&isAdmin()?' <button type="button" class="btn sec sm no-pdf" id="mSegX" style="margin-left:6px">Cancelar seguimiento</button>':''):"")+'</table></div>'+
    confHTML(v)+
-   ph+'<div class="firmas"><div><img class="fimg hide" id="fImgDoc" alt=""><span class="fl"></span>Firma del docente observado<b>'+esc(v.docente||"")+'</b></div><div><span class="fl"></span>Firma del observador(a) / coordinador(a)<b>'+esc(v.observador||"")+'</b></div></div></div>'+
+   ph+'<div class="firmas"><div><img class="fimg hide" id="fImgDoc" alt=""><span class="fl"></span>Firma del docente observado<b>'+esc(v.docente||"")+'</b></div><div><img class="fimg hide" id="fImgObs" alt=""><span class="fl"></span>Firma del observador(a) / coordinador(a)<b>'+esc(v.observador||"")+'</b></div></div></div>'+
   (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(fHora(new Date(v.creado))):''):'')+
     (v.actualizadoPor&&v.actualizado&&v.actualizado!==v.creado?' · Última modificación: '+esc(v.actualizadoPor)+' el '+esc(fHora(new Date(v.actualizado))):'')+'</div>':'')+
   '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir</button><button class="btn sec" id="mPdfF">PDF con firmas</button><button class="btn" id="mMail">'+(v.correoEnviado?'Reenviar por correo':'Enviar por correo')+'</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
@@ -1454,7 +1454,7 @@ function openVisit(id){
   if((v.fotos||[]).length) getFotos(v.id).then(list=>{ const b=$("#fichaFotos .shots"); if(b) b.innerHTML=list===null?'<p class="muted" style="margin:0">No se pudieron cargar las fotografías. Revisa la conexión y vuelve a abrir la ficha.</p>':list.length?list.map((f,i)=>'<figure><img src="'+esc(f.data)+'" alt="Foto '+(i+1)+'"><figcaption>Foto '+(i+1)+(f.desc?': '+esc(f.desc):'')+'</figcaption></figure>').join(""):'<p class="muted" style="margin:0">Sin fotografías.</p>'; });
   if(!canWrite()) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove(); if(!canWrite()||!v.docenteCorreo) $("#mMail").remove(); else{ if(v.correoEnviado) $("#mMail").classList.add("sec"); $("#mMail").onclick=()=>sendMail(v); }
   $("#mClose").onclick=closeModal; if($("#mEdit")) $("#mEdit").onclick=()=>editVisit(v); $("#mPrint").onclick=()=>window.print();
-  $("#mPdfF").onclick=()=>downloadPdf(v.id+"-firmas.pdf",true); loadFirma(v);
+  $("#mPdfF").onclick=async()=>{ await firmasListas(v.id); downloadPdf(v.id+"-firmas.pdf",true); }; loadFirma(v);
   $("#mDoc").onclick=()=>openDocente(v.docente);
   if($("#mSegX")) $("#mSegX").onclick=()=>cancelSeg(v);
   if($("#cfOk")){ $("#cfOk").onclick=()=>giveConf(v,"CONFORME"); $("#cfObs").onclick=()=>giveConf(v,"OBSERVACIONES"); }
@@ -2104,46 +2104,62 @@ $("#modal").addEventListener("click",e=>{ const b=e.target.closest("[data-segsnz
   if(!$$("#modal [data-segcard]").length) closeModal(); });
 setInterval(checkSegAlert,60000);
 
-/* ---------- firma del docente (dedo o lápiz digital) ---------- */
-// Se guarda aparte (rctx_firmas/{id de la visita}) para no cargar las firmas con la lista de visitas.
-// Una sola vez, con la hora del servidor; solo la súper administración puede borrarla.
-let FIRMAS={};
-async function getFirma(id){ if(id in FIRMAS) return FIRMAS[id];
-  try{ const s=await withTimeout(getDoc(doc(FB,COLS,id)),15000); FIRMAS[id]=s.exists()?s.data():null; return FIRMAS[id]; }catch(e){ return undefined; } }
-function sigPad(host,onSave){
-  host.innerHTML='<div class="no-pdf"><p class="lbl" style="margin:14px 0 6px">Firma del docente <span class="muted" style="font-weight:400">· con el dedo o un lápiz digital</span></p>'+
-    '<div class="sig"><canvas id="sigCv" aria-label="Espacio para la firma del docente"></canvas><span class="sig-l">Firme aquí</span></div>'+
-    '<div class="row" style="margin-top:8px"><button type="button" class="btn sec sm" id="sigClr">Borrar</button><button type="button" class="btn sm" id="sigOk" disabled>Guardar firma</button><span class="fmsg" id="sigMsg"></span></div>'+
-    '<p class="muted" style="margin:6px 0 0">La firma queda registrada con la fecha y hora del servidor y no se puede cambiar después.</p></div>';
-  const cv=$("#sigCv"), ctx=cv.getContext("2d"), hint=host.querySelector(".sig-l"); let drawing=false, last=null, dirty=false;
-  const r0=cv.getBoundingClientRect(), k=window.devicePixelRatio||1; cv.width=Math.round(r0.width*k); cv.height=Math.round(r0.height*k);
-  ctx.scale(k,k); ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=ctx.fillStyle="#1B1F3B";
+/* ---------- firmas del docente y del evaluador (dedo o lápiz digital) ---------- */
+// Cada firma se guarda aparte (rctx_firmas y rctx_firmas_obs, con el id de la visita) para no cargarlas con la lista de visitas.
+// Una sola vez, con la hora del servidor; solo la súper administración puede borrarlas.
+const FIRMA_K={
+  doc:{col:COLS, box:"firmaBox", li:"fImgDoc", titulo:"Firma del docente", quien:v=>v.docente||"el docente",
+    puede:v=>canWrite()||(!!v.docenteCorreo&&myMail()===v.docenteCorreo)},
+  obs:{col:COLSO, box:"firmaObsBox", li:"fImgObs", titulo:"Firma del evaluador", quien:v=>v.observador||"el evaluador", puede:()=>canWrite()}};
+let FIRMAS={}, FIRMA_P={};
+async function getFirma(k,id){ const key=k+":"+id; if(key in FIRMAS) return FIRMAS[key];
+  try{ const s=await withTimeout(getDoc(doc(FB,FIRMA_K[k].col,id)),15000); FIRMAS[key]=s.exists()?s.data():null; return FIRMAS[key]; }catch(e){ return undefined; } }
+const firmaOk=f=>!!(f&&/^data:image\/png;base64,/.test(f.img||""));
+function sigPad(host,titulo,onSave){
+  host.innerHTML='<div class="no-pdf"><p class="lbl" style="margin:14px 0 6px">'+esc(titulo)+' <span class="muted" style="font-weight:400">· con el dedo o un lápiz digital</span></p>'+
+    '<div class="sig"><canvas aria-label="Espacio para la '+esc(titulo.toLowerCase())+'"></canvas><span class="sig-l">Firme aquí</span></div>'+
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn sec sm" data-sg="clr">Borrar</button><button type="button" class="btn sm" data-sg="ok" disabled>Guardar firma</button><span class="fmsg" data-sg="msg"></span></div>'+
+    '<p class="muted" style="margin:6px 0 0">Queda registrada con la fecha y hora del servidor y no se puede cambiar después.</p></div>';
+  const q=x=>host.querySelector(x), cv=q("canvas"), ctx=cv.getContext("2d"), hint=q(".sig-l"), ok=q('[data-sg="ok"]'); let drawing=false, last=null, dirty=false;
+  // El tamaño se toma de la pantalla; si la ficha aún no estaba visible al dibujarse, se toma al empezar a firmar.
+  const fit=()=>{ const r=cv.getBoundingClientRect(), k=window.devicePixelRatio||1; if(!r.width) return;
+    cv.width=Math.round(r.width*k); cv.height=Math.round(r.height*k); ctx.setTransform(k,0,0,k,0,0);
+    ctx.lineCap="round"; ctx.lineJoin="round"; ctx.strokeStyle=ctx.fillStyle="#1B1F3B"; };
+  fit();
   const pt=e=>{ const r=cv.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top,p:e.pointerType==="pen"&&e.pressure?e.pressure:.5}; };
-  const mark=()=>{ if(dirty) return; dirty=true; $("#sigOk").disabled=false; hint.classList.add("hide"); };
-  cv.addEventListener("pointerdown",e=>{ e.preventDefault(); cv.setPointerCapture(e.pointerId); drawing=true; last=pt(e); ctx.beginPath(); ctx.arc(last.x,last.y,1.4,0,Math.PI*2); ctx.fill(); mark(); });
+  const mark=()=>{ if(dirty) return; dirty=true; ok.disabled=false; hint.classList.add("hide"); };
+  cv.addEventListener("pointerdown",e=>{ e.preventDefault(); if(!dirty&&cv.width!==Math.round(cv.getBoundingClientRect().width*(window.devicePixelRatio||1))) fit(); cv.setPointerCapture(e.pointerId); drawing=true; last=pt(e); ctx.beginPath(); ctx.arc(last.x,last.y,1.4,0,Math.PI*2); ctx.fill(); mark(); });
   cv.addEventListener("pointermove",e=>{ if(!drawing) return; e.preventDefault();
     const co=e.getCoalescedEvents?e.getCoalescedEvents():[]; (co.length?co:[e]).forEach(ev=>{ const p=pt(ev); ctx.lineWidth=1.3+p.p*2.6; ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; }); });
   const end=()=>{ drawing=false; }; cv.addEventListener("pointerup",end); cv.addEventListener("pointercancel",end);
-  $("#sigClr").onclick=()=>{ ctx.clearRect(0,0,cv.width,cv.height); dirty=false; $("#sigOk").disabled=true; hint.classList.remove("hide"); };
-  $("#sigOk").onclick=()=>{ if(!dirty) return; const o=document.createElement("canvas"); o.width=600; o.height=Math.round(600*cv.height/cv.width);
-    o.getContext("2d").drawImage(cv,0,0,o.width,o.height); onSave(o.toDataURL("image/png")); };
+  q('[data-sg="clr"]').onclick=()=>{ ctx.clearRect(0,0,cv.width,cv.height); dirty=false; ok.disabled=true; hint.classList.remove("hide"); };
+  ok.onclick=()=>{ if(!dirty) return; const o=document.createElement("canvas"); o.width=600; o.height=Math.round(600*cv.height/cv.width);
+    o.getContext("2d").drawImage(cv,0,0,o.width,o.height); onSave(o.toDataURL("image/png"),ok,q('[data-sg="msg"]')); };
 }
-async function saveFirma(v,img){
-  if(!confirm("¿Guardar la firma de "+(v.docente||"el docente")+"? No se podrá cambiar después.")) return;
-  $("#sigOk").disabled=true; $("#sigMsg").textContent="";
-  try{ await withTimeout(setDoc(doc(FB,COLS,v.id),{img,fecha:serverTimestamp(),por:myMail()}),20000); delete FIRMAS[v.id]; toast("Firma guardada"); openVisit(v.id); }
-  catch(e){ $("#sigMsg").textContent=errMsg(e,"No se pudo guardar la firma."); $("#sigOk").disabled=false; } }
+async function saveFirma(k,v,img,ok,msg){
+  const K=FIRMA_K[k];
+  if(!confirm("¿Guardar la "+K.titulo.toLowerCase()+" ("+K.quien(v)+")? No se podrá cambiar después.")) return;
+  ok.disabled=true; msg.textContent="";
+  try{ await withTimeout(setDoc(doc(FB,K.col,v.id),{img,fecha:serverTimestamp(),por:myMail()}),20000); delete FIRMAS[k+":"+v.id]; toast("Firma guardada"); openVisit(v.id); }
+  catch(e){ msg.textContent=errMsg(e,"No se pudo guardar la firma."); ok.disabled=false; } }
+function paintFirma(k,v,f){
+  const K=FIRMA_K[k], b=$("#"+K.box); if(!b||($("#mTitle")||{}).textContent!==v.id) return;
+  if(f===undefined){ b.innerHTML='<p class="muted no-pdf" style="margin:12px 0 0">No se pudo cargar la '+esc(K.titulo.toLowerCase())+'. Vuelve a abrir la ficha.</p>'; return; }
+  if(firmaOk(f)){ const d=tsDate(f.fecha);
+    b.innerHTML='<p class="lbl" style="margin:14px 0 6px">'+esc(K.titulo)+'</p><div class="sigv"><img src="'+esc(f.img)+'" alt="'+esc(K.titulo)+': '+esc(K.quien(v))+'"></div>'+
+      '<p class="muted" style="margin:4px 0 0">'+esc(K.quien(v))+(d?' · firmada el '+esc(fHora(d)):'')+(f.por?' · registrada por '+esc(f.por):'')+'</p>';
+    const li=$("#"+K.li); if(li){ li.src=f.img; li.classList.remove("hide"); } return; }
+  if(K.puede(v)) sigPad(b,K.titulo,(img,ok,msg)=>saveFirma(k,v,img,ok,msg)); else b.innerHTML=""; }
 function loadFirma(v){
-  const box=$("#firmaBox"); if(!box) return;
-  box.innerHTML='<p class="muted no-pdf" style="margin:12px 0 0"><span class="spin"></span> Cargando firma</p>';
-  getFirma(v.id).then(f=>{ const b=$("#firmaBox"); if(!b||($("#mTitle")||{}).textContent!==v.id) return;
-    if(f===undefined){ b.innerHTML='<p class="muted no-pdf" style="margin:12px 0 0">No se pudo cargar la firma. Vuelve a abrir la ficha.</p>'; return; }
-    if(f&&/^data:image\/png;base64,/.test(f.img||"")){ const d=tsDate(f.fecha);
-      b.innerHTML='<p class="lbl" style="margin:14px 0 6px">Firma del docente</p><div class="sigv"><img src="'+esc(f.img)+'" alt="Firma de '+esc(v.docente||"el docente")+'"></div>'+
-        '<p class="muted" style="margin:4px 0 0">'+(d?'Firmada el '+esc(fHora(d)):'')+(f.por?' · registrada por '+esc(f.por):'')+'</p>';
-      const li=$("#fImgDoc"); if(li){ li.src=f.img; li.classList.remove("hide"); } return; }
-    if(canWrite()||(v.docenteCorreo&&myMail()===v.docenteCorreo)) sigPad(b,img=>saveFirma(v,img)); else b.innerHTML=""; });
-}
+  ["doc","obs"].forEach(k=>{ const b=$("#"+FIRMA_K[k].box); if(b) b.innerHTML='<p class="muted no-pdf" style="margin:12px 0 0"><span class="spin"></span> Cargando firma</p>'; });
+  FIRMA_P[v.id]=Promise.all(["doc","obs"].map(k=>getFirma(k,v.id).then(f=>{ paintFirma(k,v,f); return f; })));
+  return FIRMA_P[v.id]; }
+// Antes de generar el PDF con firmas (descarga o correo) se espera a que las firmas estén cargadas y dibujadas.
+async function firmasListas(id){
+  const r=await withTimeout(FIRMA_P[id]||Promise.resolve([]),20000).catch(()=>[]);
+  await Promise.race([new Promise(ok=>setTimeout(ok,3000)),
+    Promise.all(["fImgDoc","fImgObs"].map(i=>{ const im=$("#"+i); return im&&!im.classList.contains("hide")&&im.decode?im.decode().catch(()=>{}):null; }))]);
+  return r; }
 
 /* ---------- envío de la evaluación por correo (Gmail del evaluador) ---------- */
 // Se envía desde la cuenta institucional de quien evalúa, con el PDF adjunto. El permiso de Google se pide
@@ -2188,6 +2204,9 @@ function mailFallback(v,why){ const fb=$("#mailFb"); if(!fb) return;
 async function sendMail(v){
   if(!MAIL_RE.test(v.docenteCorreo||"")){ toast("La visita no tiene un correo institucional válido del docente."); return; }
   const prevS=v.correoEnviado, dd=prevS&&tsDate(prevS.fecha);
+  // Aviso si al PDF le falta alguna firma (las firmas se cargaron al abrir la ficha).
+  const falta=["doc","obs"].filter(k=>{ const f=FIRMAS[k+":"+v.id]; return f!==undefined&&!firmaOk(f); }).map(k=>FIRMA_K[k].titulo.toLowerCase());
+  if(falta.length&&!confirm("Esta ficha aún no tiene la "+falta.join(" ni la ")+". El PDF se enviará con la línea de firma en blanco.\n\n¿Enviar de todos modos?")) return;
   if(!confirm(prevS?"Esta evaluación ya se envió a "+(prevS.a||v.docenteCorreo)+(dd?" el "+fHora(dd):"")+". ¿Enviarla de nuevo a "+v.docenteCorreo+"?":"Se enviará la evaluación "+v.id+", con el PDF adjunto, a "+v.docenteCorreo+" desde tu cuenta "+myMail()+".\n\nSi Google muestra «Google no verificó esta app», pulsa «Configuración avanzada» y luego «Ir a matriz-rctx-eight-academy» para dar el permiso.\n\n¿Continuar?")) return;
   const b=$("#mMail"), label=b.textContent; $("#mailFb").innerHTML="";
   const busy=on=>{ $$("#modal .m-foot button").forEach(x=>x.disabled=on); if(on) b.innerHTML='<span class="spin"></span> Enviando'; else b.textContent=label; };
@@ -2201,6 +2220,7 @@ async function sendMail(v){
     mailFallback(v,"Google no concedió el permiso para enviar correos ("+(c||"sin código")+")."); return; }
   try{
     toast("Preparando el PDF…");
+    await firmasListas(v.id);
     const pdf=await pdfFrom(v.id+".pdf",true,w=>w.outputPdf("blob"));
     const raw=mimeMsg(v.docenteCorreo,mailSubject(v),mailHTML(v),v.id+".pdf",u8b64(new Uint8Array(await pdf.arrayBuffer())));
     const res=await withTimeout(fetch("https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send?uploadType=media",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"message/rfc822"},body:raw}),60000);

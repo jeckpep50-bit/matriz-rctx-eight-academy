@@ -65,9 +65,9 @@ En **Docentes** hay una pestaña por sede: **Docentes Kids**, **Docentes Primari
 
 Al registrar una visita, el campo «Docente observado/a» sugiere los docentes de la sede elegida y el **correo del docente se completa solo**. La pestaña «Calificaciones» sigue mostrando el historial de notas.
 
-## Firma del docente
+## Firmas del docente y del evaluador
 
-En la ficha, el apartado **Conformidad y firma del docente** tiene un espacio para que el docente firme **con el dedo o con un lápiz digital** (en tableta, celular o pantalla táctil). La firma se guarda una sola vez, con la hora del servidor y quien la registró (un evaluador o el propio docente); solo la súper administración puede borrarla. Se guarda aparte, en `rctx_firmas`, y aparece en el **PDF con firmas** sobre la línea «Firma del docente observado». La ficha ya solo ofrece «PDF con firmas», y ese es el PDF que se adjunta al enviar por correo.
+En la ficha, el apartado **Conformidad y firmas** tiene dos espacios para firmar **con el dedo o con un lápiz digital** (tableta, celular o pantalla táctil): la **firma del docente** (la registra un evaluador o el propio docente) y la **firma del evaluador** (solo evaluadores o la súper administración). Cada firma se guarda una sola vez, con la hora del servidor y quien la registró; solo la súper administración puede borrarlas. Se guardan aparte (`rctx_firmas` y `rctx_firmas_obs`) y aparecen en el **PDF con firmas** sobre sus líneas. Al enviar por correo, la plataforma espera a que las firmas estén cargadas y avisa si falta alguna. La ficha ya solo ofrece «PDF con firmas», y ese es el PDF que se adjunta al enviar por correo.
 
 ## Envío de la evaluación por correo
 
