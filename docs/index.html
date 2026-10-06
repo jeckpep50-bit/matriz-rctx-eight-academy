@@ -976,7 +976,8 @@ async function saveVisit(v,fotos){
     if(prev&&prev.correoEnviado) data.correoEnviado=prev.correoEnviado;
     if(fotos===null) data.fotos=prev&&prev.fotos||[];
     tx.set(doc(FB,COLV,id),data);
-    if(fotos!==null){ if(fotos.length) tx.set(doc(FB,COLF,id),{fotos}); else tx.delete(doc(FB,COLF,id)); }
+    // Sin fotos se guarda la lista vacía (borrar el documento de fotos es solo de la súper administración).
+    if(fotos!==null&&(fotos.length||prev)) tx.set(doc(FB,COLF,id),{fotos});
     if(origen&&!origen.seguimientoHecho&&!origen.seguimientoCancelado)
       tx.update(doc(FB,COLV,data.seguimientoDe),{seguimientoHecho:{fecha:todayISO(),por:myMail(),visita:id}});
     return data;
@@ -1800,7 +1801,7 @@ $("#perEditor").addEventListener("input",()=>{ pDirty=true; $("#pMsg").textConte
 $("#pSave").onclick=async()=>{ const p={nombre:$("#pNom").value.trim()||"Año lectivo",t:[0,1,2].map(k=>({i:$('[data-pi="'+k+'"]').value,f:$('[data-pf="'+k+'"]').value}))};
   if(!validPer(p)){ $("#pMsg").textContent="Revisa las fechas: cada trimestre debe terminar después de empezar y comenzar después del anterior."; return; }
   const old=CONFIG; CONFIG=Object.assign({},CONFIG,{periodo:p});
-  try{ await withTimeout(putConfig(),20000); pDirty=false; $("#pMsg").textContent="Periodos guardados."; renderConfig(); }catch(e){ CONFIG=old; $("#pMsg").textContent=errMsg(e,"No se pudieron guardar los periodos."); } };
+  try{ await withTimeout(putConfig(),20000); pDirty=false; renderConfig(); $("#pMsg").textContent="Periodos guardados."; }catch(e){ CONFIG=old; $("#pMsg").textContent=errMsg(e,"No se pudieron guardar los periodos."); } };
 // Rango de fechas de un periodo: hoy, 7, 30, t1, t2, t3, anio o "" (todo).
 function periodRange(p){ const P=getPer(), t=todayISO();
   if(p==="hoy") return {from:t,to:t,label:"Hoy"};
