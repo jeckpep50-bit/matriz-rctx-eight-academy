@@ -99,7 +99,9 @@ service cloud.firestore {
         && ((!('seguimientoHecho' in request.resource.data) && !('seguimientoCancelado' in request.resource.data)) || rctxSuper())
         && (!('seguimientoDe' in request.resource.data) || exists(/databases/$(database)/documents/rctx_visitas/$(request.resource.data.seguimientoDe)));
       // Al editar no se puede cambiar el autor, la fecha de creación, la conformidad del docente ni el registro de envío.
-      allow update: if (rctxEval() && rctxVisitOk(id)
+      // Los cierres puntuales (seguimiento, envío por correo, conformidad) se evalúan primero: si la edición completa
+      // se evalúa antes y no aplica, puede invalidar toda la condición en vez de pasar a la siguiente.
+      allow update: if rctxSegLink(id) || rctxMailLog() || rctxConfByTeacher() || (rctxEval() && rctxVisitOk(id)
           && (!('creadoPor' in resource.data) || request.resource.data.get('creadoPor', '') == resource.data.creadoPor)
           && (!('creado' in resource.data) || request.resource.data.get('creado', '') == resource.data.creado)
           && request.resource.data.get('conformidad', null) == resource.data.get('conformidad', null)
@@ -107,8 +109,7 @@ service cloud.firestore {
           // El cierre o la cancelación del seguimiento y su origen no se cambian al editar (salvo la súper administración).
           && ((request.resource.data.get('seguimientoHecho', null) == resource.data.get('seguimientoHecho', null)
               && request.resource.data.get('seguimientoCancelado', null) == resource.data.get('seguimientoCancelado', null)
-              && request.resource.data.get('seguimientoDe', null) == resource.data.get('seguimientoDe', null)) || rctxSuper()))
-        || rctxConfByTeacher() || rctxMailLog() || rctxSegLink(id);
+              && request.resource.data.get('seguimientoDe', null) == resource.data.get('seguimientoDe', null)) || rctxSuper()));
       allow delete: if rctxSuper();
     }
     match /rctx_fotos/{id} {
