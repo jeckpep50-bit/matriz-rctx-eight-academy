@@ -44,10 +44,12 @@ firebase deploy --only hosting,firestore           # publica la página y las re
 
 | Cuenta | Puede |
 |---|---|
-| Súper administración (`dsroblesl`) | Todo: lo de los evaluadores, eliminar visitas y Ajustes (pesos, trimestres, duraciones, listas, logo y respaldos) |
-| Evaluadores (`slbustamantel`, `lemaciasb`, `mibermeov`) | Registrar y editar visitas, marcar seguimientos, enviar la evaluación por correo, añadir y eliminar docentes de Secundaria |
-| Cualquier otra cuenta `@eightacademy.edu.ec` | Solo consultar registros, docentes y tablero, y dar su conformidad en sus propias visitas |
+| Súper administración (`dsroblesl`) | Todo, sobre cualquier visita: editar, hacer seguimientos, firmar, enviar por correo, cancelar seguimientos, eliminar visitas y Ajustes. Ve en la campanita y el tablero los seguimientos de todos |
+| Evaluadores (`slbustamantel`, `lemaciasb`, `mibermeov`) | Registrar visitas y, **solo sobre las que registraron**: editarlas mientras sigan abiertas, hacer su seguimiento, firmar y enviarlas por correo. Ven solo sus propios seguimientos. Añadir y eliminar docentes |
+| Cualquier otra cuenta `@eightacademy.edu.ec` | Consultar registros, docentes y tablero, y dar su conformidad y firma en sus propias visitas. No ve «Eliminar» ni Ajustes |
 | Otros dominios (gmail, etc.) | Nada: ven «Sin acceso» |
+
+Una visita queda **cerrada a la edición del evaluador** cuando el docente dio su conformidad, cuando se envió por correo o cuando su seguimiento ya se realizó (puede reenviarla por correo). Estas reglas se aplican en la página y en el servidor (`firestore.rules`).
 
 Para cambiar los roles edita **los dos archivos**: `SUPER_ADMIN_EMAILS` y `EVALUADOR_EMAILS` en `docs/firebase-config.js`, y `rctxSuper()` y `rctxEval()` en `firestore.rules`; luego publica con `firebase deploy --only firestore,hosting`. El servidor aplica estas reglas aunque alguien modifique la página.
 

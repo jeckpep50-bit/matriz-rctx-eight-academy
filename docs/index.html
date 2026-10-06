@@ -947,6 +947,17 @@ const mailList=a=>(a||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x.
 const ADMINS=mailList(CFG.SUPER_ADMIN_EMAILS), EVALS=mailList(CFG.EVALUADOR_EMAILS);
 const canWrite=()=>ROLE==="admin"||ROLE==="eval";
 const isAdmin=()=>ROLE==="admin";
+// El evaluador solo actúa sobre las visitas que registró, y solo las edita mientras siguen abiertas
+// (sin conformidad del docente, sin envío por correo y sin seguimiento realizado). La súper administración, sobre todas.
+const esAutor=v=>String(v&&v.creadoPor||"").toLowerCase()===myMail();
+const abierta=v=>!v.conformidad&&!v.correoEnviado&&!v.seguimientoHecho;
+const canAct=v=>isAdmin()||(canWrite()&&esAutor(v));
+const canEdit=v=>isAdmin()||(canAct(v)&&abierta(v));
+const canSeg=v=>segPend(v)&&canAct(v);
+function cierre(v){ if(!canWrite()||canEdit(v)) return "";
+  if(!esAutor(v)) return "Solo la persona que registró esta visita puede editarla.";
+  const r=[]; if(v.conformidad) r.push("el docente ya dio su conformidad"); if(v.correoEnviado) r.push("ya se envió por correo"); if(v.seguimientoHecho) r.push("su seguimiento ya se realizó");
+  return "Edición cerrada: "+r.join(", ")+"."; }
 const ROLN={admin:"Súper administración",eval:"Evaluador",lector:"Solo lectura"};
 function sortV(){ VISITS.sort((a,b)=>((b.fecha||"")+(b.id||"")).localeCompare((a.fecha||"")+(a.id||""))); }
 const clean=o=>JSON.parse(JSON.stringify(o));
@@ -1278,6 +1289,7 @@ async function onSave(e){
   if(photosLoading){ $("#formMsg").textContent="Espera a que terminen de cargar las fotografías."; return; }
   // Si un intento anterior sí llegó a guardarse (p. ej., se cortó la conexión justo después), se actualiza esa visita en vez de duplicarla.
   if(!editingId&&TOKEN){ const dup=VISITS.find(x=>x.token===TOKEN); if(dup) editingId=dup.id; }
+  { const cur=editingId&&VISITS.find(x=>x.id===editingId); if(cur&&!canEdit(cur)){ $("#formMsg").textContent=cierre(cur)||"No puedes editar esta visita."; return; } }
   const v=collect(); v.id=editingId||"";
   const fotos=(!editingId||photosDirty)?[0,1].filter(i=>photos[i]).map(i=>({data:photos[i].data, desc:$('[data-desc="'+i+'"]').value.trim()})):null;
   saving=true; saveDraftNow(); const wasEdit=!!editingId;
@@ -1310,6 +1322,7 @@ function loadPhotos(id){
     paint(0); paint(1); });
 }
 function editVisit(v){
+  if(!canEdit(v)){ toast(cierre(v)||"No puedes editar esta visita."); return; }
   if(!confirmDiscard("Hay una visita en curso sin guardar. ¿Descartarla para editar "+v.id+"?")) return;
   resetForm(); editingId=v.id; SEGDE=v.seguimientoDe||""; paintSegDe(); TOKEN=v.token||""; PESOS=Object.assign({},vW(v));
   setSel($("#secOpts"),v.seccion); $("#fecha").value=v.fecha||todayISO();
@@ -1446,7 +1459,7 @@ function openVisit(id){
    '<div class="ficha"><div class="sh">Resultado</div><div style="padding:14px">'+resultHTML(v)+'</div></div>'+
    mx+
    '<div class="ficha"><div class="sh">Retroalimentación y seguimiento</div><table>'+tr("Fortalezas observadas",esc(v.fortalezas))+tr("Aspectos por mejorar",esc(v.mejoras))+
-    tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(segPend(v)&&canWrite()?' <button type="button" class="btn sm no-pdf" data-segstart="'+esc(v.id)+'" style="margin-left:6px">Realizar seguimiento</button>':'')+(segPend(v)&&isAdmin()?' <button type="button" class="btn sec sm no-pdf" id="mSegX" style="margin-left:6px">Cancelar seguimiento</button>':''):"")+'</table></div>'+
+    tr("Fecha de seguimiento",v.seguimiento?fLarga(v.seguimiento)+' &nbsp;'+segState(v)+(canSeg(v)?' <button type="button" class="btn sm no-pdf" data-segstart="'+esc(v.id)+'" style="margin-left:6px">Realizar seguimiento</button>':'')+(segPend(v)&&isAdmin()?' <button type="button" class="btn sec sm no-pdf" id="mSegX" style="margin-left:6px">Cancelar seguimiento</button>':''):"")+'</table></div>'+
    confHTML(v)+
    ph+'<div class="firmas"><div><img class="fimg hide" id="fImgDoc" alt=""><span class="fl"></span>Firma del docente observado<b>'+esc(v.docente||"")+'</b></div><div><img class="fimg hide" id="fImgObs" alt=""><span class="fl"></span>Firma del observador(a) / coordinador(a)<b>'+esc(v.observador||"")+'</b></div></div></div>'+
   (v.creadoPor||v.actualizadoPor?'<div class="audit">'+(v.creadoPor?'Registrada por '+esc(v.creadoPor)+(v.creado?' el '+esc(fHora(new Date(v.creado))):''):'')+
@@ -1454,7 +1467,9 @@ function openVisit(id){
   '<div class="m-foot"><button class="btn" id="mEdit">Editar visita</button><button class="btn sec" id="mDoc">Ver historial del docente</button><button class="btn sec" id="mPrint">Imprimir</button><button class="btn sec" id="mPdfF">PDF con firmas</button><button class="btn" id="mMail">'+(v.correoEnviado?'Reenviar por correo':'Enviar por correo')+'</button><span class="grow"></span><button class="btn danger" id="mDel">Eliminar</button></div>';
   openModal();
   if((v.fotos||[]).length) getFotos(v.id).then(list=>{ const b=$("#fichaFotos .shots"); if(b) b.innerHTML=list===null?'<p class="muted" style="margin:0">No se pudieron cargar las fotografías. Revisa la conexión y vuelve a abrir la ficha.</p>':list.length?list.map((f,i)=>'<figure><img src="'+esc(f.data)+'" alt="Foto '+(i+1)+'"><figcaption>Foto '+(i+1)+(f.desc?': '+esc(f.desc):'')+'</figcaption></figure>').join(""):'<p class="muted" style="margin:0">Sin fotografías.</p>'; });
-  if(!canWrite()) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove(); if(!canWrite()||!v.docenteCorreo) $("#mMail").remove(); else{ if(v.correoEnviado) $("#mMail").classList.add("sec"); $("#mMail").onclick=()=>sendMail(v); }
+  if(!canEdit(v)) $("#mEdit").remove(); if(!isAdmin()) $("#mDel").remove(); if(!canAct(v)||!v.docenteCorreo) $("#mMail").remove();
+  if(cierre(v)) $("#modal .m-foot").insertAdjacentHTML("beforebegin",'<div class="audit" style="color:var(--orange-ink);font-weight:700">'+esc(cierre(v))+'</div>');
+  if($("#mMail")){ if(v.correoEnviado) $("#mMail").classList.add("sec"); $("#mMail").onclick=()=>sendMail(v); }
   $("#mClose").onclick=closeModal; if($("#mEdit")) $("#mEdit").onclick=()=>editVisit(v); $("#mPrint").onclick=()=>window.print();
   $("#mPdfF").onclick=async()=>{ await savePending(); await firmasListas(v.id); downloadPdf(v.id+"-firmas.pdf",true); }; loadFirma(v);
   $("#mDoc").onclick=()=>openDocente(v.docente);
@@ -1687,8 +1702,8 @@ function monthlyHTML(){
   while((y<yb||(y===yb&&m<=mb))&&months.length<24){ months.push(y+"-"+pad(m)); m++; if(m>12){ m=1; y++; } }
   const secs=SECS.filter(s=>!tSec||s===tSec);
   const data=secs.map(s=>({s,pts:months.map(mo=>{ const vs=VISITS.filter(v=>v.seccion===s&&(v.fecha||"").slice(0,7)===mo&&inRange(v.fecha,{from:rg.from,to})).map(v=>calcV(v)).filter(r=>r.nivel!=="INCOMPLETA");
-    return vs.length?{a:avg(vs.map(r=>r.total)),n:vs.length}:null; })}));
-  const any=data.some(d=>d.pts.some(Boolean));
+    return vs.length?{a:avg(vs.map(r=>r.total)),n:vs.length}:null; })})).filter(d=>d.pts.some(Boolean));
+  const any=data.length>0;
   const head='<div class="panel"><h3>Evolución mensual del promedio por sección</h3><p class="hint">'+esc(rg.label)+esc(note)+'. Calificación promedio de las visitas de cada mes.</p>';
   if(!any||!months.length) return head+'<p class="muted" style="margin:0">Sin datos en el periodo.</p></div>';
   const W=Math.round(Math.max(300,Math.min(900,innerWidth-(innerWidth>900?360:70)))),H=240,ml=34,mr=104,mt=20,mB=30,iw=W-ml-mr,ih=H-mt-mB,n=months.length;
@@ -1725,13 +1740,14 @@ function indStatsHTML(l){
 const SEG_DIAS=7;
 function segHTML(){
   const t=todayISO(), lim=i2d(d2i(t)+SEG_DIAS);
-  const p=VISITS.filter(v=>segPend(v)&&(!tSec||v.seccion===tSec)&&v.seguimiento<=lim).sort((a,b)=>a.seguimiento.localeCompare(b.seguimiento));
+  // Cada evaluador ve sus seguimientos; la súper administración, los de todos; el resto de cuentas, ninguno.
+  const p=VISITS.filter(v=>segPend(v)&&(isAdmin()||(canWrite()&&esAutor(v)))&&(!tSec||v.seccion===tSec)&&v.seguimiento<=lim).sort((a,b)=>a.seguimiento.localeCompare(b.seguimiento));
   if(!p.length) return '';
   const venc=p.filter(v=>v.seguimiento<t), prox=p.filter(v=>v.seguimiento>=t);
   const li=v=>{ const d=d2i(v.seguimiento)-d2i(t);
     return '<li><span class="grow"><button class="linkish" data-open="'+esc(v.id)+'">'+esc(v.docente||"—")+'</button><span>Seguimiento: '+fCorta(v.seguimiento)+' · '+(d<0?'venció hace '+(-d)+' día'+(d===-1?'':'s'):d===0?'es hoy':'en '+d+' día'+(d===1?'':'s'))+' · '+esc(v.id)+'</span></span>'+
-      (d<0?'<span class="tag prio">Vencido</span>':'<span class="tag warn">Próximo</span>')+(canWrite()?'<button class="btn sec sm" data-segstart="'+esc(v.id)+'">Realizar seguimiento</button>':'')+'</li>'; };
-  return '<div class="panel" style="border-left:4px solid '+(venc.length?'var(--danger)':'var(--orange)')+'"><h3>Seguimientos pendientes</h3><p class="hint">'+
+      (d<0?'<span class="tag prio">Vencido</span>':'<span class="tag warn">Próximo</span>')+(canSeg(v)?'<button class="btn sec sm" data-segstart="'+esc(v.id)+'">Realizar seguimiento</button>':'')+'</li>'; };
+  return '<div class="panel" style="border-left:4px solid '+(venc.length?'var(--danger)':'var(--orange)')+'"><h3>'+(isAdmin()?'Seguimientos pendientes':'Tus seguimientos pendientes')+'</h3><p class="hint">'+
     (venc.length?venc.length+' vencido'+(venc.length===1?'':'s'):'Ninguno vencido')+' · '+prox.length+' en los próximos '+SEG_DIAS+' días.</p><ul class="plist">'+venc.concat(prox).map(li).join("")+'</ul></div>';
 }
 
@@ -2059,6 +2075,7 @@ const segStarted=new Set();
 function startSeg(id){
   const v=VISITS.find(x=>x.id===id); if(!v||!canWrite()) return;
   if(!segPend(v)){ toast("Este seguimiento ya no está pendiente."); return; }
+  if(!canSeg(v)){ toast("Solo quien registró la visita puede hacer su seguimiento."); return; }
   if(!confirmDiscard("Hay una visita en curso sin guardar. ¿Descartarla para iniciar el seguimiento de "+(v.docente||"este docente")+"?")) return;
   segStarted.add(v.id); bellToggle(false); closeModal();
   resetForm(); SEGDE=v.id; setSel($("#secOpts"),v.seccion);
@@ -2111,8 +2128,8 @@ setInterval(checkSegAlert,60000);
 // Una sola vez, con la hora del servidor; solo la súper administración puede borrarlas.
 const FIRMA_K={
   doc:{col:COLS, box:"firmaBox", li:"fImgDoc", titulo:"Firma del docente", quien:v=>v.docente||"el docente",
-    puede:v=>canWrite()||(!!v.docenteCorreo&&myMail()===v.docenteCorreo)},
-  obs:{col:COLSO, box:"firmaObsBox", li:"fImgObs", titulo:"Firma del evaluador", quien:v=>v.observador||"el evaluador", puede:()=>canWrite()}};
+    puede:v=>canAct(v)||(!!v.docenteCorreo&&myMail()===v.docenteCorreo)},
+  obs:{col:COLSO, box:"firmaObsBox", li:"fImgObs", titulo:"Firma del evaluador", quien:v=>v.observador||"el evaluador", puede:v=>canAct(v)}};
 let FIRMAS={}, FIRMA_P={};
 async function getFirma(k,id){ const key=k+":"+id; if(key in FIRMAS) return FIRMAS[key];
   try{ const s=await withTimeout(getDoc(doc(FB,FIRMA_K[k].col,id)),15000); FIRMAS[key]=s.exists()?s.data():null; return FIRMAS[key]; }catch(e){ return undefined; } }
@@ -2221,6 +2238,7 @@ function mailFallback(v,why){ const fb=$("#mailFb"); if(!fb) return;
     '<div class="row" style="margin-top:10px"><button type="button" class="btn sec sm" id="fbPdf">1. Descargar PDF</button><a class="btn sm" id="fbMail" target="_blank" rel="noopener" href="'+esc(url)+'">2. Abrir Gmail</a></div></div>';
   $("#fbPdf").onclick=()=>downloadPdf(v.id+".pdf",false); }
 async function sendMail(v){
+  if(!canAct(v)){ toast("Solo quien registró la visita puede enviarla por correo."); return; }
   if(!MAIL_RE.test(v.docenteCorreo||"")){ toast("La visita no tiene un correo institucional válido del docente."); return; }
   const prevS=v.correoEnviado, dd=prevS&&tsDate(prevS.fecha);
   // Aviso si al PDF le falta alguna firma (las firmas se cargaron al abrir la ficha).
