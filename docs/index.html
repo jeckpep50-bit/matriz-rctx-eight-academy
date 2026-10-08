@@ -2259,16 +2259,20 @@ async function sendMail(v){
     toast("Preparando el PDF…");
     if(!(await savePending())){ busy(false); return; }
     await firmasListas(v.id);
-    const pdf=await pdfFrom(v.id+".pdf",true,w=>w.outputPdf("blob"));
+    let pdf; try{ pdf=await pdfFrom(v.id+".pdf",true,w=>w.outputPdf("blob")); }catch(e){ throw {code:"pdf",msg:String(e&&e.message||e||"")}; }
     const raw=mimeMsg(v.docenteCorreo,mailSubject(v),mailHTML(v),v.id+".pdf",u8b64(new Uint8Array(await pdf.arrayBuffer())));
-    const res=await withTimeout(fetch("https://gmail.googleapis.com/upload/gmail/v1/users/me/messages/send?uploadType=media",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"message/rfc822"},body:raw}),60000);
+    // Google no acepta desde el navegador la ruta /upload de Gmail (no responde a CORS); el mensaje va en JSON, en base64url.
+    const res=await withTimeout(fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},
+      body:JSON.stringify({raw:btoa(raw).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")})}),90000).catch(e=>{ throw e&&e.code==="timeout"?e:{code:"net",msg:String(e&&e.message||e||"")}; });
     if(!res.ok){ const j=await res.json().catch(()=>({})); if(res.status===401||res.status===403) GTOK=null; throw {code:"gmail",status:res.status,msg:j.error&&j.error.message||""}; }
     try{ await withTimeout(updateDoc(doc(FB,COLV,v.id),{correoEnviado:{fecha:serverTimestamp(),por:myMail(),a:v.docenteCorreo}}),20000); }
     catch(e){ toast("Correo enviado, pero no se pudo registrar el envío en la ficha."); busy(false); return; }
     toast("Evaluación enviada a "+v.docenteCorreo); setTimeout(()=>openVisit(v.id),400);
   }catch(e){ busy(false);
     const why=e&&e.code==="gmail"?(e.status===403?"Google rechazó el envío: falta el permiso «Enviar correo en tu nombre» o la institución lo bloquea.":"Gmail respondió con el error "+e.status+(e.msg?" ("+e.msg+")":"")+"."):
-      e&&e.code==="timeout"||!navigator.onLine?"Sin conexión con Gmail.":"No se pudo generar o enviar el PDF.";
+      e&&e.code==="timeout"||!navigator.onLine?"Sin conexión con Gmail.":e&&e.code==="pdf"?"No se pudo generar el PDF"+(e.msg?" ("+e.msg+")":"")+".":
+      e&&e.code==="net"?"No se pudo conectar con Gmail"+(e.msg?" ("+e.msg+")":"")+".":"Error inesperado"+(e&&(e.message||e.msg)?" ("+(e.message||e.msg)+")":"")+".";
+    console.error("Envío por correo:",e);
     mailFallback(v,why); }
 }
 
