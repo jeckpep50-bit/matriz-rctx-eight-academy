@@ -77,6 +77,8 @@ En la ficha de cada visita, el botón **Enviar por correo** envía la evaluació
 
 La primera vez (y luego como máximo cada hora) Google pide permiso para «enviar correo en tu nombre». Como el proyecto de Google Cloud no pertenece a la organización de eightacademy, Google muestra antes el aviso **«Google no verificó esta app»**: se continúa con *Configuración avanzada › Ir a matriz-rctx-eight-academy*. Si Google o la institución bloquean el permiso, la ficha ofrece la alternativa: descargar el PDF y abrir Gmail con el mensaje ya redactado.
 
+En la ventana de permisos hay que dejar **marcada la casilla «Enviar correo electrónico en tu nombre»**; la plataforma lo comprueba antes de armar el PDF y, si falta, lo indica. Un corte de red o una falla pasajera de Gmail se reintenta una vez sola, y cada aviso de error dice qué falló (PDF, conexión, permiso vencido o negado). En fichas muy largas el PDF baja un poco la nitidez para no superar el límite de imagen de Safari (iPad y iPhone).
+
 ## Funcionamiento y protección de datos
 
 - **Borrador automático:** la visita en curso se guarda en el dispositivo mientras se escribe. Si el navegador se cierra o se recarga, al volver aparece «Recuperar borrador».

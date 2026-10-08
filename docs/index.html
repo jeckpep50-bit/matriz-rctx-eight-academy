@@ -112,6 +112,18 @@ main{padding:26px 30px 110px; max-width:1200px; min-width:0}
 .req{color:var(--danger)}
 input[type=text],input[type=date],input[type=time],input[type=search],select,textarea{
   width:100%; background:var(--surface); border:1px solid var(--line-2); border-radius:8px; padding:10px 12px; min-height:42px}
+/* Safari (iPad, iPhone) da a los campos de fecha un ancho propio que ignora la columna y los monta sobre el campo vecino. */
+input[type=date]{-webkit-appearance:none; appearance:none; display:block; min-width:0; max-width:100%; text-align:left}
+input[type=date]::-webkit-date-and-time-value{text-align:left; margin:0}
+/* Lista de sugerencias bajo el campo (docente, observador, asignatura): igual en computadora, iPad y teléfono. */
+.has-sug{position:relative}
+.sugg{position:absolute; left:0; right:0; z-index:40; margin:0; padding:4px; list-style:none; background:var(--surface); border:1px solid var(--line-2); border-radius:10px;
+  box-shadow:0 12px 28px rgba(0,0,0,.22); max-height:min(300px,45vh); overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain}
+.sugg li{padding:11px 12px; border-radius:7px; cursor:pointer; font-size:14.5px; line-height:1.3; color:var(--ink)}
+.sugg li+li{margin-top:1px}
+.sugg li:hover,.sugg li[aria-selected=true]{background:var(--surface-3); color:var(--h2)}
+.sugg b{color:var(--h2)}
+.sugg .sugg-n{padding:6px 12px 4px; font-size:12px; color:var(--muted); cursor:default; background:none!important}
 textarea{min-height:100px; resize:vertical; line-height:1.55}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--focus); outline-offset:0; border-color:var(--h2)}
 input[readonly]{background:var(--surface-3); color:var(--ink-2); font-weight:700}
@@ -600,12 +612,12 @@ details.dt{margin-top:10px} details.dt summary{cursor:pointer; color:var(--h2); 
         <p class="hint">Los campos con <span class="req">*</span> son obligatorios.</p>
         <div class="grid g3">
           <div class="field"><label for="fecha">Fecha de visita <span class="req">*</span></label><input type="date" id="fecha"></div>
-          <div class="field"><label for="observador">Observador/a <span class="req">*</span></label><input type="text" id="observador" list="dlObs" placeholder="Quien realiza la visita"></div>
-          <div class="field"><label for="docente">Docente observado/a <span class="req">*</span></label><input type="text" id="docente" list="dlDoc" placeholder="Docente a cargo"><span class="muted" id="docHint"></span></div>
+          <div class="field"><label for="observador">Observador/a <span class="req">*</span></label><input type="text" id="observador" data-sug="dlObs" autocomplete="off" placeholder="Quien realiza la visita"></div>
+          <div class="field"><label for="docente">Docente observado/a <span class="req">*</span></label><input type="text" id="docente" data-sug="dlDoc" autocomplete="off" placeholder="Docente a cargo"><span class="muted" id="docHint"></span></div>
           <div class="field"><label for="docCorreo">Correo del docente <span class="req">*</span></label><input type="text" id="docCorreo" inputmode="email" placeholder="nombre@eightacademy.edu.ec"><span class="muted">Con este correo el docente revisa su ficha y da su conformidad.</span></div>
           <div class="field"><label for="curso">Grado / curso <span class="req">*</span></label><input type="text" id="curso" placeholder="Ej.: 10.º EGB"></div>
           <div class="field"><label for="paralelo">Paralelo</label><input type="text" id="paralelo" placeholder="Ej.: D"></div>
-          <div class="field"><label for="materia">Asignatura <span class="req">*</span></label><input type="text" id="materia" list="dlMat" placeholder="Asignatura o área"></div>
+          <div class="field"><label for="materia">Asignatura <span class="req">*</span></label><input type="text" id="materia" data-sug="dlMat" autocomplete="off" placeholder="Asignatura o área"></div>
         </div>
         <div class="field" style="margin-top:14px"><label for="tema">Tema de clase</label><input type="text" id="tema" placeholder="Tema desarrollado durante la observación"></div>
         <datalist id="dlObs"></datalist><datalist id="dlDoc"></datalist><datalist id="dlMat"></datalist>
@@ -1104,6 +1116,7 @@ function initForm(){
   // Unifica nombres escritos con otra capitalización o sin tildes con el nombre ya registrado.
   [["#docente","#dlDoc"],["#observador","#dlObs"],["#materia","#dlMat"]].forEach(([s,dl])=>$(s).addEventListener("change",()=>{
     const k=norm($(s).value); if(!k) return; const o=Array.from($(dl).options).find(x=>norm(x.value)===k); if(o&&o.value!==$(s).value){ $(s).value=o.value; markDirty(); } }));
+  ["#docente","#observador","#materia"].forEach(s=>sugBox($(s)));
   initTimes();
   // En Secundaria el correo se toma de la base de docentes de Secundaria; en las demás secciones, de la nómina.
   $("#docente").addEventListener("change",()=>{ const x=docMatch($("#docente").value); if(!x) return;
@@ -1485,7 +1498,10 @@ const H2P_SRC="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pd
 const loadScript=src=>new Promise((ok,ko)=>{ const s=document.createElement("script"); s.src=src; s.onload=ok; s.onerror=ko; document.head.appendChild(s); });
 const SVG_PROPS=["fill","stroke","stroke-width","stroke-dasharray","opacity","display","font-size","font-weight","font-family"];
 // out recibe el conversor ya preparado: w=>w.save() descarga el archivo; w=>w.outputPdf("blob") lo devuelve para adjuntarlo.
-async function pdfFrom(name,firmas,out){
+// Safari (iPad, iPhone) no dibuja lienzos de más de 16,7 millones de píxeles: en fichas muy largas se baja la nitidez
+// lo justo para no pasar ese límite. ligero=true se usa si el correo resulta demasiado pesado.
+const CANVAS_MAX=15e6;
+async function pdfFrom(name,firmas,out,ligero){
   const root=document.documentElement, prev=root.getAttribute("data-theme"); let box=null;
   try{
     if(!window.html2pdf) await withTimeout(loadScript(H2P_SRC),20000);
@@ -1494,8 +1510,10 @@ async function pdfFrom(name,firmas,out){
     const so=m.querySelectorAll("svg, svg *"), sc=c.querySelectorAll("svg, svg *");
     so.forEach((el,i)=>{ const cs=getComputedStyle(el); sc[i].setAttribute("style",SVG_PROPS.map(p=>p+":"+cs.getPropertyValue(p)).join(";")); });
     box=document.createElement("div"); box.className="pdfbox"; box.appendChild(c); document.body.appendChild(box);
-    return await out(window.html2pdf().set({margin:[8,8,10,8],filename:name,image:{type:"jpeg",quality:.95},
-      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0},
+    // Margen de 1,25 por los saltos de página que el conversor agrega al alto de la ficha.
+    const px=Math.max(1,c.scrollWidth)*Math.max(1,c.scrollHeight)*1.25, scale=Math.max(.75,Math.min(ligero?1.4:2,Math.sqrt(CANVAS_MAX/px)));
+    return await out(window.html2pdf().set({margin:[8,8,10,8],filename:name,image:{type:"jpeg",quality:ligero?.8:.95},
+      html2canvas:{scale,useCORS:true,backgroundColor:"#ffffff",scrollX:0,scrollY:0},
       jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:["css","legacy"],avoid:["tr",".sc-card",".prog svg",".firmas","figure",".kpi",".bar"]}}).from(c));
   }
   finally{ if(box) box.remove(); if(prev) root.setAttribute("data-theme",prev); else root.removeAttribute("data-theme"); }
@@ -1833,6 +1851,47 @@ function renderScale(){
    '<tr><td><b>Total</b></td><td class="num"><b>'+IND.reduce((a,i)=>a+i.p,0)+'</b></td><td>'+IND.length+' indicadores</td></tr></tbody></table></div>'+
    '<div class="tbl-wrap"><table class="tbl sm"><thead><tr><th>Nivel del indicador</th><th class="num">Factor</th></tr></thead><tbody>'+LVS.map(l=>'<tr><td>'+lvTag(l)+'</td><td class="num">'+pct(FACT[l])+'</td></tr>').join("")+
    '</tbody></table><table class="tbl sm"><thead><tr><th>Desempeño</th><th>Rango</th></tr></thead><tbody><tr><td>'+nivTag("SATISFACTORIO")+'</td><td>90 o más</td></tr><tr><td>'+nivTag("CONFORME")+'</td><td>70 a 89.99</td></tr><tr><td>'+nivTag("INSATISFACTORIO")+'</td><td>Menos de 70</td></tr></tbody></table></div></div>';
+}
+// Lista desplegable bajo el campo mientras se escribe. Las opciones salen del datalist del campo (data-sug), que
+// renderLists mantiene al día. Al elegir, el campo dispara «change» como si se hubiera escrito (así se completa el correo).
+function sugBox(inp){
+  const dl=$("#"+inp.dataset.sug), box=document.createElement("ul"), MAXS=40; let items=[], act=-1;
+  box.className="sugg hide"; box.id=inp.id+"Sug"; box.setAttribute("role","listbox");
+  inp.parentNode.classList.add("has-sug"); inp.insertAdjacentElement("afterend",box);
+  inp.setAttribute("role","combobox"); inp.setAttribute("aria-autocomplete","list"); inp.setAttribute("aria-controls",box.id); inp.setAttribute("aria-expanded","false");
+  const close=()=>{ if(box.classList.contains("hide")) return; box.classList.add("hide"); inp.setAttribute("aria-expanded","false"); inp.removeAttribute("aria-activedescendant"); act=-1; };
+  const mark=i=>{ act=i; box.querySelectorAll("li[data-i]").forEach(li=>li.setAttribute("aria-selected",+li.dataset.i===i?"true":"false"));
+    const li=box.querySelector('li[data-i="'+i+'"]'); if(li){ inp.setAttribute("aria-activedescendant",li.id); li.scrollIntoView({block:"nearest"}); } };
+  const pick=v=>{ inp.value=v; close(); inp.dispatchEvent(new Event("input",{bubbles:true})); inp.dispatchEvent(new Event("change",{bubbles:true})); };
+  // Resalta las partes escritas, sin importar tildes ni mayúsculas (la normalización conserva la longitud de cada letra).
+  const hl=(v,ws)=>{ const k=String(v).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase(), on=new Array(v.length).fill(false);
+    if(k.length===v.length) ws.forEach(w=>{ let p=k.indexOf(w); while(p>=0&&w){ for(let i=p;i<p+w.length;i++) on[i]=true; p=k.indexOf(w,p+w.length); } });
+    let out="",open=false; for(let i=0;i<v.length;i++){ if(on[i]!==open){ out+=on[i]?"<b>":"</b>"; open=on[i]; } out+=esc(v[i]); } return out+(open?"</b>":""); };
+  const show=()=>{ const ws=norm(inp.value).split(" ").filter(Boolean);
+    if(!ws.length){ close(); return; }
+    const all=Array.from(dl.options).map(o=>o.value), hit=all.filter(v=>{ const k=norm(v); return ws.every(w=>k.indexOf(w)>=0); });
+    // Primero los que empiezan por lo escrito.
+    hit.sort((a,b)=>(norm(a).indexOf(ws[0])===0?0:1)-(norm(b).indexOf(ws[0])===0?0:1));
+    items=hit.slice(0,MAXS);
+    if(!items.length||(items.length===1&&norm(items[0])===norm(inp.value))){ close(); return; }
+    box.innerHTML=items.map((v,i)=>'<li role="option" id="'+box.id+i+'" data-i="'+i+'" aria-selected="false">'+hl(v,ws)+'</li>').join("")+
+      (hit.length>MAXS?'<li class="sugg-n" aria-hidden="true">'+(hit.length-MAXS)+' más: sigue escribiendo para acotar.</li>':'');
+    box.style.top=(inp.offsetTop+inp.offsetHeight+4)+"px"; box.classList.remove("hide"); box.scrollTop=0; inp.setAttribute("aria-expanded","true"); act=-1; };
+  inp.addEventListener("input",e=>{ if(e.isTrusted) show(); });
+  inp.addEventListener("keydown",e=>{
+    if(box.classList.contains("hide")){ if(e.key==="ArrowDown"&&inp.value){ e.preventDefault(); show(); } return; }
+    if(e.key==="ArrowDown"){ e.preventDefault(); mark(Math.min(act+1,items.length-1)); }
+    else if(e.key==="ArrowUp"){ e.preventDefault(); mark(Math.max(act-1,0)); }
+    else if(e.key==="Enter"){ e.preventDefault(); if(act>=0) pick(items[act]); else if(items.length===1) pick(items[0]); else close(); }
+    else if(e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); close(); }
+    else if(e.key==="Tab") close(); });
+  // Tocar la lista no la cierra (en iPad el campo puede perder el foco antes del clic); tocar fuera, sí.
+  let hold=false;
+  inp.addEventListener("blur",()=>setTimeout(()=>{ if(!hold) close(); },150));
+  box.addEventListener("pointerdown",e=>{ hold=true; if(e.target.closest("li[data-i]")) e.preventDefault(); });
+  document.addEventListener("pointerup",()=>{ if(hold) setTimeout(()=>{ hold=false; },400); },true);
+  document.addEventListener("pointerdown",e=>{ if(!box.contains(e.target)&&e.target!==inp) close(); },true);
+  box.addEventListener("click",e=>{ const li=e.target.closest("li[data-i]"); if(li){ pick(items[+li.dataset.i]); hold=false; } });
 }
 function opts(s){ return Array.from(s).sort((a,b)=>a.localeCompare(b,"es")).map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join(""); }
 // Une variantes del mismo nombre (mayúsculas, tildes); gana la primera aparición (la nómina va primero).
@@ -2207,6 +2266,11 @@ async function gmailToken(){
   const p=new GoogleAuthProvider(); p.addScope(GMAIL_SCOPE); p.setCustomParameters({login_hint:myMail(),hd:DOMAIN});
   const r=await reauthenticateWithPopup(AUTH.currentUser,p), c=GoogleAuthProvider.credentialFromResult(r);
   if(!c||!c.accessToken) throw {code:"no-token"};
+  // Google deja desmarcar la casilla de enviar correos en su ventana; se comprueba antes de armar el PDF.
+  // Si la consulta falla, se sigue: Gmail igual rechazaría el envío con un aviso claro.
+  try{ const r2=await withTimeout(fetch("https://www.googleapis.com/oauth2/v3/tokeninfo",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"access_token="+encodeURIComponent(c.accessToken)}),10000);
+    if(r2.ok){ const j=await r2.json(); if(typeof j.scope==="string"&&j.scope.split(" ").indexOf(GMAIL_SCOPE)<0) throw {code:"no-scope"}; } }
+  catch(e){ if(e&&e.code==="no-scope") throw e; }
   GTOK={t:c.accessToken,exp:Date.now()+50*60e3}; return GTOK.t;
 }
 const u8b64=u=>{ let x=""; for(let i=0;i<u.length;i+=0x8000) x+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000)); return btoa(x); };
@@ -2254,22 +2318,33 @@ async function sendMail(v){
     if(c==="auth/popup-closed-by-user"||c==="auth/cancelled-popup-request"){ toast("Envío cancelado"); return; }
     if(c==="auth/popup-blocked"){ toast("El navegador bloqueó la ventana de Google. Permite las ventanas emergentes para este sitio e intenta de nuevo."); return; }
     if(c==="auth/user-mismatch"){ toast("En la ventana de Google elige tu cuenta "+myMail()+"."); return; }
+    if(c==="no-scope"){ mailFallback(v,"En la ventana de Google no quedó marcada la casilla «Enviar correo electrónico en tu nombre». Pulsa «Enviar por correo» de nuevo y márcala antes de continuar."); return; }
     mailFallback(v,"Google no concedió el permiso para enviar correos ("+(c||"sin código")+")."); return; }
   try{
     toast("Preparando el PDF…");
     if(!(await savePending())){ busy(false); return; }
     await firmasListas(v.id);
-    let pdf; try{ pdf=await pdfFrom(v.id+".pdf",true,w=>w.outputPdf("blob")); }catch(e){ throw {code:"pdf",msg:String(e&&e.message||e||"")}; }
-    const raw=mimeMsg(v.docenteCorreo,mailSubject(v),mailHTML(v),v.id+".pdf",u8b64(new Uint8Array(await pdf.arrayBuffer())));
-    // Google no acepta desde el navegador la ruta /upload de Gmail (no responde a CORS); el mensaje va en JSON, en base64url.
-    const res=await withTimeout(fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},
-      body:JSON.stringify({raw:btoa(raw).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")})}),90000).catch(e=>{ throw e&&e.code==="timeout"?e:{code:"net",msg:String(e&&e.message||e||"")}; });
+    const armar=async ligero=>{ let pdf; try{ pdf=await pdfFrom(v.id+".pdf",true,w=>w.outputPdf("blob"),ligero); }catch(e){ throw {code:"pdf",msg:String(e&&e.message||e||"")}; }
+      if(!pdf||pdf.size<1000) throw {code:"pdf",msg:"el PDF salió vacío"};
+      const raw=mimeMsg(v.docenteCorreo,mailSubject(v),mailHTML(v),v.id+".pdf",u8b64(new Uint8Array(await pdf.arrayBuffer())));
+      return JSON.stringify({raw:btoa(raw).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}); };
+    // Una ficha normal pesa unos 2,5 MB; si una muy larga pasa de 4 MB, se rehace el PDF más liviano para no rozar los límites de Google.
+    let body=await armar(false); if(body.length>4e6) body=await armar(true);
+    // Google no acepta desde el navegador la ruta /upload de Gmail; el mensaje va en JSON, en base64url.
+    const post=()=>withTimeout(fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body}),90000)
+      .catch(e=>{ throw e&&e.code==="timeout"?e:{code:"net",msg:String(e&&e.message||e||"")}; });
+    let res;
+    // Un corte de red o una falla pasajera de Gmail (429, 5xx) se reintenta una sola vez. Solo si la red se corta
+    // justo después de que Gmail aceptó el primero, el docente podría recibirlo dos veces.
+    try{ res=await post(); }catch(e){ if(e.code!=="net") throw e; await new Promise(ok=>setTimeout(ok,2500)); res=await post(); }
+    if(res.status===429||res.status>=500){ await new Promise(ok=>setTimeout(ok,3000)); res=await post(); }
     if(!res.ok){ const j=await res.json().catch(()=>({})); if(res.status===401||res.status===403) GTOK=null; throw {code:"gmail",status:res.status,msg:j.error&&j.error.message||""}; }
     try{ await withTimeout(updateDoc(doc(FB,COLV,v.id),{correoEnviado:{fecha:serverTimestamp(),por:myMail(),a:v.docenteCorreo}}),20000); }
     catch(e){ toast("Correo enviado, pero no se pudo registrar el envío en la ficha."); busy(false); return; }
     toast("Evaluación enviada a "+v.docenteCorreo); setTimeout(()=>openVisit(v.id),400);
   }catch(e){ busy(false);
-    const why=e&&e.code==="gmail"?(e.status===403?"Google rechazó el envío: falta el permiso «Enviar correo en tu nombre» o la institución lo bloquea.":"Gmail respondió con el error "+e.status+(e.msg?" ("+e.msg+")":"")+"."):
+    const why=e&&e.code==="gmail"?(e.status===403?"Google rechazó el envío: falta el permiso «Enviar correo en tu nombre» o la institución lo bloquea"+(e.msg?" ("+e.msg+")":"")+". Pulsa «Enviar por correo» de nuevo y marca la casilla de enviar correos.":
+      e.status===401?"El permiso de Google venció. Pulsa «Enviar por correo» de nuevo para renovarlo.":"Gmail respondió con el error "+e.status+(e.msg?" ("+e.msg+")":"")+"."):
       e&&e.code==="timeout"||!navigator.onLine?"Sin conexión con Gmail.":e&&e.code==="pdf"?"No se pudo generar el PDF"+(e.msg?" ("+e.msg+")":"")+".":
       e&&e.code==="net"?"No se pudo conectar con Gmail"+(e.msg?" ("+e.msg+")":"")+".":"Error inesperado"+(e&&(e.message||e.msg)?" ("+(e.message||e.msg)+")":"")+".";
     console.error("Envío por correo:",e);
